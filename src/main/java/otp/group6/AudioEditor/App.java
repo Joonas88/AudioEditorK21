@@ -25,7 +25,7 @@ public class App {
                 @Override
                 public void run() {
                     try{
-                        Thread.sleep(10000);
+                        Thread.sleep(5000);
                     }catch (Exception ex){
                         ex.printStackTrace();
                     }
