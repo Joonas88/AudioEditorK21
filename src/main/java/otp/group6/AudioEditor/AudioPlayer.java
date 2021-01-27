@@ -10,7 +10,7 @@ import javax.sound.sampled.Clip;
 public class AudioPlayer {
 	@SuppressWarnings("unused")
 	private Clip clip;
-	
+	private long framePosition;
 	public AudioPlayer() {
 		
 		try {
@@ -68,4 +68,19 @@ public class AudioPlayer {
 	}
 	
 	//TODO metodit taaksepäin ja eteenpäin kelaukselle!!
+	public void forward() {
+		if(clip.isOpen() && clip.getMicrosecondPosition() + 3000000l < clip.getMicrosecondLength()) {
+			System.out.println(clip.getMicrosecondPosition());
+			clip.setMicrosecondPosition(clip.getMicrosecondPosition() + 3000000l);
+		}else {
+			System.out.println("cant fast-forward");
+		}
+	}
+	public void rewind() {
+		if(clip.isOpen() && clip.getMicrosecondPosition() - 3000000l > 0l) {
+			clip.setMicrosecondPosition(clip.getMicrosecondPosition() - 3000000l);
+		}else {
+			clip.setMicrosecondPosition(0l);
+		}
+	}
 }

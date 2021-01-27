@@ -26,7 +26,7 @@ public class TestPlayer {
 		int i;
 		while(true) {
 			i = sc.nextInt();
-			if(i == 3) {
+			if(i == 5) {
 				break;
 			}
 			choice(ap,i);
@@ -41,6 +41,12 @@ public static void choice(AudioPlayer app, int i) {
     	break;
     	case 2:
     	app.pause();
+    	break;
+    	case 3:
+    	app.forward();
+    	break;
+    	case 4:
+    	app.rewind();
     	break;
     	}
     }
