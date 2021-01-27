@@ -25,6 +25,7 @@ public class AudioPlayer {
 		if (!clip.isOpen()) {
 			try {
 				clip.open(audio);
+				clip.loop(0);
 			}  catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -32,6 +33,7 @@ public class AudioPlayer {
 			clip.close();
 			try {
 				clip.open(audio);
+				clip.loop(0);
 			}  catch (Exception e) {
 				e.printStackTrace();
 			}
