@@ -28,6 +28,7 @@ public class SoundManipulator {
 		}
 		
 		play();
+		System.out.println(clip.isRunning());
 		Scanner scanner = new Scanner(System.in);
 		while(true) {
 			int i = scanner.nextInt();
@@ -59,6 +60,7 @@ public class SoundManipulator {
 			clip.open(ais2);
 			clip.loop(0);
 			clip.start();
+			
 			
 		} catch (Exception e) {
 			e.printStackTrace();
