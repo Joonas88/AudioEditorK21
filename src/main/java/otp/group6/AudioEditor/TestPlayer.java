@@ -27,6 +27,7 @@ public class TestPlayer {
 		while(true) {
 			i = sc.nextInt();
 			if(i == 5) {
+				ap.closeAudio();
 				break;
 			}
 			choice(ap,i);

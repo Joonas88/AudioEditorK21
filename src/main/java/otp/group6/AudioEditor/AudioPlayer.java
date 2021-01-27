@@ -1,16 +1,19 @@
 package otp.group6.AudioEditor;
 
-import java.io.IOException;
-
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
+/**
+ * 
+ * @author Kevin Akkoyun, Joonas Soininen
+ * @version 0.1
+ *
+ */
 
 public class AudioPlayer {
 	@SuppressWarnings("unused")
 	private Clip clip;
-	private long framePosition;
 	public AudioPlayer() {
 		
 		try {
@@ -50,7 +53,6 @@ public class AudioPlayer {
 				
 	}
 	
-	
 	public void pause() {
 		if(clip.isOpen()&&clip.isRunning()) {
 			clip.stop();	
@@ -67,20 +69,27 @@ public class AudioPlayer {
 		}
 	}
 	
-	//TODO metodit taaksepäin ja eteenpäin kelaukselle!!
 	public void forward() {
-		if(clip.isOpen() && clip.getMicrosecondPosition() + 3000000l < clip.getMicrosecondLength()) {
-			System.out.println(clip.getMicrosecondPosition());
+		if(clip.isOpen() && clip.getMicrosecondPosition() + 3000000l < clip.getMicrosecondLength()) {			
 			clip.setMicrosecondPosition(clip.getMicrosecondPosition() + 3000000l);
 		}else {
 			System.out.println("cant fast-forward");
 		}
 	}
+	
 	public void rewind() {
 		if(clip.isOpen() && clip.getMicrosecondPosition() - 3000000l > 0l) {
 			clip.setMicrosecondPosition(clip.getMicrosecondPosition() - 3000000l);
 		}else {
 			clip.setMicrosecondPosition(0l);
+		}
+	}
+	
+	public void closeAudio() {
+		if(clip.isOpen()) {			
+			clip.close();
+		} else {
+			System.out.println("No audiofile to close!");
 		}
 	}
 }
