@@ -1,4 +1,4 @@
-package otp.group6.AudioEditor;
+package otp.group6.prototypes;
 import javax.sound.sampled.*;
 import java.io.File;
 import java.util.Scanner;
@@ -38,6 +38,7 @@ public class App {
     public void recordAudio(){
     try{
         AudioFormat format = getAudioFormat();
+        System.out.print(format.getFrameSize());
         DataLine.Info info = new DataLine.Info(TargetDataLine.class, format);
         App.line = (TargetDataLine) AudioSystem.getLine(info);
         App.line.open(format);

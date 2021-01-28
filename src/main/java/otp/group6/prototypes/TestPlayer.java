@@ -1,4 +1,4 @@
-package otp.group6.AudioEditor;
+package otp.group6.prototypes;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,15 +8,17 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import otp.group6.AudioEditor.*;
+
+
 public class TestPlayer {
 
 	public static void main(String[] args) {
-		AudioPlayer ap = new AudioPlayer();
+		Soundboard sb = new Soundboard();
 		AudioInputStream ais;
 		try {
-			 ais = AudioSystem.getAudioInputStream( new File("src/audio/test3.wav").getAbsoluteFile());
-			 ap.openAudio(ais);
-			 ap.play();
+			 ais = AudioFileHandler.OpenFile("src/audio/test3.wav");
+			 sb.addSample(new Sample(ais));
 			 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -27,27 +29,27 @@ public class TestPlayer {
 		while(true) {
 			i = sc.nextInt();
 			if(i == 5) {
-				ap.closeAudio();
+				sb.closeSample();
 				break;
 			}
-			choice(ap,i);
+			choice(sb,i);
 		}
 	  
 	}
-public static void choice(AudioPlayer app, int i) {
+public static void choice(Soundboard app, int i) {
     	
     	switch (i) {
     	case 1 :
-    	app.resume();
+    	app.playSample(0);
     	break;
     	case 2:
-    	app.pause();
+    	
     	break;
     	case 3:
-    	app.forward();
+    	
     	break;
     	case 4:
-    	app.rewind();
+    	
     	break;
     	}
     }
