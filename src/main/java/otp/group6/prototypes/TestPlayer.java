@@ -12,14 +12,14 @@ import otp.group6.AudioEditor.*;
 
 
 public class TestPlayer {
-
+	static AudioRecorder ar;
+	static Soundboard sb;
 	public static void main(String[] args) {
-		Soundboard sb = new Soundboard();
+		sb = new Soundboard();
 		AudioInputStream ais;
+		ar = new AudioRecorder();
 		try {
-			 ais = AudioFileHandler.OpenFile("src/audio/test3.wav");
-			 sb.addSample(new Sample(ais));
-			 
+			 sb.addSample(sb.new Sample("src/audio/test3.wav"));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -29,21 +29,28 @@ public class TestPlayer {
 		while(true) {
 			i = sc.nextInt();
 			if(i == 5) {
-				sb.closeSample();
 				break;
 			}
-			choice(sb,i);
+			choice(i);
 		}
 	  
 	}
-public static void choice(Soundboard app, int i) {
+public static void choice(int i) {
     	
     	switch (i) {
     	case 1 :
-    	app.playSample(0);
+    	if(sb.isPlaying()) {
+    		sb.closeSample();
+    	} else {
+    		sb.playSample(0);
+    	}
     	break;
     	case 2:
-    	
+    	if(ar.isAlive()) {
+    		ar.stopRecord();
+    	}else {
+    		ar.start();
+    	}
     	break;
     	case 3:
     	
@@ -53,5 +60,4 @@ public static void choice(Soundboard app, int i) {
     	break;
     	}
     }
-    
 }

@@ -8,7 +8,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.TargetDataLine;
 /**
- * 
+ * Provides tools for basic audio recording
  * @author Kevin Akkoyun, Joonas Soininen
  * @version 0.1
  *
@@ -16,16 +16,26 @@ import javax.sound.sampled.TargetDataLine;
 
 //
 
-public class AudioRecorder {
+public class AudioRecorder extends Thread{
 	private AudioFormat format;
 	private File targetFile;
 	private TargetDataLine line;
 	
 	public AudioRecorder() {
 		this.setFormat(getDefaultAudioFormat());
-		
+		//in development only
+		//VAIHDA KÄYTTÄJÄLTÄ KYSYTTYYN TIEDOSTOPOLKUUN!!
+		this.setTargetFile(null);
 	}
-	
+	@Override
+	public void run() {
+		try {
+			recordAudio();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	public AudioFormat getFormat() {
 		return format;
 	}
@@ -70,7 +80,7 @@ public class AudioRecorder {
 
     }
     
-    public void stop(){
+    public void stopRecord(){
         line.stop();
         line.close();
     }

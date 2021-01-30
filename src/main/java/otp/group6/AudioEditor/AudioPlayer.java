@@ -1,5 +1,7 @@
 package otp.group6.AudioEditor;
 
+import java.io.IOException;
+
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -23,7 +25,12 @@ public class AudioPlayer {
 		}
 		
 	}
-	
+	//HUOM! MUISTA LUODA UUSI AUDIO INPUT STREAM OLIO AINA KUN TOISTAT TIEDOSTOA UUDESTAAN
+	// ^ paitsi jos et sulje klippiä. Saman audioInputStreamin syöttö uudestaan klipille EI TOIMI
+	/**
+	 * 
+	 * @param audio A new AudioInputStream
+	 */
 	public void openAudio(AudioInputStream audio) {
 		if (!clip.isOpen()) {
 			try {
@@ -46,7 +53,7 @@ public class AudioPlayer {
 	public void play() {
 		
 		if(clip.isOpen()) {
-			clip.start();	
+			clip.start();
 		} else {
 			System.out.println("No file selected!");
 		}
@@ -91,5 +98,11 @@ public class AudioPlayer {
 		} else {
 			System.out.println("No audiofile to close!");
 		}
+	}
+	public boolean isPlaying() {
+		if(clip.isActive()) {
+			return true;
+		}
+		return false;
 	}
 }
