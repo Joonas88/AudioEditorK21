@@ -46,6 +46,10 @@ public class Soundboard {
 	private AudioPlayer player;
 	private ArrayList<Sample> sampleArray = new ArrayList<Sample>();
 	
+	public int getSampleAmount() {
+		return sampleArray.size();
+	}
+	
 	public Soundboard() {
 		player = new AudioPlayer();
 	}
@@ -56,8 +60,12 @@ public class Soundboard {
 		sampleArray.remove(sampleIndex);
 	}
 	public void playSample(int sampleIndex) {
+		try {
 			player.openAudio(sampleArray.get(sampleIndex).getSample());
 			player.play();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 	public void closeSample() {
 		player.pause();

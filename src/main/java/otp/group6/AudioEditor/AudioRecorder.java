@@ -23,9 +23,8 @@ public class AudioRecorder extends Thread{
 	
 	public AudioRecorder() {
 		this.setFormat(getDefaultAudioFormat());
-		//in development only
-		//VAIHDA KÄYTTÄJÄLTÄ KYSYTTYYN TIEDOSTOPOLKUUN!!
-		this.setTargetFile(null);
+		//Sets default file
+		this.setTargetFile(new File("src/audio/default.wav").getAbsoluteFile());
 	}
 	@Override
 	public void run() {
@@ -49,9 +48,7 @@ public class AudioRecorder extends Thread{
 	}
 
 	public void setTargetFile(File targetFile) {
-		//TODO testiversion poisto
-		//this.targetFile = targetFile;
-		this.targetFile = new File("src/audio/test3.wav").getAbsoluteFile();
+		this.targetFile = targetFile;
 	}
 	
 	//TODO Tutki mahdollisuutta antaa käyttäjälle muokkaus äänitaajuuteen yms, onko se mahdollista
