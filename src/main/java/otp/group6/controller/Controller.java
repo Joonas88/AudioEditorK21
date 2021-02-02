@@ -21,12 +21,6 @@ public class Controller {
 		soundboard = new Soundboard();
 		mainPlayer = new AudioPlayer();
 		recorder = new AudioRecorder();
-		
-		//dev test - Remove from final
-		soundboard.addSample(soundboard.new Sample("src/audio/test3.wav"));
-		soundboard.addSample(soundboard.new Sample("src/audio/testi5.wav"));
-		soundboard.addSample(soundboard.new Sample("src/audio/test5.wav"));
-		soundboard.addSample(soundboard.new Sample("src/audio/jumalauta.wav"));
 	}
 	public void intialConfig() {
 		
@@ -47,8 +41,5 @@ public class Controller {
 	
 	public void stopRecord() {
 		recorder.stopRecord();
-	}
-	public int getSampleAmount() {
-		return soundboard.getSampleAmount();
 	}
 }

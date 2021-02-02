@@ -81,8 +81,4 @@ public class AudioRecorder extends Thread{
         line.stop();
         line.close();
     }
-
-    
-    
-    
 }

@@ -39,33 +39,6 @@ public class MainController {
 	TextField tf;
 	
 	/**
-	 * Adds a new button to the soundboard.
-	 * TODO lisää toiminto jolla pitää kirjaa nappien indexeistä.
-	 * TODO Sijoittelu toiminnallisuus
-	 * TODO Siisti koodia
-	 */
-	@FXML
-	public void addButton() {
-		if(button_count + 1 <= controller.getSampleAmount()) {
-			Button button = new Button();
-			int i = button_count;
-			button.setOnAction(new EventHandler<ActionEvent>() {
-				public void handle(ActionEvent e) {
-					controller.playSound(i);
-				}
-			});
-			button.setText(Integer.toString(button_count + 1));
-			button.layoutXProperty().set(100 * (button_count + 1));
-			button.layoutYProperty().set(150);
-			try {
-				ap.getChildren().add(button);
-				button_count++;
-			}catch(Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
-	/**
 	 * TODO REGEX tarkistus tiedostonimille
 	 */
 	@FXML

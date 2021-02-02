@@ -15,7 +15,6 @@
                <content>
                   <AnchorPane fx:id="ap" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <Button fx:id="btn" layoutX="84.0" layoutY="123.0" mnemonicParsing="false" onAction="#addButton" text="file.." AnchorPane.bottomAnchor="218.0" AnchorPane.leftAnchor="84.0" AnchorPane.rightAnchor="469.0" AnchorPane.topAnchor="123.0" />
                         <Text fx:id="text" layoutX="84.0" layoutY="87.0" strokeType="OUTSIDE" strokeWidth="0.0" AnchorPane.bottomAnchor="276.93408203125" AnchorPane.leftAnchor="84.0" AnchorPane.rightAnchor="516.0" AnchorPane.topAnchor="74.93310546875" />
                      </children>
                   </AnchorPane>
