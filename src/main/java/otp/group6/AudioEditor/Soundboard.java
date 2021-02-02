@@ -45,11 +45,7 @@ public class Soundboard {
 
 	private AudioPlayer player;
 	private ArrayList<Sample> sampleArray = new ArrayList<Sample>();
-	
-	public int getSampleAmount() {
-		return sampleArray.size();
-	}
-	
+
 	public Soundboard() {
 		player = new AudioPlayer();
 	}

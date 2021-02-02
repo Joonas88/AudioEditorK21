@@ -18,18 +18,50 @@ public class Controller {
 	private AudioRecorder recorder;
 	
 	public Controller() {
+		initialConfig();
+	}
+	
+	public void initialConfig() {
 		soundboard = new Soundboard();
 		mainPlayer = new AudioPlayer();
 		recorder = new AudioRecorder();
 	}
-	public void intialConfig() {
-		
-	}
 	
+	// Soundboard methods start
+	// TODO MainController tarvitsee try/catch-lohkon tätä metodia käyttäessä myös!
 	public void playSound(int index) {
 		soundboard.playSample(index);
 	}
 	
+	public void stopSound() {
+		try {
+		if (soundboard.isPlaying()) {
+			soundboard.closeSample();	
+		}	
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void addSample(Sample sample) {
+		try {
+		soundboard.addSample(sample);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	// TODO MainController tarvitsee try/catch-lohkon tätä metodia käyttäessä myös!
+	public void removeSample(int index) {
+		try {
+		soundboard.removeSample(index);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	//Soundboard methods stop
+	
+	// AudioRecorder methods start
 	public void recordAudio(String file_name) {
 		try {
 			recorder.setTargetFile(new File("src/audio/" + file_name + ".wav").getAbsoluteFile());
@@ -40,6 +72,11 @@ public class Controller {
 	}
 	
 	public void stopRecord() {
+		try {
 		recorder.stopRecord();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
+	// AudioRecorder methods stop
 }
