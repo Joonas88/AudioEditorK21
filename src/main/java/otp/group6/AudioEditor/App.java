@@ -10,7 +10,7 @@ public class App {
     TargetDataLine line;
 
     //audio tiedosto johon data tallennetaan
-    File wavFile = new File("src/audio/test3.wav").getAbsoluteFile();
+    File wavFile = new File("src/audio/test5.wav").getAbsoluteFile();
 
     AudioFileFormat.Type fileType = AudioFileFormat.Type.WAVE;
     static String path = "src/audio/";
@@ -50,8 +50,8 @@ public class App {
         System.out.println(line.isOpen());
         line.start();
         AudioInputStream ais = new AudioInputStream(line);
-        AudioInputStream monoAis = convertToMono(ais);
-        AudioSystem.write(monoAis, fileType,wavFile);
+        //AudioInputStream monoAis = convertToMono(ais);
+        AudioSystem.write(ais, fileType,wavFile);
 
     }catch(Exception ex){
         ex.printStackTrace();
@@ -60,10 +60,12 @@ public class App {
     public AudioFormat getAudioFormat(){
         float sampleRate = 44100;
         int sampleSizeBits = 16;
-        int channels = 2;
+        int channels = 1;
         boolean signed = true;
         boolean bigEndian = false;
         AudioFormat format = new AudioFormat(sampleRate,sampleSizeBits,channels,signed, bigEndian);
+        
+
         return format;
     }
     

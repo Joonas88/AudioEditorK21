@@ -24,7 +24,7 @@ import be.tarsos.dsp.io.TarsosDSPAudioFormat;
 
 public class SoundManipulator {
 	static File wavFile = new File("src/audio/test3.wav").getAbsoluteFile();
-	static File wavFile2 = new File("src/audio/test4.wav").getAbsoluteFile();
+	static File wavFile2 = new File("src/audio/test7.wav").getAbsoluteFile();
 	static AudioInputStream ais;
 	static AudioFormat inFormat;
 	static Clip clip;
@@ -40,7 +40,7 @@ public class SoundManipulator {
 			ex.printStackTrace();
 		}
 
-		changeSpeed();
+		play();
 		Scanner scanner = new Scanner(System.in);
 		while (true) {
 			int i = scanner.nextInt();
@@ -50,7 +50,7 @@ public class SoundManipulator {
 
 	public static AudioFormat getOutFormat(AudioFormat inFormat) {
 		// vaihda muuttaaksesi nopeutta
-		float multiplier = 0.8f;
+		float multiplier = 0.5f;
 		int ch = inFormat.getChannels();
 		float sampleRate = inFormat.getSampleRate();
 		float frameRate = inFormat.getFrameRate();
