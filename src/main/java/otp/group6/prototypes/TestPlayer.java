@@ -1,5 +1,6 @@
 package otp.group6.prototypes;
 
+import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
@@ -21,7 +22,7 @@ public class TestPlayer {
 		AudioInputStream ais;
 		ar = new AudioRecorder();
 		try {
-			 sb.addSample(sb.new Sample("src/audio/test3.wav"));
+			 sb.addSample("src/audio/test3.wav");
 			 Mixer.Info[] mixerInfos = AudioSystem.getMixerInfo();
 			 for (Mixer.Info info: mixerInfos){
 			  Mixer m = AudioSystem.getMixer(info);
@@ -72,7 +73,12 @@ public static void choice(int i) {
     	}
     	break;
     	case 3:
-    	
+    		try {
+				Desktop.getDesktop().open(new File("src/audio").getAbsoluteFile());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
     	break;
     	case 4:
     	

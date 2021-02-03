@@ -45,12 +45,16 @@ public class Soundboard {
 
 	private AudioPlayer player;
 	private ArrayList<Sample> sampleArray = new ArrayList<Sample>();
-
+	
+	public int getSampleArrayLength() {
+		return sampleArray.size();
+	}
+	
 	public Soundboard() {
 		player = new AudioPlayer();
 	}
-	public void addSample(Sample sample) {
-		sampleArray.add(sample);
+	public void addSample(String path) {
+		sampleArray.add(new Sample(path));
 	}
 	public void removeSample(int sampleIndex) {
 		sampleArray.remove(sampleIndex);

@@ -43,9 +43,9 @@ public class Controller {
 		}
 	}
 	
-	public void addSample(Sample sample) {
+	public void addSample(String path) {
 		try {
-		soundboard.addSample(sample);
+		soundboard.addSample(path);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -58,6 +58,9 @@ public class Controller {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	public int getSampleArrayLength() {
+		return soundboard.getSampleArrayLength();
 	}
 	//Soundboard methods stop
 	
