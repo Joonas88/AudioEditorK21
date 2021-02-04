@@ -1,5 +1,6 @@
 package otp.group6.prototypes;
 
+import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
@@ -39,6 +40,8 @@ public class TestPlayer {
 
 			  }
 			 }
+			
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -55,7 +58,7 @@ public class TestPlayer {
 	  
 	}
 public static void choice(int i) {
-    	
+	String home = System.getProperty("user.home");
     	switch (i) {
     	case 1 :
     	if(sb.isPlaying()) {
@@ -72,11 +75,28 @@ public static void choice(int i) {
     	}
     	break;
     	case 3:
-    	
+    		 try {
+				Runtime.getRuntime().exec("explorer D:\\TESTI");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
     	break;
     	case 4:
-    	
+			 try {
+				Desktop.getDesktop().open(new File(home));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
     	break;
+    	case 6:
+    		System.out.println(home);
+    		java.nio.file.Path path = java.nio.file.Paths.get(home, "TESTI");
+    		System.out.println(path);
+    		boolean directoryExists = java.nio.file.Files.exists(path);
+    		System.out.println(directoryExists);
+    		break;
     	}
     }
 }

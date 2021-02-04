@@ -2,6 +2,7 @@ package otp.group6.controller;
 
 import java.io.File;
 
+import otp.group6.AudioEditor.AudioFileHandler;
 import otp.group6.AudioEditor.AudioPlayer;
 import otp.group6.AudioEditor.AudioRecorder;
 import otp.group6.AudioEditor.Soundboard;
@@ -62,6 +63,7 @@ public class Controller {
 	//Soundboard methods stop
 	
 	// AudioRecorder methods start
+	//TODO vaihda tiedoston tallennuksen tapa
 	public void recordAudio(String file_name) {
 		try {
 			recorder.setTargetFile(new File("src/audio/" + file_name + ".wav").getAbsoluteFile());
@@ -74,6 +76,64 @@ public class Controller {
 	public void stopRecord() {
 		try {
 		recorder.stopRecord();
+		getRecordedAudio(recorder.getTargetFile().getPath());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void getRecordedAudio (String file_name) {
+		try {
+			mainPlayer.openAudio(AudioFileHandler.OpenFile(file_name));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+				
+	}
+	
+	public void playRecordedAudio () {
+		try {
+			mainPlayer.play();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void pauseRecordedAudio () {
+		try {
+			mainPlayer.pause();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void resumeRecordedAudio () {
+		try {
+			mainPlayer.resume();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void rewindRecordedAudio () {
+		try {
+			mainPlayer.rewind();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void forwardRecordedAudio () {
+		try {
+			mainPlayer.forward();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void stopRecordedAudio () {
+		try {
+			mainPlayer.closeAudio();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
