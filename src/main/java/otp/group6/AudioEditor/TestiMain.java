@@ -13,7 +13,7 @@ public class TestiMain {
 		AudioMuunnin audioMuunnin = new AudioMuunnin("src/audio/testiaani.wav"); //Huom! testiaani.wav!
 
 		// audioMuunnin.setPitchFactor(0.5f);
-		audioMuunnin.setDelayEffect(2, 1);
+		//audioMuunnin.setDelayEffect(10, 0);
 		//audioMuunnin.setFlangerEffect(0.02, 0.7);
 
 		audioMuunnin.playAudio();

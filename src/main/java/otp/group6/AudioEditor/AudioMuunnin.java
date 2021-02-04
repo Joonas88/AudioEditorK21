@@ -22,13 +22,13 @@ public class AudioMuunnin {
 	private File wavFile;
 	private AudioDispatcher adp;
 	private WaveformSimilarityBasedOverlapAdd wsola;
-	private GainProcessor gain; // TODO: Halutaanko säätää??
+	private GainProcessor gainProcessor; // TODO: Halutaanko säätää??
 	private AudioPlayer audioPlayer;
 	private RateTransposer rateTransposer;
 	private AudioFormat format;
 	private WaveformWriter writer;
-	private FlangerEffect flangerEffect = null;
-	private DelayEffect delayEffect = null;
+	private FlangerEffect flangerEffect;
+	private DelayEffect delayEffect;
 	private float pitchFactor = 1; // pitch factor 1 = alkuperäinen pitch
 	private float sampleRate;
 
@@ -52,6 +52,15 @@ public class AudioMuunnin {
 			rateTransposer = new RateTransposer(pitchFactor);
 			adp.addAudioProcessor(rateTransposer);
 
+			// Kaikuefekti
+			delayEffect = new DelayEffect(1, 0, sampleRate); // Kaiun oletusarvot: kesto 1s, efekti ei käytössä eli 0 ja
+																// normi sampleRate
+			adp.addAudioProcessor(delayEffect);
+			
+			//Gain
+			gainProcessor = new GainProcessor(1); //1 on normaali gain
+			adp.addAudioProcessor(gainProcessor);
+
 		} catch (UnsupportedAudioFileException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -72,7 +81,7 @@ public class AudioMuunnin {
 
 	// KEEESKEEn
 	public void kirjoitaTiedostoon() {
-		writer = new WaveformWriter(format, "src/audio/miksattuAudio.wav"); //Tiedoston nimi miksattuAudio!!
+		writer = new WaveformWriter(format, "src/audio/miksattuAudio.wav"); // Tiedoston nimi miksattuAudio!!
 		adp.addAudioProcessor(writer);
 		adp.run();
 	}
@@ -89,19 +98,22 @@ public class AudioMuunnin {
 	}
 
 	/**
-	 * Viiveen muokkaaminen
+	 * Viiveen/kaiun muokkaaminen
 	 * 
 	 * @param echoLength kaiun kesto sekunteina
-	 * @param decay
+	 * @param decay      TÄHÄN JOKU FIKSU KUVAUS
 	 */
 	public void setDelayEffect(double echoLength, double decay) {
-		if (delayEffect == null) {
-			delayEffect = new DelayEffect(echoLength, decay, sampleRate);
-			adp.addAudioProcessor(delayEffect);
-		} else {
-			delayEffect.setEchoLength(echoLength);
-			delayEffect.setDecay(decay);
-		}
+		delayEffect.setEchoLength(echoLength);
+		delayEffect.setDecay(decay);
+	}
+	
+	/**
+	 * Gainin muokkaus välillä
+	 * @param gain
+	 */
+	public void setGain(double newGain) {
+		gainProcessor.setGain(newGain);
 	}
 
 	public void playAudio() {
