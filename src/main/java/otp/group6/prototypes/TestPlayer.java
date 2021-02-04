@@ -58,13 +58,6 @@ public class TestPlayer {
 public static void choice(int i) {
     	
     	switch (i) {
-    	case 1 :
-    	if(sb.isPlaying()) {
-    		sb.closeSample();
-    	} else {
-    		sb.playSample(0);
-    	}
-    	break;
     	case 2:
     	if(ar.isAlive()) {
     		ar.stopRecord();

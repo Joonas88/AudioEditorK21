@@ -45,6 +45,7 @@ public class AudioMuunnin {
 			// pitch-arvosta riippumatta
 			wsola = new WaveformSimilarityBasedOverlapAdd(Parameters.musicDefaults(pitchFactor, sampleRate));
 			adp = AudioDispatcherFactory.fromFile(wavFile, wsola.getInputBufferSize(), wsola.getOverlap());
+			
 			wsola.setDispatcher(adp);
 			adp.addAudioProcessor(wsola);
 

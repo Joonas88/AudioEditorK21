@@ -43,7 +43,7 @@ public class Soundboard {
 		}
 	}
 
-	private AudioPlayer player;
+	private AudioOutput player;
 	private ArrayList<Sample> sampleArray = new ArrayList<Sample>();
 	
 	public int getSampleArrayLength() {
@@ -51,7 +51,6 @@ public class Soundboard {
 	}
 	
 	public Soundboard() {
-		player = new AudioPlayer();
 	}
 	public void addSample(String path) {
 		sampleArray.add(new Sample(path));
@@ -60,18 +59,24 @@ public class Soundboard {
 		sampleArray.remove(sampleIndex);
 	}
 	public void playSample(int sampleIndex) {
+
 		try {
-			player.openAudio(sampleArray.get(sampleIndex).getSample());
-			player.play();
+				if(player == null|| !player.isAlive()) {
+					player = new AudioOutput();
+				}
+				else {
+					player.closeAudio();
+					player.join();
+					player = new AudioOutput();
+				}
+				
+				player.openAudio(sampleArray.get(sampleIndex).getSample());
+				System.out.println(player.getState());
+				player.start();
+			
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
-	}
-	public void closeSample() {
-		player.pause();
-		player.closeAudio();
-	}
-	public boolean isPlaying() {
-		return player.isPlaying();
+		
 	}
 }
