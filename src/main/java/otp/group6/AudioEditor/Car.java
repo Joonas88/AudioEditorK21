@@ -10,7 +10,7 @@ public class Car {
 	private String maker;
 	private String regNo;
 	
-	public Car(String maker, String regNo) {
+	public Car(String regNo, String maker) {
 		this.maker = maker;
 		this.regNo = regNo;
 	}
