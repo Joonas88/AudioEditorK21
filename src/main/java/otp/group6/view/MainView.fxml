@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane fx:id="mainContainer" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="otp.group6.view.MainController">
+   <children>
+      <TabPane layoutY="29.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="570.0" prefWidth="900.0" tabClosingPolicy="UNAVAILABLE">
+         <tabs>
+            <Tab text="Live mixer">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+              </content>
+            </Tab>
+            <Tab text="Soundboard">
+               <content>
+                  <AnchorPane fx:id="ap" minHeight="0.0" minWidth="0.0" prefHeight="635.0" prefWidth="960.0">
+                     <children>
+                        <GridPane fx:id="buttonGrid" layoutX="51.0" layoutY="38.0" prefHeight="462.0" prefWidth="794.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                                 <children>
+                                    <Button fx:id="newSoundButton" layoutX="65.0" layoutY="45.0" mnemonicParsing="false" onAction="#openSample" text="+" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="65.0" AnchorPane.rightAnchor="65.0" AnchorPane.topAnchor="45.0" />
+                                 </children>
+                              </AnchorPane>
+                              <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" />
+                              <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" />
+                              <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" />
+                              <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="4" />
+                              <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1" />
+                              <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                              <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                              <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+                              <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2" />
+                              <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                              <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                              <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="4" GridPane.rowIndex="2" />
+                              <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="3" />
+                              <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                              <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                              <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="4" GridPane.rowIndex="3" />
+                           </children>
+                        </GridPane>
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+            <Tab text="Mixer">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <AnchorPane layoutX="14.0" layoutY="14.0" prefHeight="400.0" prefWidth="259.5" AnchorPane.bottomAnchor="123.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="621.0" AnchorPane.topAnchor="14.0">
+                           <children>
+                              <GridPane layoutX="6.0" layoutY="58.0" prefHeight="172.0" prefWidth="115.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                <columnConstraints>
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                                       <children>
+                                          <Text layoutX="79.0" layoutY="36.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Select file" textAlignment="CENTER" wrappingWidth="101.03515625" AnchorPane.leftAnchor="79.0" AnchorPane.rightAnchor="80.0" />
+                                          <Button layoutX="99.0" layoutY="74.0" mnemonicParsing="false" onAction="#openFile" text="File..." AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="99.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="74.0" />
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
+                                       <children>
+                                          <Text layoutX="77.0" layoutY="52.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Use microphone" AnchorPane.bottomAnchor="145.0" AnchorPane.leftAnchor="77.0" AnchorPane.rightAnchor="77.17822265625" AnchorPane.topAnchor="39.0" />
+                                          <Button layoutX="99.0" layoutY="87.0" mnemonicParsing="false" text="Start" AnchorPane.bottomAnchor="87.0" AnchorPane.leftAnchor="99.0" AnchorPane.rightAnchor="99.0" AnchorPane.topAnchor="87.0" />
+                                       </children>
+                                    </AnchorPane>
+                                 </children>
+                              </GridPane>
+                           </children></AnchorPane>
+                        <AnchorPane layoutX="274.0" layoutY="14.0" prefHeight="400.0" prefWidth="605.5" AnchorPane.bottomAnchor="123.0" AnchorPane.leftAnchor="274.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="14.0">
+                           <children>
+                              <GridPane layoutX="-1.0" prefHeight="401.0" prefWidth="608.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                <columnConstraints>
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                                       <children>
+                                          <Slider layoutX="82.0" layoutY="59.0" AnchorPane.bottomAnchor="59.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="59.0" />
+                                          <Text layoutX="20.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="255.0" AnchorPane.topAnchor="14.0" />
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
+                                       <children>
+                                          <Slider layoutX="20.0" layoutY="59.0" AnchorPane.bottomAnchor="59.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="59.0" />
+                                          <Text layoutX="20.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="255.0" AnchorPane.topAnchor="14.0" />
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
+                                       <children>
+                                          <Slider layoutX="82.0" layoutY="59.0" AnchorPane.bottomAnchor="59.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="59.0" />
+                                          <Text layoutX="20.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="255.0" AnchorPane.topAnchor="14.0" />
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                       <children>
+                                          <Slider layoutX="82.0" layoutY="59.0" AnchorPane.bottomAnchor="59.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="59.0" />
+                                          <Text layoutX="20.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="255.0" AnchorPane.topAnchor="14.0" />
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2">
+                                       <children>
+                                          <Slider layoutX="82.0" layoutY="59.0" AnchorPane.bottomAnchor="59.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="59.0" />
+                                          <Text layoutX="20.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="255.0" AnchorPane.topAnchor="14.0" />
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                       <children>
+                                          <Slider layoutX="82.0" layoutY="59.0" AnchorPane.bottomAnchor="59.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="59.0" />
+                                          <Text layoutX="20.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="255.0" AnchorPane.topAnchor="14.0" />
+                                       </children>
+                                    </AnchorPane>
+                                 </children>
+                              </GridPane>
+                           </children></AnchorPane>
+                        <AnchorPane layoutX="14.0" layoutY="420.0" prefHeight="100.0" prefWidth="865.0" AnchorPane.bottomAnchor="17.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="420.0">
+                           <children>
+                              <Slider layoutX="100.0" layoutY="22.0" prefHeight="16.0" prefWidth="672.0" AnchorPane.bottomAnchor="61.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="22.0" />
+                              <Text layoutX="747.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text=":" AnchorPane.bottomAnchor="78.0" AnchorPane.leftAnchor="747.0" AnchorPane.rightAnchor="113.6201171875" AnchorPane.topAnchor="6.0" />
+                              <ButtonBar layoutX="286.0" layoutY="50.0" prefHeight="40.0" prefWidth="294.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="286.0" AnchorPane.rightAnchor="284.0" AnchorPane.topAnchor="50.0">
+                                <buttons>
+                                  <Button mnemonicParsing="false" text="Pause" />
+                                    <Button mnemonicParsing="false" text="Play" />
+                                    <Button mnemonicParsing="false" text="Stop" />
+                                </buttons>
+                              </ButtonBar>
+                              <Button layoutX="803.0" layoutY="70.0" mnemonicParsing="false" text="Save" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="803.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="74.0" />
+                           </children></AnchorPane>
+                     </children></AnchorPane>
+              </content>
+            </Tab>
+            <Tab text="Recorder">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <AnchorPane layoutX="767.0" layoutY="470.0" prefHeight="53.0" prefWidth="114.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="767.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="470.0">
+                           <children>
+                              <Button layoutX="29.0" layoutY="14.0" mnemonicParsing="false" text="Save" AnchorPane.bottomAnchor="13.0" AnchorPane.leftAnchor="29.0" AnchorPane.rightAnchor="28.0" AnchorPane.topAnchor="14.0" />
+                           </children></AnchorPane>
+                        <AnchorPane layoutX="138.0" layoutY="159.0" prefHeight="220.0" prefWidth="620.0">
+                           <children>
+                              <Button layoutX="96.0" layoutY="96.0" mnemonicParsing="false" prefHeight="29.0" prefWidth="118.0" text="play/pause" AnchorPane.bottomAnchor="95.0" AnchorPane.leftAnchor="96.0" AnchorPane.rightAnchor="406.0" AnchorPane.topAnchor="96.0" />
+                              <Button layoutX="394.0" layoutY="96.0" mnemonicParsing="false" prefHeight="29.0" prefWidth="115.0" text="Record" AnchorPane.bottomAnchor="95.0" AnchorPane.leftAnchor="394.0" AnchorPane.rightAnchor="111.0" AnchorPane.topAnchor="96.0" />
+                              <Slider layoutX="83.0" layoutY="179.0" prefHeight="16.0" prefWidth="427.0" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="83.0" AnchorPane.rightAnchor="110.0" AnchorPane.topAnchor="179.0" />
+                              <Text layoutX="472.0" layoutY="176.0" strokeType="OUTSIDE" strokeWidth="0.0" text=":" />
+                           </children>
+                        </AnchorPane>
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+         </tabs>
+      </TabPane>
+      <MenuBar>
+        <menus>
+          <Menu mnemonicParsing="false" text="Settings">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Preferences" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="About" />
+                  <MenuItem mnemonicParsing="false" text="User guide" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+   </children>
+</AnchorPane>
