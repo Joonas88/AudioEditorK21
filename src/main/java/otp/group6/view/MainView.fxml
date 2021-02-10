@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
@@ -117,37 +118,41 @@
                                  <children>
                                     <AnchorPane prefHeight="200.0" prefWidth="200.0">
                                        <children>
-                                          <Slider layoutX="82.0" layoutY="59.0" AnchorPane.bottomAnchor="59.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="59.0" />
-                                          <Text layoutX="20.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="255.0" AnchorPane.topAnchor="14.0" />
+                                          <Slider fx:id="sliderPitch" blockIncrement="0.1" layoutX="82.0" layoutY="59.0" majorTickUnit="1.0" max="4.0" min="0.1" showTickLabels="true" showTickMarks="true" value="1.0" AnchorPane.bottomAnchor="59.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="59.0" />
+                                          <Text layoutX="20.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Pitch" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="255.0" AnchorPane.topAnchor="14.0" />
                                        </children>
                                     </AnchorPane>
                                     <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
                                        <children>
-                                          <Slider layoutX="20.0" layoutY="59.0" AnchorPane.bottomAnchor="59.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="59.0" />
-                                          <Text layoutX="20.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="255.0" AnchorPane.topAnchor="14.0" />
+                                          <Slider layoutX="20.0" layoutY="59.0" showTickLabels="true" showTickMarks="true" AnchorPane.bottomAnchor="59.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="59.0" />
+                                          <Text layoutX="20.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Flanger" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="255.0" AnchorPane.topAnchor="14.0" />
+                                          <Slider layoutX="57.0" layoutY="100.0" showTickLabels="true" showTickMarks="true" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
                                        </children>
                                     </AnchorPane>
                                     <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
                                        <children>
-                                          <Slider layoutX="82.0" layoutY="59.0" AnchorPane.bottomAnchor="59.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="59.0" />
-                                          <Text layoutX="20.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="255.0" AnchorPane.topAnchor="14.0" />
+                                          <Slider fx:id="sliderEchoLength" blockIncrement="0.1" layoutX="20.0" layoutY="40.0" majorTickUnit="1.0" max="5.0" showTickLabels="true" showTickMarks="true" AnchorPane.bottomAnchor="78.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="40.0" />
+                                          <Text layoutX="20.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Echo" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="255.0" AnchorPane.topAnchor="14.0" />
+                                          <Slider fx:id="sliderDecay" blockIncrement="0.1" layoutX="20.0" layoutY="97.0" majorTickUnit="0.1" max="1.0" minorTickCount="1" prefHeight="38.0" prefWidth="264.0" showTickLabels="true" showTickMarks="true" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
+                                          <Label layoutX="84.0" layoutY="21.0" text="Echo length (s)" />
+                                          <Label layoutX="84.0" layoutY="78.0" text="Decay" />
                                        </children>
                                     </AnchorPane>
                                     <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                        <children>
-                                          <Slider layoutX="82.0" layoutY="59.0" AnchorPane.bottomAnchor="59.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="59.0" />
+                                          <Slider layoutX="82.0" layoutY="59.0" showTickLabels="true" showTickMarks="true" AnchorPane.bottomAnchor="59.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="59.0" />
                                           <Text layoutX="20.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="255.0" AnchorPane.topAnchor="14.0" />
                                        </children>
                                     </AnchorPane>
                                     <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2">
                                        <children>
-                                          <Slider layoutX="82.0" layoutY="59.0" AnchorPane.bottomAnchor="59.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="59.0" />
-                                          <Text layoutX="20.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="255.0" AnchorPane.topAnchor="14.0" />
+                                          <Slider fx:id="sliderGain" blockIncrement="0.1" layoutX="82.0" layoutY="59.0" majorTickUnit="1.0" max="5.0" showTickLabels="true" showTickMarks="true" value="1.0" AnchorPane.bottomAnchor="59.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="59.0" />
+                                          <Text layoutX="20.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Gain" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="255.0" AnchorPane.topAnchor="14.0" />
                                        </children>
                                     </AnchorPane>
                                     <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                        <children>
-                                          <Slider layoutX="82.0" layoutY="59.0" AnchorPane.bottomAnchor="59.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="59.0" />
+                                          <Slider layoutX="82.0" layoutY="59.0" showTickLabels="true" showTickMarks="true" AnchorPane.bottomAnchor="59.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="59.0" />
                                           <Text layoutX="20.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="255.0" AnchorPane.topAnchor="14.0" />
                                        </children>
                                     </AnchorPane>
@@ -161,11 +166,11 @@
                               <ButtonBar layoutX="286.0" layoutY="50.0" prefHeight="40.0" prefWidth="294.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="286.0" AnchorPane.rightAnchor="284.0" AnchorPane.topAnchor="50.0">
                                 <buttons>
                                   <Button mnemonicParsing="false" text="Pause" />
-                                    <Button mnemonicParsing="false" text="Play" />
+                                    <Button mnemonicParsing="false" onAction="#toistaAani" text="Play" />
                                     <Button mnemonicParsing="false" text="Stop" />
                                 </buttons>
                               </ButtonBar>
-                              <Button layoutX="803.0" layoutY="70.0" mnemonicParsing="false" text="Save" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="803.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="74.0" />
+                              <Button layoutX="803.0" layoutY="70.0" mnemonicParsing="false" onAction="#saveMixedFile" text="Save" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="803.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="74.0" />
                            </children></AnchorPane>
                      </children></AnchorPane>
               </content>

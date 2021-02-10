@@ -1,4 +1,4 @@
-package otp.group6.AudioEditor;
+package otp.group6.roosanTestit;
 
 	import java.awt.BorderLayout;
 	import java.awt.GridLayout;
@@ -223,6 +223,7 @@ package otp.group6.AudioEditor;
 		}
 		
 		private void startFile(final File inputFile,Mixer mixer){
+			System.out.println("startfile tapahtuuuuuu");
 			if(dispatcher != null){
 				dispatcher.stop();
 			}
@@ -344,6 +345,7 @@ package otp.group6.AudioEditor;
 		}
 		
 		private static void startCli(String source,String target,double cents) throws UnsupportedAudioFileException, IOException{
+			System.out.println("startCLI tapahtuuuuuu");
 			File inputFile = new File(source);
 			AudioFormat format = AudioSystem.getAudioFileFormat(inputFile).getFormat();	
 			double sampleRate = format.getSampleRate();
