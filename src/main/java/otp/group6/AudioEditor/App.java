@@ -48,7 +48,8 @@ public class App {
         System.out.println(line.isOpen());
         line.start();
         AudioInputStream ais = new AudioInputStream(line);
-        AudioSystem.write(ais, fileType,wavFile);
+        AudioInputStream monoAis = convertToMono(ais);
+        AudioSystem.write(monoAis, fileType,wavFile);
 
     }catch(Exception ex){
         ex.printStackTrace();
@@ -66,5 +67,27 @@ public class App {
     public void stop(){
         line.stop();
         line.close();
+    }
+    
+    //Muuttaa äänen stereosta monoksi
+    public static AudioInputStream convertToMono(AudioInputStream sourceStream) {
+        AudioFormat sourceFormat = sourceStream.getFormat();
+
+        // is already mono?
+        if(sourceFormat.getChannels() == 1) {
+            return sourceStream;
+        }
+
+        AudioFormat targetFormat = new AudioFormat(
+                sourceFormat.getEncoding(),
+                sourceFormat.getSampleRate(),
+                sourceFormat.getSampleSizeInBits(),
+                1,
+                // this is the important bit, the framesize needs to change as well,
+                // for framesize 4, this calculation leads to new framesize 2
+                (sourceFormat.getSampleSizeInBits() + 7) / 8,
+                sourceFormat.getFrameRate(),
+                sourceFormat.isBigEndian());
+        return AudioSystem.getAudioInputStream(targetFormat, sourceStream);
     }
 }
