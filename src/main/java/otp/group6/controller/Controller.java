@@ -3,7 +3,7 @@ package otp.group6.controller;
 import java.io.File;
 
 import otp.group6.AudioEditor.AudioFileHandler;
-import otp.group6.AudioEditor.AudioPlayer;
+import otp.group6.AudioEditor.AudioOutput;
 import otp.group6.AudioEditor.AudioRecorder;
 import otp.group6.AudioEditor.Soundboard;
 import otp.group6.AudioEditor.Soundboard.Sample;
@@ -15,7 +15,7 @@ import otp.group6.AudioEditor.Soundboard.Sample;
 public class Controller {
 	
 	private Soundboard soundboard;
-	private AudioPlayer mainPlayer;
+	private AudioOutput mainPlayer;
 	private AudioRecorder recorder;
 	
 	public Controller() {
@@ -24,7 +24,7 @@ public class Controller {
 	
 	public void initialConfig() {
 		soundboard = new Soundboard();
-		mainPlayer = new AudioPlayer();
+		mainPlayer = new AudioOutput();
 		recorder = new AudioRecorder();
 	}
 	
@@ -33,20 +33,11 @@ public class Controller {
 	public void playSound(int index) {
 		soundboard.playSample(index);
 	}
+	//TODO STOPSOUND metodi
 	
-	public void stopSound() {
+	public void addSample(String path) {
 		try {
-		if (soundboard.isPlaying()) {
-			soundboard.closeSample();	
-		}	
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public void addSample(Sample sample) {
-		try {
-		soundboard.addSample(sample);
+		soundboard.addSample(path);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -59,6 +50,9 @@ public class Controller {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	public int getSampleArrayLength() {
+		return soundboard.getSampleArrayLength();
 	}
 	//Soundboard methods stop
 	

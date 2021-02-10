@@ -1,8 +1,15 @@
 package otp.group6.AudioEditor;
 import javax.sound.sampled.*;
 import javax.sound.sampled.AudioFileFormat.Type;
+import javax.swing.JFileChooser;
 
+import javafx.stage.FileChooser;
+import javafx.stage.Window;
+
+import java.awt.Desktop;
 import java.io.File;
+import java.io.IOException;
+import java.net.URI;
 
 /**
  * 
@@ -11,7 +18,14 @@ import java.io.File;
  *
  */
 
-public class AudioFileHandler {
+public class AudioFileHandler{
+	
+	
+	//Constructor
+	public void AudioFileHandler() {
+		
+	}
+	
 
 	public static AudioInputStream OpenFile(String name) {
 		AudioInputStream a = null;
@@ -53,6 +67,12 @@ public class AudioFileHandler {
 			e.printStackTrace();
 		}
 
+	}
+	public static File openFileExplorer(Window window) {
+		FileChooser fc = new FileChooser();
+		File file = fc.showOpenDialog(window);
+		return file;
+		
 	}
 	
 }

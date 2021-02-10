@@ -22,7 +22,7 @@ public class TestPlayer {
 		AudioInputStream ais;
 		ar = new AudioRecorder();
 		try {
-			 sb.addSample(sb.new Sample("src/audio/test3.wav"));
+			 sb.addSample("src/audio/test3.wav");
 			 Mixer.Info[] mixerInfos = AudioSystem.getMixerInfo();
 			 for (Mixer.Info info: mixerInfos){
 			  Mixer m = AudioSystem.getMixer(info);
@@ -60,13 +60,6 @@ public class TestPlayer {
 public static void choice(int i) {
 	String home = System.getProperty("user.home");
     	switch (i) {
-    	case 1 :
-    	if(sb.isPlaying()) {
-    		sb.closeSample();
-    	} else {
-    		sb.playSample(0);
-    	}
-    	break;
     	case 2:
     	if(ar.isAlive()) {
     		ar.stopRecord();
@@ -75,8 +68,8 @@ public static void choice(int i) {
     	}
     	break;
     	case 3:
-    		 try {
-				Runtime.getRuntime().exec("explorer D:\\TESTI");
+    		try {
+				Desktop.getDesktop().open(new File("src/audio").getAbsoluteFile());
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
