@@ -71,6 +71,7 @@ public class AudioFileHandler {
 	public static File openFileExplorer(Window window) {
 		FileChooser fc = new FileChooser();
 		File file = fc.showOpenDialog(window);
+		System.out.println(AudioFileHandler.class +" " + file.getName());
 		return file;
 
 	}

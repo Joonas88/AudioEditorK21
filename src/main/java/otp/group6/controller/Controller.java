@@ -38,8 +38,11 @@ public class Controller {
 		}
 
 	}
-	// TODO STOPSOUND metodi
-
+	
+	/**
+	 * Adds sample to Soundboard SampleArray
+	 * @param path filepath
+	 */
 	public void addSample(String path) {
 		try {
 			soundboard.addSample(path);

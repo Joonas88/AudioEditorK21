@@ -3,7 +3,7 @@ package otp.group6.view;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
-
+import java.util.regex.*;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -66,6 +66,9 @@ public class MainController {
 		controller.stopRecord();
 	}
 
+	/**
+	 * NOT YET USED Opens file explorer window
+	 */
 	@FXML
 	public void openFile() {
 		try {
@@ -75,15 +78,21 @@ public class MainController {
 			e.printStackTrace();
 		}
 	}
-
+	
 	@FXML
 	public void openSample() {
+		//REGEX pattern for ".wav"
+		Pattern pattern = Pattern.compile("(\\.wav)$", Pattern.CASE_INSENSITIVE);
 		try {
 			File file = AudioFileHandler.openFileExplorer(mainContainer.getScene().getWindow());
-			//File must be not null to add button
-			if(file != null) {
-				controller.addSample(file.getAbsolutePath());
-				addButton(controller.getSampleArrayLength() - 1);
+			
+			// File must be not null to add button
+			if (file != null) {
+				Matcher matcher = pattern.matcher(file.getName());
+				if (matcher.find()) {
+					controller.addSample(file.getAbsolutePath());
+					addButton(controller.getSampleArrayLength() - 1);
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
