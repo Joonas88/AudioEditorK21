@@ -9,13 +9,14 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import otp.group6.*;
+
 /**
  * 
  * @author Kevin Akkoyun
  * @version 0.1
  */
 public class MainApplication extends Application {
-	
+
 	public static void main(String[] args) {
 		launch(args);
 	}
@@ -28,11 +29,13 @@ public class MainApplication extends Application {
 		primaryStage.setTitle("AudioEditor");
 		primaryStage.show();
 	}
-	//TODO Täytä metodit, tyhjennä "start"
+
+	// TODO Täytä metodit, tyhjennä "start"
 	public void intializeRootLayout() {
-		
+
 	}
+
 	public void intitalizeMainLayout() {
-		
+
 	}
 }

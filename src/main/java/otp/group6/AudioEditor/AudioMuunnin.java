@@ -45,7 +45,7 @@ public class AudioMuunnin {
 			// pitch-arvosta riippumatta
 			wsola = new WaveformSimilarityBasedOverlapAdd(Parameters.musicDefaults(pitchFactor, sampleRate));
 			adp = AudioDispatcherFactory.fromFile(wavFile, wsola.getInputBufferSize(), wsola.getOverlap());
-			
+
 			wsola.setDispatcher(adp);
 			adp.addAudioProcessor(wsola);
 
@@ -57,9 +57,9 @@ public class AudioMuunnin {
 			delayEffect = new DelayEffect(1, 0, sampleRate); // Kaiun oletusarvot: kesto 1s, efekti ei käytössä eli 0 ja
 																// normi sampleRate
 			adp.addAudioProcessor(delayEffect);
-			
-			//Gain
-			gainProcessor = new GainProcessor(1); //1 on normaali gain
+
+			// Gain
+			gainProcessor = new GainProcessor(1); // 1 on normaali gain
 			adp.addAudioProcessor(gainProcessor);
 
 		} catch (UnsupportedAudioFileException e) {
@@ -108,9 +108,10 @@ public class AudioMuunnin {
 		delayEffect.setEchoLength(echoLength);
 		delayEffect.setDecay(decay);
 	}
-	
+
 	/**
 	 * Gainin muokkaus välillä
+	 * 
 	 * @param gain
 	 */
 	public void setGain(double newGain) {

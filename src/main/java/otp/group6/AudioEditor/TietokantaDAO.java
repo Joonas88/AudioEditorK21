@@ -1,6 +1,9 @@
 package otp.group6.AudioEditor;
 
 import java.util.ArrayList;
+
+import otp.group6.prototypes.Car;
+
 import java.sql.*;
 
 public class TietokantaDAO {
@@ -63,10 +66,9 @@ public class TietokantaDAO {
 		}
 		return car; // joko null tai tietokannasta haetut tiedot Car-oliona
 	}
-	
-	
+
 	// Palauttaa taulukollisen Car-olioita
-	public Car[] readCars(String carMake) { 
+	public Car[] readCars(String carMake) {
 		ArrayList<Car> list = new ArrayList<Car>();
 		try (PreparedStatement myStatement = connection
 				.prepareStatement("SELECT * FROM ajoneuvo WHERE merkki LIKE ?")) {
@@ -89,7 +91,6 @@ public class TietokantaDAO {
 		return (Car[]) list.toArray(returnArray); // palauta taulukossa
 	}
 
-	
 	public boolean create(Car car) throws SQLException { // vie uusi Car-olio tietokantaan
 		// Tarkastetaan löytyykö tietokannasta jo vastaava rekkari
 		try (PreparedStatement myStatement = connection.prepareStatement("SELECT * FROM ajoneuvo WHERE rekno = ? ");) {
@@ -124,7 +125,6 @@ public class TietokantaDAO {
 		}
 	}
 
-	
 	// Päivittää ajoneuvon merkin
 	public boolean update(String rekno, String uusiMerkki) {
 		try (PreparedStatement pstmt = connection
@@ -139,7 +139,6 @@ public class TietokantaDAO {
 		}
 	}
 
-	
 	// Poistaa ajoneuvon taulukosta rekisterinumeron perusteella
 	public boolean delete(String rekno) {
 		try (PreparedStatement statement = connection.prepareStatement("DELETE FROM ajoneuvo WHERE rekno = ?")) {
@@ -153,7 +152,6 @@ public class TietokantaDAO {
 		}
 	}
 
-	
 	public static void main(String[] args) throws SQLException {
 		// TODO Auto-generated method stub
 

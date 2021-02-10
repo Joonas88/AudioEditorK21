@@ -1,6 +1,5 @@
 package otp.group6.AudioEditor;
 
-
 public class TestiMain {
 
 	// float pitchFactor = 0.7f;
@@ -10,14 +9,14 @@ public class TestiMain {
 
 	public static void main(String[] args) {
 
-		AudioMuunnin audioMuunnin = new AudioMuunnin("src/audio/testiaani.wav"); //Huom! testiaani.wav!
+		AudioMuunnin audioMuunnin = new AudioMuunnin("src/audio/testiaani.wav"); // Huom! testiaani.wav!
 
 		// audioMuunnin.setPitchFactor(0.5f);
-		//audioMuunnin.setDelayEffect(10, 0);
-		//audioMuunnin.setFlangerEffect(0.02, 0.7);
+		// audioMuunnin.setDelayEffect(10, 0);
+		// audioMuunnin.setFlangerEffect(0.02, 0.7);
 
 		audioMuunnin.playAudio();
-		//audioMuunnin.kirjoitaTiedostoon();
+		// audioMuunnin.kirjoitaTiedostoon();
 
 	}
 }

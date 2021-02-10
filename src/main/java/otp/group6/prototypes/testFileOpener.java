@@ -4,12 +4,11 @@ import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 
-public class testFileOpener extends Thread
-{
+public class testFileOpener extends Thread {
 	public testFileOpener() {
-		
+
 	}
-	
+
 	@Override
 	public void run() {
 		try {

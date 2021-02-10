@@ -17,38 +17,37 @@ public class SoundManipulator {
 	static AudioInputStream ais;
 	static AudioFormat inFormat;
 	static Clip clip;
+
 	public static void main(String[] args) {
-		try{
+		try {
 			ais = AudioSystem.getAudioInputStream(wavFile);
 			inFormat = getOutFormat(ais.getFormat());
-			
-		}
-		catch(Exception ex){
+
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
-		
+
 		play();
 		System.out.println(clip.isRunning());
 		Scanner scanner = new Scanner(System.in);
-		while(true) {
+		while (true) {
 			int i = scanner.nextInt();
 			break;
 		}
 	}
-	
-	
+
 	public static AudioFormat getOutFormat(AudioFormat inFormat) {
 		int ch = inFormat.getChannels();
 		float sampleRate = inFormat.getSampleRate();
 		float frameRate = inFormat.getFrameRate();
 		System.out.println(sampleRate + " " + frameRate);
-		return new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 1000,
-				16, ch, ch*2, frameRate * 2, inFormat.isBigEndian());
-		
+		return new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 1000, 16, ch, ch * 2, frameRate * 2,
+				inFormat.isBigEndian());
+
 	}
-	
-	 public static void play() {
-		 AudioInputStream ais2 = AudioSystem.getAudioInputStream(inFormat, ais);
+
+	public static void play() {
+		AudioInputStream ais2 = AudioSystem.getAudioInputStream(inFormat, ais);
 //		 try {
 //			AudioSystem.write(ais2, AudioFileFormat.Type.WAVE, wavFile2);
 //		} catch (IOException e1) {
@@ -60,10 +59,9 @@ public class SoundManipulator {
 			clip.open(ais2);
 			clip.loop(0);
 			clip.start();
-			
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	 }
+	}
 }
