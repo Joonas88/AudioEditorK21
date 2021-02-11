@@ -50,16 +50,6 @@ public class MainApplication extends Application {
 		
 		
 	}
-<<<<<<< HEAD
-
-	// TODO Täytä metodit, tyhjennä "start"
-	public void intializeRootLayout() {
-
-	}
-
-	public void intitalizeMainLayout() {
-
-=======
 	/**
      * Initializes the root layout.
      */
@@ -82,9 +72,5 @@ public class MainApplication extends Application {
 			e.printStackTrace();
 		}
 		
-	}
-	public void initializeMainLayout() {
-		
->>>>>>> 6106280e4a73ef9aa87d06b0bed487d2817b544d
 	}
 }

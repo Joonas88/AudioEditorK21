@@ -1,16 +1,11 @@
 package otp.group6.view;
-
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
-<<<<<<< HEAD
 import java.util.regex.*;
-=======
 import java.text.DecimalFormat;
-
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
->>>>>>> 6106280e4a73ef9aa87d06b0bed487d2817b544d
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
