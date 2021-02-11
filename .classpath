@@ -25,5 +25,7 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="D:/Downloads/TarsosDSP-latest-bin.jar"/>
 	<classpathentry kind="lib" path="D:/Downloads/PitchShift-latest.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Java/AudioServers/org-jaudiolibs-audioservers-jack.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Java/AudioServers/org-jaudiolibs-audioservers.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

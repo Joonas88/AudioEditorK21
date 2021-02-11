@@ -6,9 +6,15 @@ import java.util.Scanner;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.DataLine;
+import javax.sound.sampled.TargetDataLine;
+
+import org.jaudiolibs.audioservers.AudioClient;
+import org.jaudiolibs.audioservers.jack.JackAudioServer;
 
 import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.AudioEvent;
+import be.tarsos.dsp.AudioProcessor;
 import be.tarsos.dsp.FadeIn;
 import be.tarsos.dsp.FadeOut;
 import be.tarsos.dsp.GainProcessor;
@@ -30,12 +36,16 @@ import be.tarsos.dsp.pitch.PitchDetectionResult;
 import be.tarsos.dsp.pitch.PitchProcessor;
 import be.tarsos.dsp.pitch.PitchProcessor.PitchEstimationAlgorithm;
 import be.tarsos.dsp.resample.RateTransposer;
+import be.tarsos.dsp.synthesis.NoiseGenerator;
+
 
 public class PitchShiftingTest {
 
 	static File wavFile = new File("src/audio/test5.wav").getAbsoluteFile();
 	static AudioFormat format;
 	static AudioDispatcher adp;
+	static AudioDispatcher liveDispatcher;
+	
 
 	public static void main(String[] args) {
 
@@ -65,8 +75,8 @@ public class PitchShiftingTest {
 			DelayEffect delay = new DelayEffect(delayLength, delayDecay, format.getSampleRate());
 			
 			//Häivytys (FadeOut ei jostain syystä toimi)
-			FadeIn fadeIn = new FadeIn(5);
-			FadeOut fadeOut = new FadeOut(5);
+			FadeIn fadeIn = new FadeIn(2);
+			FadeOut fadeOut = new FadeOut(2);
 			
 			//Volume
 			GainProcessor gainProcessor = new GainProcessor(3);
@@ -111,6 +121,7 @@ public class PitchShiftingTest {
                         ex.printStackTrace();
                     }
                  adp.stop();
+                 liveDispatcher.stop();
                  float i = adp.secondsProcessed();
                  System.out.println("Pysähtyi kohdassa: " + i);
                  
@@ -125,16 +136,36 @@ public class PitchShiftingTest {
 //			adp.addAudioProcessor(gainProcessor);
 //			adp.addAudioProcessor(lowPassSP);
 //			adp.addAudioProcessor(highPass);
-			adp.addAudioProcessor(delay);
+//			adp.addAudioProcessor(delay);
 //			adp.addAudioProcessor(delay2);
 //			adp.addAudioProcessor(delay3);
-			adp.addAudioProcessor(flangerEffect);
-			adp.addAudioProcessor(wsola);
-			adp.addAudioProcessor(rateTransposer);
-			adp.addAudioProcessor(writer);
-			adp.addAudioProcessor(audioPlayer);
+//			adp.addAudioProcessor(flangerEffect);
+//			adp.addAudioProcessor(wsola);
+//			adp.addAudioProcessor(rateTransposer);
+//			adp.addAudioProcessor(writer);
+//			adp.addAudioProcessor(audioPlayer);
+
 			
-			adp.run();
+//			adp.run();
+			
+			
+			
+			
+			AudioFormat format2 = getAudioFormat();
+	        DataLine.Info info = new DataLine.Info(TargetDataLine.class, format2);
+	        TargetDataLine line = (TargetDataLine) AudioSystem.getLine(info);
+	        line.open(format2);
+	        line.start();
+	        AudioInputStream ais = new AudioInputStream(line);
+	        JVMAudioInputStream audioStream = new JVMAudioInputStream(ais);
+			liveDispatcher = new AudioDispatcher(audioStream, wsola.getInputBufferSize(), wsola.getOverlap());
+			
+			
+			wsola.setDispatcher(liveDispatcher);
+			liveDispatcher.addAudioProcessor(wsola);
+			liveDispatcher.addAudioProcessor(rateTransposer);
+			liveDispatcher.addAudioProcessor(audioPlayer);
+			liveDispatcher.run();
 			
 			
 		} catch (Exception e) {
@@ -143,5 +174,17 @@ public class PitchShiftingTest {
 		}
 
 	}
+	
+	public static AudioFormat getAudioFormat(){
+        float sampleRate = 44100;
+        int sampleSizeBits = 16;
+        int channels = 1;
+        boolean signed = true;
+        boolean bigEndian = false;
+        AudioFormat format = new AudioFormat(sampleRate,sampleSizeBits,channels,signed,bigEndian);
+        
+
+        return format;
+    }
 
 }
