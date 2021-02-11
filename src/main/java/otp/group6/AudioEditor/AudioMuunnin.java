@@ -37,7 +37,7 @@ public class AudioMuunnin {
 		
 	}
 	
-	public void setAudioFile(String tiedostopolku) {
+	public void setAudioSourceFile(String tiedostopolku) {
 		// Haetaan tiedosto parametrin perusteella
 				this.wavFile = new File(tiedostopolku).getAbsoluteFile();
 				try {
@@ -58,7 +58,7 @@ public class AudioMuunnin {
 					adp.addAudioProcessor(rateTransposer);
 
 					// Kaikuefekti
-					delayEffect = new DelayEffect(1, 0, sampleRate); // Kaiun oletusarvot: kesto 1s, efekti ei käytössä eli 0 ja
+					delayEffect = new DelayEffect(0.0001, 0, sampleRate); // Kaiun oletusarvot: kesto 0.0001s (koska nollaa ei voi laittaa), efekti ei käytössä eli 0 ja
 																		// normi sampleRate
 					adp.addAudioProcessor(delayEffect);
 					

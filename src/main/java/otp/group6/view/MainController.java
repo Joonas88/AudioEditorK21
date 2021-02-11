@@ -3,6 +3,7 @@ package otp.group6.view;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -80,13 +81,20 @@ public class MainController {
 	@FXML
 	private Slider sliderWetness;
 	
+	@FXML
+	private Text textCurrentPitch;
+	
+	private DecimalFormat decimalFormat = new DecimalFormat("#0.00"); //kaikki luvut kahden desimaalin tarkkuuteen
+	
 	public void alustaMikseri() {
 		//Pitch slider
 		sliderPitch.valueProperty().addListener(new ChangeListener<Number>() {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				System.out.println("pitch " + newValue);
-				controller.soundManipulatorAdjustParameters(newValue.floatValue(), -1, -1, -2);
+				controller.soundManipulatorAdjustParameters(newValue.floatValue(), -1, -1, -1);
+				
+				textCurrentPitch.setText(decimalFormat.format(newValue.doubleValue()));
 			}
 		});
 		
@@ -96,7 +104,7 @@ public class MainController {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				System.out.println("echo length " + newValue);
-				controller.soundManipulatorAdjustParameters(-1, newValue.doubleValue(), -1, -2);
+				controller.soundManipulatorAdjustParameters(-1, newValue.doubleValue(), -1, -1);
 			}
 		});
 		
@@ -105,7 +113,7 @@ public class MainController {
 			@Override
 			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number newValue) {
 				System.out.println("decay " + newValue);
-				controller.soundManipulatorAdjustParameters(-1, -1, newValue.doubleValue(), -2);
+				controller.soundManipulatorAdjustParameters(-1, -1, newValue.doubleValue(), -1);
 			}
 		});
 		

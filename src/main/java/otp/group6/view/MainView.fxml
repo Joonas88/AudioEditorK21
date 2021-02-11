@@ -120,6 +120,9 @@
                                        <children>
                                           <Slider fx:id="sliderPitch" blockIncrement="0.1" layoutX="82.0" layoutY="59.0" majorTickUnit="1.0" max="4.0" min="0.1" showTickLabels="true" showTickMarks="true" value="1.0" AnchorPane.bottomAnchor="59.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="59.0" />
                                           <Text layoutX="20.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Pitch" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="255.0" AnchorPane.topAnchor="14.0" />
+                                          <Button layoutX="264.0" layoutY="9.0" mnemonicParsing="false" text="?" />
+                                          <Label layoutX="141.0" layoutY="13.0" text="Current value:" />
+                                          <Text fx:id="textCurrentPitch" layoutX="228.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="1" />
                                        </children>
                                     </AnchorPane>
                                     <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
@@ -127,6 +130,7 @@
                                           <Slider layoutX="20.0" layoutY="59.0" showTickLabels="true" showTickMarks="true" AnchorPane.bottomAnchor="59.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="59.0" />
                                           <Text layoutX="20.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Flanger" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="255.0" AnchorPane.topAnchor="14.0" />
                                           <Slider layoutX="57.0" layoutY="100.0" showTickLabels="true" showTickMarks="true" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
+                                          <Button layoutX="217.0" layoutY="2.0" mnemonicParsing="false" text="Reset Sliders" />
                                        </children>
                                     </AnchorPane>
                                     <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">

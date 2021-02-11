@@ -31,7 +31,7 @@ public class Controller {
 		recorder = new AudioRecorder();
 		//-
 		soundManipulator = new AudioMuunnin();
-		soundManipulator.setAudioFile("src/audio/testiaani.wav");
+		soundManipulator.setAudioSourceFile("src/audio/testiaani.wav");
 		//-
 	}
 	
@@ -49,7 +49,7 @@ public class Controller {
 			soundManipulator.setDelayEffect(-1, decay);
 		}
 		
-		if (gain != -2) {
+		if (gain != -1) {
 			soundManipulator.setGain(gain);
 		}
 	}
