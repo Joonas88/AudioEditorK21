@@ -1,4 +1,5 @@
 /target/
 /src/audio/*
 /.idea
+.classpath
 /AudioEditor.iml
