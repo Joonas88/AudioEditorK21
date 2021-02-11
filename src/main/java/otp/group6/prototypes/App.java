@@ -40,12 +40,13 @@ public class App {
         AudioFormat format = getAudioFormat();
         System.out.print(format.getFrameSize());
         DataLine.Info info = new DataLine.Info(TargetDataLine.class, format);
-        App.line = (TargetDataLine) AudioSystem.getLine(info);
-        App.line.open(format);
-        System.out.println(App.line.isOpen());
-        App.line.start();
-        AudioInputStream ais = new AudioInputStream(App.line);
-        AudioSystem.write(ais, fileType,wavFile);
+        line = (TargetDataLine) AudioSystem.getLine(info);
+        line.open(format);
+        System.out.println(line.isOpen());
+        line.start();
+        AudioInputStream ais = new AudioInputStream(line);
+        AudioInputStream monoAis = convertToMono(ais);
+        AudioSystem.write(monoAis, fileType,wavFile);
 
     }catch(Exception ex){
         ex.printStackTrace();
@@ -85,5 +86,27 @@ public class App {
 			}
     	});
     	stopper.start();
+    }
+    
+    //Muuttaa äänen stereosta monoksi
+    public static AudioInputStream convertToMono(AudioInputStream sourceStream) {
+        AudioFormat sourceFormat = sourceStream.getFormat();
+
+        // is already mono?
+        if(sourceFormat.getChannels() == 1) {
+            return sourceStream;
+        }
+
+        AudioFormat targetFormat = new AudioFormat(
+                sourceFormat.getEncoding(),
+                sourceFormat.getSampleRate(),
+                sourceFormat.getSampleSizeInBits(),
+                1,
+                // this is the important bit, the framesize needs to change as well,
+                // for framesize 4, this calculation leads to new framesize 2
+                (sourceFormat.getSampleSizeInBits() + 7) / 8,
+                sourceFormat.getFrameRate(),
+                sourceFormat.isBigEndian());
+        return AudioSystem.getAudioInputStream(targetFormat, sourceStream);
     }
 }
