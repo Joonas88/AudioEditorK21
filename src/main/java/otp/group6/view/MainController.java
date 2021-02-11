@@ -3,7 +3,14 @@ package otp.group6.view;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
+<<<<<<< HEAD
 import java.util.regex.*;
+=======
+import java.text.DecimalFormat;
+
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+>>>>>>> 6106280e4a73ef9aa87d06b0bed487d2817b544d
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -12,6 +19,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
@@ -41,6 +49,14 @@ public class MainController {
 		button_count = 0;
 
 		controller = new Controller();
+		
+		
+		///ROOSAN TESTI
+		
+		//alustaMikseri();
+		///
+		
+		
 	}
 
 	/**
@@ -52,6 +68,84 @@ public class MainController {
 	Button newSoundButton;
 	@FXML
 	GridPane buttonGrid;
+
+	
+	
+	//ROOSAN TESTIT////////////////////////////////////////////////////
+	//MIXER
+	@FXML
+	private Slider sliderPitch;
+	@FXML
+	private Slider sliderEchoLength;
+	@FXML
+	private Slider sliderDecay;
+	@FXML
+	private Slider sliderGain;
+	@FXML
+	private Slider sliderFlangerLength;
+	@FXML
+	private Slider sliderWetness;
+	
+	@FXML
+	private Text textCurrentPitch;
+	
+	private DecimalFormat decimalFormat = new DecimalFormat("#0.00"); //kaikki luvut kahden desimaalin tarkkuuteen
+	
+	public void alustaMikseri() {
+		//Pitch slider
+		sliderPitch.valueProperty().addListener(new ChangeListener<Number>() {
+			@Override
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				System.out.println("pitch " + newValue);
+				controller.soundManipulatorAdjustParameters(newValue.floatValue(), -1, -1, -1);
+				
+				textCurrentPitch.setText(decimalFormat.format(newValue.doubleValue()));
+			}
+		});
+		
+		//Echo length slider
+		sliderEchoLength.valueProperty().addListener(new ChangeListener<Number>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				System.out.println("echo length " + newValue);
+				controller.soundManipulatorAdjustParameters(-1, newValue.doubleValue(), -1, -1);
+			}
+		});
+		
+		// Echo decay slider
+		sliderDecay.valueProperty().addListener(new ChangeListener<Number>() {
+			@Override
+			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number newValue) {
+				System.out.println("decay " + newValue);
+				controller.soundManipulatorAdjustParameters(-1, -1, newValue.doubleValue(), -1);
+			}
+		});
+		
+		//Gain slider
+		sliderGain.valueProperty().addListener(new ChangeListener<Number>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number newValue) {
+				controller.soundManipulatorAdjustParameters(-1, -1, -1, newValue.doubleValue());
+				
+			}
+		});
+	}
+
+	
+	@FXML
+	public void toistaAani() {
+		controller.soundManipulatorPlayAudio();
+	}
+	
+	@FXML
+	public void saveMixedFile() {
+		controller.soundManipulatorSaveFile();
+	}
+	
+	
+		///////////////////////////////////////////////////////////
 
 	/**
 	 * TODO REGEX tarkistus tiedostonimille
@@ -66,9 +160,8 @@ public class MainController {
 		controller.stopRecord();
 	}
 
-	/**
-	 * NOT YET USED Opens file explorer window
-	 */
+
+
 	@FXML
 	public void openFile() {
 		try {
@@ -78,13 +171,14 @@ public class MainController {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@FXML
 	public void openSample() {
 		//REGEX pattern for ".wav"
 		Pattern pattern = Pattern.compile("(\\.wav)$", Pattern.CASE_INSENSITIVE);
 		try {
 			File file = AudioFileHandler.openFileExplorer(mainContainer.getScene().getWindow());
+
 			
 			// File must be not null to add button
 			if (file != null) {
@@ -94,6 +188,7 @@ public class MainController {
 					addButton(controller.getSampleArrayLength() - 1);
 				}
 			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -133,4 +228,5 @@ public class MainController {
 		text.setTextAlignment(TextAlignment.CENTER);
 		ap.getChildren().add(text);
 	}
+
 }

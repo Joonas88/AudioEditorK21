@@ -33,60 +33,60 @@ public class AudioMuunnin {
 	private float sampleRate;
 
 	// Konstruktori
-	public AudioMuunnin(String tiedostopolku) {
+	public AudioMuunnin() {
+		
+	}
+	
+	public void setAudioSourceFile(String tiedostopolku) {
 		// Haetaan tiedosto parametrin perusteella
-		this.wavFile = new File(tiedostopolku).getAbsoluteFile();
-		try {
-			// formaatti ja sampleRate instanssimuuttujiin
-			this.format = AudioSystem.getAudioFileFormat(wavFile).getFormat();
-			this.sampleRate = format.getSampleRate();
+				this.wavFile = new File(tiedostopolku).getAbsoluteFile();
+				try {
+					// formaatti ja sampleRate instanssimuuttujiin
+					this.format = AudioSystem.getAudioFileFormat(wavFile).getFormat();
+					this.sampleRate = format.getSampleRate();
 
-			// WaveformSimilarityBasedOverlapAdd pitää tiedoston samanmittaisena
-			// pitch-arvosta riippumatta
-			wsola = new WaveformSimilarityBasedOverlapAdd(Parameters.musicDefaults(pitchFactor, sampleRate));
-			adp = AudioDispatcherFactory.fromFile(wavFile, wsola.getInputBufferSize(), wsola.getOverlap());
+					// WaveformSimilarityBasedOverlapAdd pitää tiedoston samanmittaisena
+					// pitch-arvosta riippumatta
+					wsola = new WaveformSimilarityBasedOverlapAdd(Parameters.musicDefaults(pitchFactor, sampleRate));
+					adp = AudioDispatcherFactory.fromFile(wavFile, wsola.getInputBufferSize(), wsola.getOverlap());
+					
+					wsola.setDispatcher(adp);
+					adp.addAudioProcessor(wsola);
 
-			wsola.setDispatcher(adp);
-			adp.addAudioProcessor(wsola);
+					// Pitch-arvon muuttaja
+					rateTransposer = new RateTransposer(pitchFactor);
+					adp.addAudioProcessor(rateTransposer);
 
-			// Pitch-arvon muuttaja
-			rateTransposer = new RateTransposer(pitchFactor);
-			adp.addAudioProcessor(rateTransposer);
+					// Kaikuefekti
+					delayEffect = new DelayEffect(0.0001, 0, sampleRate); // Kaiun oletusarvot: kesto 0.0001s (koska nollaa ei voi laittaa), efekti ei käytössä eli 0 ja
+																		// normi sampleRate
+					adp.addAudioProcessor(delayEffect);
+					
+					//Gain
+					gainProcessor = new GainProcessor(1); //1 on normaali gain
+					adp.addAudioProcessor(gainProcessor);
 
-			// Kaikuefekti
-			delayEffect = new DelayEffect(1, 0, sampleRate); // Kaiun oletusarvot: kesto 1s, efekti ei käytössä eli 0 ja
-																// normi sampleRate
-			adp.addAudioProcessor(delayEffect);
-
-			// Gain
-			gainProcessor = new GainProcessor(1); // 1 on normaali gain
-			adp.addAudioProcessor(gainProcessor);
-
-		} catch (UnsupportedAudioFileException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+				} catch (UnsupportedAudioFileException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 	}
 
+	//Sound effect methods
+	
 	public void setPitchFactor(float pitchFactor) {
 		// Vaihdetaan arvot Rate Trandposeriin..
 		this.pitchFactor = pitchFactor;
 		rateTransposer.setFactor(pitchFactor);
+		System.out.println("muutettu pitch");
 		// ..ja pituuden algoritmiin :D lol idk
 		wsola.setParameters(WaveformSimilarityBasedOverlapAdd.Parameters.musicDefaults(pitchFactor, sampleRate));
 
 	}
-
-	// KEEESKEEn
-	public void kirjoitaTiedostoon() {
-		writer = new WaveformWriter(format, "src/audio/miksattuAudio.wav"); // Tiedoston nimi miksattuAudio!!
-		adp.addAudioProcessor(writer);
-		adp.run();
-	}
-
+	
 	public void setFlangerEffect(double maxFlangerLength, double wet) { // vika parametri double lfoFrequency,
 																		// halutaanko muokata??
 		if (flangerEffect == null) {
@@ -105,8 +105,19 @@ public class AudioMuunnin {
 	 * @param decay      TÄHÄN JOKU FIKSU KUVAUS
 	 */
 	public void setDelayEffect(double echoLength, double decay) {
-		delayEffect.setEchoLength(echoLength);
-		delayEffect.setDecay(decay);
+		if(echoLength != -1) {
+			if (echoLength == 0) {
+				echoLength = 0.0001; // JOO HAHAHÖHÖ koska tarsos ei hyväksy nollaa
+			}
+			delayEffect.setEchoLength(echoLength);
+			System.out.println("muutettu echo length");
+		}
+		
+		if(decay != -1) {
+			delayEffect.setDecay(decay);
+			System.out.println("muutettu decay");
+		}
+		
 	}
 
 	/**
@@ -116,23 +127,33 @@ public class AudioMuunnin {
 	 */
 	public void setGain(double newGain) {
 		gainProcessor.setGain(newGain);
+		System.out.println("gain säädetty");
 	}
 
+	
 	public void playAudio() {
 		try {
+			System.out.println("play audio klikattu");
 			audioPlayer = new AudioPlayer(format);
 			adp.addAudioProcessor(audioPlayer);
 			try {
 				Thread t = new Thread(adp);
 				t.start();
 			} catch (Exception e) {
-				// TODO: handle exception
+				e.printStackTrace();
 			}
 		} catch (LineUnavailableException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
+	}	
+	
+	// KEEESKEEn
+	public void saveFile() {
+		writer = new WaveformWriter(format, "src/audio/miksattuAudio.wav"); // Tiedoston nimi miksattuAudio!!
+		adp.addAudioProcessor(writer);
+		adp.run();
+		System.out.println("Mikserin tiedosto tallennettu");
 	}
 
 }

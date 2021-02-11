@@ -9,11 +9,14 @@ public class TestiMain {
 
 	public static void main(String[] args) {
 
-		AudioMuunnin audioMuunnin = new AudioMuunnin("src/audio/testiaani.wav"); // Huom! testiaani.wav!
 
-		// audioMuunnin.setPitchFactor(0.5f);
-		// audioMuunnin.setDelayEffect(10, 0);
-		// audioMuunnin.setFlangerEffect(0.02, 0.7);
+		AudioMuunnin audioMuunnin = new AudioMuunnin(); //Huom! testiaani.wav!
+
+		audioMuunnin.setAudioFile("src/audio/testiaani.wav");
+		 //audioMuunnin.setPitchFactor(4.f);
+		audioMuunnin.setDelayEffect(10, 0);
+		//audioMuunnin.setFlangerEffect(0.02, 0.7);
+
 
 		audioMuunnin.playAudio();
 		// audioMuunnin.kirjoitaTiedostoon();
