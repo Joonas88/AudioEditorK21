@@ -239,7 +239,7 @@ public class AudioCloudDAO {
 				return false;
 			} else {
 				// TODO käyttäjälle palaute
-				JOptionPane.showMessageDialog(null, "Käyttäjänimi ei kelpaa! Valitse toinen :)", "HUOMIO!", JOptionPane.INFORMATION_MESSAGE);
+				// JOptionPane.showMessageDialog(null, "Käyttäjänimi ei kelpaa! Valitse toinen :)", "HUOMIO!", JOptionPane.INFORMATION_MESSAGE);//Nämä ponnahtaa myös testeissä!
 				System.out.println("KÄYTTÄJÄNIMI JO KÄYTÖSSÄ!");//Poistetteava
 				return true;
 			}
@@ -265,7 +265,7 @@ public class AudioCloudDAO {
 					query.setString(4, user.getSalt());
 					query.executeUpdate();
 					// TODO Käyttäjälle palaute
-					JOptionPane.showMessageDialog(null, "Uusi käyttäjä luotu!");
+					//JOptionPane.showMessageDialog(null, "Uusi käyttäjä luotu!"); //Nämä ponnahtaa myös testeissä!
 					System.out.println("Uusi käyttäjä luotu!"); //Poistetteava
 					return true;
 				} catch (SQLException e) {
@@ -275,7 +275,7 @@ public class AudioCloudDAO {
 						System.err.println("SQL-tilakoodi: " + e.getSQLState());
 					} while (e.getNextException() != null);
 				}
-				JOptionPane.showMessageDialog(null, "Jokin meni pahasti vikaan!", "ERROR", JOptionPane.WARNING_MESSAGE);
+				// JOptionPane.showMessageDialog(null, "Jokin meni pahasti vikaan!", "ERROR", JOptionPane.WARNING_MESSAGE);//Nämä ponnahtaa myös testeissä!
 				return false;
 
 	}
@@ -295,7 +295,7 @@ public class AudioCloudDAO {
 
 			
 			if (!rset.next()) {
-				JOptionPane.showMessageDialog(null, "Validointi ei onnistu, koita uudelleen?"); //Ei voi kertoa ettei tunnusta ole
+				//JOptionPane.showMessageDialog(null, "Validointi ei onnistu, koita uudelleen?"); //Ei voi kertoa ettei tunnusta ole //Nämä ponnahtaa myös testeissä!
 				System.out.println("Käyttäjätunnusta ei ole olemassa"); //Poistettava
 			}
 			
@@ -306,11 +306,11 @@ public class AudioCloudDAO {
 			
 			if (pwMatch) {
 				//TODO muuttuja kirjautuneelle käyttäjälle?
-				JOptionPane.showMessageDialog(null, "Tervetuloa! "+rset.getString("username"));
+				//JOptionPane.showMessageDialog(null, "Tervetuloa! "+rset.getString("username")); //Nämä ponnahtaa myös testeissä!
 				System.out.println("Tervetuloa "+rset.getString("username"));
 				return "Tervetuloa "+rset.getString("username");
 			} else {
-				JOptionPane.showMessageDialog(null, "Käyttäjätunnus tai salasana väärä!", "HUOMIO!", JOptionPane.WARNING_MESSAGE);
+				//JOptionPane.showMessageDialog(null, "Käyttäjätunnus tai salasana väärä!", "HUOMIO!", JOptionPane.WARNING_MESSAGE); //Nämä ponnahtaa myös testeissä!
 				System.out.println(false);
 				return "Käyttäjätunnus tai salasana väärä!";
 			}
@@ -345,7 +345,7 @@ public class AudioCloudDAO {
 					query.setDouble(11, mix.getMix6());					
 					query.executeUpdate();
 					// TODO Käyttäjälle palaute
-					JOptionPane.showMessageDialog(null, "Mikseriasetus tallennettu! :)");
+					// JOptionPane.showMessageDialog(null, "Mikseriasetus tallennettu! :)"); //Nämä ponnahtaa myös testeissä!
 					System.out.println("Mix tallennettu!"); //Poistetteava
 					return true;
 				} catch (SQLException e) {
@@ -356,12 +356,12 @@ public class AudioCloudDAO {
 					} while (e.getNextException() != null);
 				}
 				//TODO Käyttäjälle palaute
-				JOptionPane.showMessageDialog(null, "Tallennus epäonnistui :( Yritä uudelleen!");
+//				JOptionPane.showMessageDialog(null, "Tallennus epäonnistui :( Yritä uudelleen!"); //Nämä ponnahtaa myös testeissä!
 				return false;
 	}
 	
 	/**
-	 * Get all users from accounts table, possibly useless
+	 * Get all users from accounts table, only for development
 	 * @return array of users
 	 */
 	public User[] getUsers() {
@@ -570,16 +570,16 @@ public class AudioCloudDAO {
 	 * @return true or false according to the success of the method.
 	 */
 	public boolean deleteMix(String specify) {
-		try (PreparedStatement statement = databaseConnection.prepareStatement("DELETE FROM mixerSETTINGSTEST WHERE id = ?")) {
+		try (PreparedStatement statement = databaseConnection.prepareStatement("DELETE FROM mixerSETTINGSTEST WHERE mixName = ?")) {
 			statement.setString(1, specify);
 			statement.executeUpdate();
 			// TODO Käyttäjälle palaute
-			JOptionPane.showMessageDialog(null, "Poistaminen onnistui! :)");
+			//JOptionPane.showMessageDialog(null, "Poistaminen onnistui! :)"); //Nämä ponnahtaa myös testeissä!
 			System.out.println("Mix poistettu!"); //Tämä poistoon
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Epäonnistui poistaminen :((");
+			//JOptionPane.showMessageDialog(null, "Epäonnistui poistaminen :(("); //Nämä ponnahtaa myös testeissä!
 			return false;
 		}
 	}
@@ -594,12 +594,12 @@ public class AudioCloudDAO {
 			statement.setString(1, specify);
 			statement.executeUpdate();
 			// TODO Käyttäjälle palaute
-			JOptionPane.showMessageDialog(null, "Käyttäjätunnus poistettu! :)");
+			//JOptionPane.showMessageDialog(null, "Käyttäjätunnus poistettu! :)"); //Nämä ponnahtaa myös testeissä!
 			System.out.println("Käyttäjä poistettu!"); //Tämä poistoon
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Ei toimi ei tää poisto ei! :((");
+			//JOptionPane.showMessageDialog(null, "Ei toimi ei tää poisto ei! :(("); //Nämä ponnahtaa myös testeissä!
 			return false;
 		}
 	}
@@ -689,7 +689,7 @@ public class AudioCloudDAO {
 		for (User testUser : taulukko) {
 			System.out.println(testUser);
 		}
-		*/		
+		 */
 		
 		/*
 		MixerSetting allList[] = dao.getAllMixArray();
