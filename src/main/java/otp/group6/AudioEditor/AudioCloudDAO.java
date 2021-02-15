@@ -2,6 +2,8 @@ package otp.group6.AudioEditor;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.JOptionPane;
 
@@ -24,16 +26,17 @@ public class AudioCloudDAO {
 	 * @author Joonas Soininen
 	 *
 	 */
-	static class User {
-		// TODO Salasana on oltava X pituinen ja se pitää salata!!
-		private String username, password;
+	public static class User {
+
+		private String username, password, salt;
 			
 		public User() {
 		}
 		
-		public User(String username, String password) {
+		public User(String username, String password, String salt) {
 			this.username=username;
 			this.password=password;
+			this.salt=salt;
 		}
 		
 		public void setUsername(String username) {
@@ -44,12 +47,20 @@ public class AudioCloudDAO {
 			this.password = password;
 		}
 		
+		public void setSalt(String salt) {
+			this.salt = salt;
+		}
+		
 		public String getUsername() {
 			return username;
 		}
 
 		public String getPassword() {
 			return password;
+		}
+		
+		public String getSalt() {
+			return salt;
 		}
 
 		@Override
@@ -67,7 +78,7 @@ public class AudioCloudDAO {
 	 * @author Joonas Soininen
 	 *
 	 */
-	static class MixerSetting {
+	public static class MixerSetting {
 		
 		private LocalDate date =  LocalDate.now();
 		private String mixName, description, dateDAO, creatorName;
@@ -181,7 +192,11 @@ public class AudioCloudDAO {
 
 	}
 
-	private Connection databaseConnection;	
+	private Connection databaseConnection;
+	
+	//TODO Päätä missä salasana määritellään oikeaan muotoon!! Tarvitsee metodin isValid 
+	private static final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,20}$";
+	private static final Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
 	
 	/**
 	 * Connection to the database
@@ -211,6 +226,31 @@ public class AudioCloudDAO {
 	}
 	
 	/**
+	 * Method to check for user name availability from the database.
+	 * @param user is the inputed user name
+	 * @return statement return true is the user name exist and false if it is available
+	 */
+	public boolean chekcforUser(User user) {
+		
+		try (PreparedStatement myStatement =  databaseConnection.prepareStatement("SELECT * FROM accountsTEST WHERE username = ? ");){
+			myStatement.setString(1, user.getUsername());
+			ResultSet rset = myStatement.executeQuery();
+			if (!rset.next()) {
+				return false;
+			} else {
+				// TODO käyttäjälle palaute
+				JOptionPane.showMessageDialog(null, "Käyttäjänimi ei kelpaa! Valitse toinen :)", "HUOMIO!", JOptionPane.INFORMATION_MESSAGE);
+				System.out.println("KÄYTTÄJÄNIMI JO KÄYTÖSSÄ!");//Poistetteava
+				return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return true;
+		}
+		
+	}
+	
+	/**
 	 * Method is used to deliver a new user in to the database. Method also makes sure that there are no dublicate users.
 	 * @param user 
 	 * @return tells the user that creating a new user has been granted or it has failed
@@ -218,17 +258,14 @@ public class AudioCloudDAO {
 	 */
 	public boolean createUser(User user) throws SQLException {
 
-		try (PreparedStatement myStatement = databaseConnection.prepareStatement("SELECT * FROM accountsTEST WHERE username = ? ");) {
-			myStatement.setString(1, user.getUsername());
-			ResultSet rset = myStatement.executeQuery();
-
-			if (!rset.next()) {
-				try (PreparedStatement query = databaseConnection.prepareStatement("INSERT INTO accountsTEST values (?,?,?)")) {
+				try (PreparedStatement query = databaseConnection.prepareStatement("INSERT INTO accountsTEST values (?,?,?,?)")) {
 					query.setString(1, null);
 					query.setString(2, user.getUsername());
 					query.setString(3, user.getPassword());
+					query.setString(4, user.getSalt());
 					query.executeUpdate();
 					// TODO Käyttäjälle palaute
+					JOptionPane.showMessageDialog(null, "Uusi käyttäjä luotu!");
 					System.out.println("Uusi käyttäjä luotu!"); //Poistetteava
 					return true;
 				} catch (SQLException e) {
@@ -238,48 +275,54 @@ public class AudioCloudDAO {
 						System.err.println("SQL-tilakoodi: " + e.getSQLState());
 					} while (e.getNextException() != null);
 				}
+				JOptionPane.showMessageDialog(null, "Jokin meni pahasti vikaan!", "ERROR", JOptionPane.WARNING_MESSAGE);
 				return false;
-			} else {
-				// TODO käyttäjälle palaute
-				System.out.println("KÄYTTÄJÄNIMI JO KÄYTÖSSÄ!");//Poistetteava
-				return false;
-			}
 
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
 	}
 	
 	/**
+	 * TODO salasanan kryptaus, token tms markkeri kirjautumisesta, jokin boolean tms true, että saa mahdollisuuden tallentaa.
 	 * 
-	 * @param u
-	 * @param p
+	 * Method to login and check for correct credentials
+	 * @param u user name
+	 * @param p password
 	 */
-	public void loginUser(String u, String p){
+	public String loginUser(String u, String p){
 
-		try (PreparedStatement myStatement = databaseConnection.prepareStatement("SELECT username, password FROM accountsTEST WHERE username = ? AND password = ?");) {
+		try (PreparedStatement myStatement = databaseConnection.prepareStatement("SELECT username, password, salt FROM accountsTEST WHERE username = ?");) {
 			myStatement.setString(1, u);
-			myStatement.setString(2, p);
 			ResultSet rset = myStatement.executeQuery();
 
+			
 			if (!rset.next()) {
-				// TODO käyttäjälle palaute
-				JOptionPane.showMessageDialog(null, "EI!");
-				System.out.println("Väärä käyttis tai salasana!");//Poistettava
+				JOptionPane.showMessageDialog(null, "Validointi ei onnistu, koita uudelleen?"); //Ei voi kertoa ettei tunnusta ole
+				System.out.println("Käyttäjätunnusta ei ole olemassa"); //Poistettava
+			}
+			
+			String pw = rset.getString("password");
+			String salt = rset.getString("salt");
+			
+			boolean pwMatch = PasswordUtils.verifyUserPassword(p, pw, salt);
+			
+			if (pwMatch) {
+				//TODO muuttuja kirjautuneelle käyttäjälle?
+				JOptionPane.showMessageDialog(null, "Tervetuloa! "+rset.getString("username"));
+				System.out.println("Tervetuloa "+rset.getString("username"));
+				return "Tervetuloa "+rset.getString("username");
 			} else {
-				// TODO käyttäjälle palaute
-				JOptionPane.showMessageDialog(null, "KYLLÄ!");
-				System.out.println("Kirjauduttu!");//Poistetteava
+				JOptionPane.showMessageDialog(null, "Käyttäjätunnus tai salasana väärä!", "HUOMIO!", JOptionPane.WARNING_MESSAGE);
+				System.out.println(false);
+				return "Käyttäjätunnus tai salasana väärä!";
 			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return "Ei voi kirjautua sisälle!"; //Kunnollinen viesti!
 	}
 	
 	/**
-	 * TODO Kirjautuneen käyttäjän haku
+	 * TODO Kirjautuneen aktiivisen käyttäjän haku
 	 * 
 	 * Create a new mix into the database
 	 * @param mix  is an instance of the class and possesses all necessary inputs
@@ -302,6 +345,7 @@ public class AudioCloudDAO {
 					query.setDouble(11, mix.getMix6());					
 					query.executeUpdate();
 					// TODO Käyttäjälle palaute
+					JOptionPane.showMessageDialog(null, "Mikseriasetus tallennettu! :)");
 					System.out.println("Mix tallennettu!"); //Poistetteava
 					return true;
 				} catch (SQLException e) {
@@ -311,6 +355,8 @@ public class AudioCloudDAO {
 						System.err.println("SQL-tilakoodi: " + e.getSQLState());
 					} while (e.getNextException() != null);
 				}
+				//TODO Käyttäjälle palaute
+				JOptionPane.showMessageDialog(null, "Tallennus epäonnistui :( Yritä uudelleen!");
 				return false;
 	}
 	
@@ -528,10 +574,12 @@ public class AudioCloudDAO {
 			statement.setString(1, specify);
 			statement.executeUpdate();
 			// TODO Käyttäjälle palaute
+			JOptionPane.showMessageDialog(null, "Poistaminen onnistui! :)");
 			System.out.println("Mix poistettu!"); //Tämä poistoon
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Epäonnistui poistaminen :((");
 			return false;
 		}
 	}
@@ -546,44 +594,102 @@ public class AudioCloudDAO {
 			statement.setString(1, specify);
 			statement.executeUpdate();
 			// TODO Käyttäjälle palaute
+			JOptionPane.showMessageDialog(null, "Käyttäjätunnus poistettu! :)");
 			System.out.println("Käyttäjä poistettu!"); //Tämä poistoon
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Ei toimi ei tää poisto ei! :((");
 			return false;
 		}
 	}
 	
+	/**
+	 * TODO Pitää päättää missä tarkitsetaan salasanan oikeellisuus!
+	 * Used to check for password security
+	 * @param password is the inputed password
+	 * @return true if it matches requirements
+	 */
+	public static boolean isValid(final String password) {
+		Matcher matcher = pattern.matcher(password);
+		return matcher.matches();
+	}
 	
 	// TODO filtteriasetuksia lisätessä on käyttäjän kirjauduttava sisälle ja siitä otetaan käyttäjätunnus lisättävän asetuksen mukaan!!
 	
 	// TESTIYMPÄRISTÖ
 	public static void main(String[] args) throws SQLException {
-		Random rand = new Random();
-		int random = rand.nextInt(10000);
 
+		String salt = PasswordUtils.getSalt(30); //Tämä tarvitaan uuden käyttäjän luomiseksi
+		
 		AudioCloudDAO dao = new AudioCloudDAO();
 		
-		//User user = new User("testikäyttäjä"+random, "salasana");
+		User user = new User();
+		/*
+		boolean testikkeli = true;
+		
+		while (testikkeli) {
+			String newuser = JOptionPane.showInputDialog("Uusi käyttäjä");
+			user.setUsername(newuser);
+			if (!dao.chekcforUser(user)) {
+				
+
+				String newpw = new String(JOptionPane.showInputDialog("Password must contain 8-20 characters, at least 1 uppercase, 1 number, 1 specia", "Example1!"));
+				
+				if (AudioCloudDAO.isValid(newpw)) {
+					String newpw2 = new String(JOptionPane.showInputDialog("Re-enter your password"));
+					
+					if (!newpw.equals(newpw2)) {
+						JOptionPane.showMessageDialog(null, "Salasanat eivät täsmää!", "HUOM!", JOptionPane.ERROR_MESSAGE);
+					} else {
+						 String mySecurePassword = PasswordUtils.generateSecurePassword(newpw, salt); // TÄMÄ TARVITAAN!!
+						 user.setPassword(mySecurePassword);
+						 user.setSalt(salt);
+						 dao.createUser(user);
+						 testikkeli = false;
+					}
+				} else {
+					JOptionPane.showMessageDialog(null, "Salasanan pitää sisältää sitä ja tätä!", "HUOM!", JOptionPane.ERROR_MESSAGE); //Pitää määrittää minkälainen salasana halutaan! Nyt on vitusti liikaa vaatimuksia :D
+				}
+			}
+		}
+		
+		String userLogin;
+		userLogin = JOptionPane.showInputDialog("Käyttäjä");
+		String pw;
+		pw  = JOptionPane.showInputDialog("Salasana");
+		
+		dao.loginUser(userLogin, pw);
+		
+		//Random rand = new Random();
+		//int random = rand.nextInt(10000);
+		
+		//User user = new User("testikäyttäjä1", "salasana", salt);
 		
 		//MixerSetting mix = new MixerSetting("testi", "Filtteriä kuvaava teksti", 1.1+random, 2.2+random, 3.3+random, 4.4+random, 5.5+random, 6.6+random);				
 		
-		//dao.createUser(new User("testikäyttäjä1234", "1234"));
+		/*
+		if (!dao.chekcforUser(user)) {
+			dao.createUser(user);
+		}
+		*/
+		
+		//dao.createUser(new User("testUser", "1234"));
 		
 		//dao.createMix(new MixerSetting("testi", "Filtteriä kuvaava teksti", 1.1+random, 2.2+random, 3.3+random, 4.4+random, 5.5+random, 6.6+random));
 		
-		//dao.deleteMix("6");
+		//dao.deleteMix("2");
 		
-		//dao.deleteUser("0");
+		//dao.deleteUser("85");
 		
-		dao.loginUser("testikäyttäjä1234", "1234");
+		//dao.loginUser("testikäyttäjä1234", "1234");
 		
 		/*
 		User taulukko[] = dao.getUsers();
 		for (User testUser : taulukko) {
 			System.out.println(testUser);
 		}
-		*/	
+		*/		
 		
 		/*
 		MixerSetting allList[] = dao.getAllMixArray();
