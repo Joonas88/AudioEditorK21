@@ -65,7 +65,6 @@ public class MainApplication extends Application {
 			primaryStage.show();
 			
 			MainController mainController = loader.getController();
-			System.out.println("LOOOOOL");
 			mainController.alustaMikseri();
 			
 		} catch (IOException e) {
