@@ -1,12 +1,19 @@
 package otp.group6.AudioEditor;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.file.FileAlreadyExistsException;
+import java.security.PublicKey;
 import java.util.Scanner;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.Mixer;
+import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.TargetDataLine;
 
 import org.jaudiolibs.audioservers.AudioClient;
@@ -15,6 +22,7 @@ import org.jaudiolibs.audioservers.jack.JackAudioServer;
 import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.AudioEvent;
 import be.tarsos.dsp.AudioProcessor;
+import be.tarsos.dsp.AutoCorrelation;
 import be.tarsos.dsp.FadeIn;
 import be.tarsos.dsp.FadeOut;
 import be.tarsos.dsp.GainProcessor;
@@ -30,6 +38,8 @@ import be.tarsos.dsp.filters.IIRFilter;
 import be.tarsos.dsp.filters.LowPassFS;
 import be.tarsos.dsp.filters.LowPassSP;
 import be.tarsos.dsp.granulator.Granulator;
+import be.tarsos.dsp.io.TarsosDSPAudioFloatConverter;
+import be.tarsos.dsp.io.TarsosDSPAudioFormat;
 import be.tarsos.dsp.io.jvm.*;
 import be.tarsos.dsp.pitch.PitchDetectionHandler;
 import be.tarsos.dsp.pitch.PitchDetectionResult;
@@ -37,15 +47,16 @@ import be.tarsos.dsp.pitch.PitchProcessor;
 import be.tarsos.dsp.pitch.PitchProcessor.PitchEstimationAlgorithm;
 import be.tarsos.dsp.resample.RateTransposer;
 import be.tarsos.dsp.synthesis.NoiseGenerator;
-
+import be.tarsos.dsp.writer.WriterProcessor;
 
 public class PitchShiftingTest {
 
 	static File wavFile = new File("src/audio/test5.wav").getAbsoluteFile();
+	static File randomFile = new File("src/audio/test1.wav").getAbsoluteFile();
 	static AudioFormat format;
 	static AudioDispatcher adp;
 	static AudioDispatcher liveDispatcher;
-	
+	static SourceDataLine sourceLine;
 
 	public static void main(String[] args) {
 
@@ -53,48 +64,54 @@ public class PitchShiftingTest {
 			// Vaihtaa tiedoston äänenkorkeutta, arvot 0.1 - 4.0 (voi olla, että pienimmät
 			// arvot eivät toimi)
 			float pitchFactor = 1.3f;
-			
-			//Kaiun pituus sekunteina
-			float delayLength = 0.006F; 
-			//Kaiun heikentyvyys 0-1. 1 = ei heikenny, 0 = ei lainkaan kaikua.
+
+			// Kaiun pituus sekunteina
+			float delayLength = 0.006F;
+			// Kaiun heikentyvyys 0-1. 1 = ei heikenny, 0 = ei lainkaan kaikua.
 			float delayDecay = 0.6f;
 
 			format = AudioSystem.getAudioFileFormat(wavFile).getFormat();
-			
-			//Tiedoston nopeuden/pituuden muuttaja
+
+			// Tiedoston nopeuden/pituuden muuttaja
 			WaveformSimilarityBasedOverlapAdd wsola = new WaveformSimilarityBasedOverlapAdd(
 					Parameters.musicDefaults(pitchFactor, format.getSampleRate()));
-			
-			//Äänenkorkeuden muuttaja
+
+			// Äänenkorkeuden muuttaja
 			RateTransposer rateTransposer = new RateTransposer(pitchFactor);
-			
-			//Tiedostoon kirjoittaja
+
+			// Tiedostoon kirjoittaja
 			WaveformWriter writer = new WaveformWriter(format, "src/audio/test2.wav");
-			
-			//Kaikuefekti
+
+			// Kaikuefekti
 			DelayEffect delay = new DelayEffect(delayLength, delayDecay, format.getSampleRate());
-			
-			//Häivytys (FadeOut ei jostain syystä toimi)
+
+			// Häivytys (FadeOut ei jostain syystä toimi)
 			FadeIn fadeIn = new FadeIn(2);
 			FadeOut fadeOut = new FadeOut(2);
-			
-			//Volume
+
+			// Volume
 			GainProcessor gainProcessor = new GainProcessor(3);
-			
-			//Lowpass (veden alla, saattaa tarvita lisää volumea)
+
+			// Lowpass (veden alla, saattaa tarvita lisää volumea)
 			LowPassFS lowPassFS = new LowPassFS(200, 44100);
-			LowPassSP lowPassSP = new LowPassSP(6000, 44100);
-			
+			LowPassSP lowPassSP = new LowPassSP(200, 44100);
+
 			HighPass highPass = new HighPass(10000, 44100);
-			
+
 			AudioPlayer audioPlayer = new AudioPlayer(format);
+
+			FlangerEffect flangerEffect = new FlangerEffect(0.02, 0, format.getSampleRate(),
+					format.getSampleRate() * 0.96);
+
+			TarsosDSPAudioFormat tarsosDSPAudioFormat = new TarsosDSPAudioFormat(format.getSampleRate(),
+					format.getSampleSizeInBits(), 1, false, false);
+			RandomAccessFile randomAccessFile = new RandomAccessFile(randomFile, "rw");
+			WriterProcessor writerProcessor = new WriterProcessor(tarsosDSPAudioFormat, randomAccessFile);
 			
-			FlangerEffect flangerEffect = new FlangerEffect(0.03, 0.01, format.getSampleRate(), format.getSampleRate() * 0.4);
 			
 			
-			
+
 			System.out.println("Mono(1) vai Stereo(2): " + format.getChannels());
-			
 
 			// Tarkistaa onko tiedosto stereo vai mono
 			if (format.getChannels() != 1) {
@@ -108,28 +125,28 @@ public class PitchShiftingTest {
 			} else {
 				adp = AudioDispatcherFactory.fromFile(wavFile, wsola.getInputBufferSize(), wsola.getOverlap());
 			}
-			
-			
+
 			Scanner sc = new Scanner(System.in);
 			Thread stopper = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try{
-                    	System.out.println("Syötä numero pysäyttääksesi");
-                        Thread.sleep(sc.nextInt());
-                    }catch (Exception ex){
-                        ex.printStackTrace();
-                    }
-                 adp.stop();
-                 liveDispatcher.stop();
-                 float i = adp.secondsProcessed();
-                 System.out.println("Pysähtyi kohdassa: " + i);
-                 
-                }
-            });
-			
+				@Override
+				public void run() {
+					try {
+						System.out.println("Syötä numero pysäyttääksesi");
+						Thread.sleep(sc.nextInt());
+					} catch (Exception ex) {
+						ex.printStackTrace();
+					}
+					adp.stop();
+					liveDispatcher.stop();
+					float i = adp.secondsProcessed();
+					System.out.println("Pysähtyi kohdassa: " + i);
+
+					
+				}
+			});
+
 			stopper.start();
-			
+
 //			adp.addAudioProcessor(pass);
 //			adp.addAudioProcessor(fadeIn);
 //			adp.addAudioProcessor(fadeOut);
@@ -145,46 +162,68 @@ public class PitchShiftingTest {
 //			adp.addAudioProcessor(writer);
 //			adp.addAudioProcessor(audioPlayer);
 
-			
 //			adp.run();
-			
-			
+
 			
 			
 			AudioFormat format2 = getAudioFormat();
-	        DataLine.Info info = new DataLine.Info(TargetDataLine.class, format2);
-	        TargetDataLine line = (TargetDataLine) AudioSystem.getLine(info);
-	        line.open(format2);
-	        line.start();
-	        AudioInputStream ais = new AudioInputStream(line);
-	        JVMAudioInputStream audioStream = new JVMAudioInputStream(ais);
+			DataLine.Info info = new DataLine.Info(TargetDataLine.class, format2);
+			TargetDataLine line = (TargetDataLine) AudioSystem.getLine(info);
+			line.open(format2);
+			line.start();
+			AudioInputStream ais = new AudioInputStream(line);
+			JVMAudioInputStream audioStream = new JVMAudioInputStream(ais);
 			liveDispatcher = new AudioDispatcher(audioStream, wsola.getInputBufferSize(), wsola.getOverlap());
-			
-			
 			wsola.setDispatcher(liveDispatcher);
 			liveDispatcher.addAudioProcessor(wsola);
 			liveDispatcher.addAudioProcessor(rateTransposer);
+			liveDispatcher.addAudioProcessor(writerProcessor);
 			liveDispatcher.addAudioProcessor(audioPlayer);
 			liveDispatcher.run();
 			
 			
+
+			/*
+			 * AudioInputStream aisTesti = null;
+			 * 
+			 * try { aisTesti = AudioSystem.getAudioInputStream(randomFile); } catch
+			 * (Exception e) { e.printStackTrace(); System.exit(1); }
+			 * 
+			 * DataLine.Info infoIn = new DataLine.Info(SourceDataLine.class,
+			 * getAudioFormat()); try { Mixer.Info[] mixerInfos =
+			 * AudioSystem.getMixerInfo(); Mixer mixer = null; for (int i = 0; i <
+			 * mixerInfos.length; i++) { System.out.println(mixerInfos[i].getName()); if
+			 * (mixerInfos[i].getName().equals("CABLE Input (VB-Audio Virtual Cable)")) {
+			 * mixer = AudioSystem.getMixer(mixerInfos[i]); break; } } sourceLine =
+			 * (SourceDataLine) mixer.getLine(infoIn); sourceLine.open(getAudioFormat()); }
+			 * catch (LineUnavailableException e) { e.printStackTrace(); System.exit(1); }
+			 * sourceLine.start(); int nBytesRead = 0; byte[] abData = new byte[128000];
+			 * while (nBytesRead != -1) { try { nBytesRead = aisTesti.read(abData, 0,
+			 * abData.length); } catch (IOException e) { e.printStackTrace(); } if
+			 * (nBytesRead >= 0) {
+			 * 
+			 * @SuppressWarnings("unused") int nBytesWritten = sourceLine.write(abData, 0,
+			 * nBytesRead); } }
+			 * 
+			 * sourceLine.drain(); sourceLine.close();
+			 */
+
 		} catch (Exception e) {
 
 			e.printStackTrace();
 		}
 
 	}
-	
-	public static AudioFormat getAudioFormat(){
-        float sampleRate = 44100;
-        int sampleSizeBits = 16;
-        int channels = 1;
-        boolean signed = true;
-        boolean bigEndian = false;
-        AudioFormat format = new AudioFormat(sampleRate,sampleSizeBits,channels,signed,bigEndian);
-        
 
-        return format;
-    }
+	public static AudioFormat getAudioFormat() {
+		float sampleRate = 44100;
+		int sampleSizeBits = 16;
+		int channels = 1;
+		boolean signed = true;
+		boolean bigEndian = false;
+		AudioFormat format = new AudioFormat(sampleRate, sampleSizeBits, channels, signed, bigEndian);
+
+		return format;
+	}
 
 }
