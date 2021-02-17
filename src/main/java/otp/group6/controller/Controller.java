@@ -29,37 +29,69 @@ public class Controller {
 		soundboard = new Soundboard();
 		mainPlayer = new AudioOutput();
 		recorder = new AudioRecorder();
-		//-
 		soundManipulator = new AudioMuunnin();
-		soundManipulator.setAudioSourceFile("src/audio/testiaani.wav");
-		//-
 	}
 	
+	
+	
 	// SoundManipulator methods start
-	public void soundManipulatorAdjustParameters(float newPitch, double echoLength, double decay, double gain) {
-		if (newPitch != -1) {
-		soundManipulator.setPitchFactor(newPitch);
-		}
-		
-		if (echoLength != -1) {
-			soundManipulator.setDelayEffect(echoLength, -1);
-		}
-		
-		if (decay != -1) {
-			soundManipulator.setDelayEffect(-1, decay);
-		}
-		
-		if (gain != -1) {
-			soundManipulator.setGain(gain);
-		}
+
+	//SoundManipulator parameter setters
+	//Pitch
+	public void soundManipulatorSetPitchFactor(double pitch) {
+		soundManipulator.setPitchFactor(pitch);	
+	}	
+	//Gain
+	public void soundManipulatorSetGain(double gain) {
+		soundManipulator.setGain(gain);
+	}
+	//Echo length
+	public void soundManipulatorSetEchoLength(double echoLength) {
+		soundManipulator.setEchoLength(echoLength);
+	}
+	//Decay
+	public void soundManipulatorSetDecay(double decay) {
+		soundManipulator.setDecay(decay);
+	}
+	//Flanger length	
+	public void soundManipulatorSetFlangerLength(double flangerLength) {
+		soundManipulator.setFlangerLength(flangerLength);
+	}
+	//Flanger wetness
+	public void soundManipulatorSetWetness(double wetness) {
+		soundManipulator.setWetness(wetness);
+	}
+	//LFO
+	public void soundManipulatorSetLFO(double lfo) {
+		soundManipulator.setLFO(lfo);
+	}
+	public void soundManipulatorSetLowPass(double lowPass) {
+		//TODO
+	}
+	
+	//Mixer general methods
+	public void soundManipulatorOpenFile(File file) {
+		soundManipulator.setAudioSourceFile(file);
 	}
 	
 	public void soundManipulatorPlayAudio() {
 		soundManipulator.playAudio();
 	}
 	
+	public void soundManipulatorStopAudio() {
+		soundManipulator.stopAudio();
+	}
+	
 	public void soundManipulatorSaveFile() {
 		soundManipulator.saveFile();
+	}
+	
+	public void soundManipulatorResetAllSliders() {
+		
+	}
+	public void testFilter() {
+		soundManipulator.testFilter();
+		
 	}
 	
 	// SoundManipulator methods end
@@ -111,4 +143,6 @@ public class Controller {
 		}
 	}
 	// AudioRecorder methods stop
+
+	
 }

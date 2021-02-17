@@ -80,63 +80,156 @@ public class MainController {
 	private Slider sliderFlangerLength;
 	@FXML
 	private Slider sliderWetness;
-	
 	@FXML
-	private Text textCurrentPitch;
+	private Slider sliderLfoFrequency;
+	@FXML
+	private Slider sliderLowPass;
+	@FXML
+	private TextField textFieldPitch;
+	@FXML
+	private TextField textFieldGain;
+	@FXML
+	private TextField textFieldEchoLength;
+	@FXML
+	private TextField textFieldDecay;
+	@FXML
+	private TextField textFieldFlangerLength;
+	@FXML
+	private TextField textFieldWetness;
+	@FXML
+	private TextField textFieldLfo;
+	@FXML
+	private TextField textFieldLowPass;
+	
+	/*
+	//(double maxFlangerLength,double wet,
+    double sampleRate,
+    double lfoFrequency)*/
+	
 	
 	private DecimalFormat decimalFormat = new DecimalFormat("#0.00"); //kaikki luvut kahden desimaalin tarkkuuteen
 	
-	public void alustaMikseri() {
+	public void initializeMixer() {
 		//Pitch slider
 		sliderPitch.valueProperty().addListener(new ChangeListener<Number>() {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-				System.out.println("pitch " + newValue);
-				controller.soundManipulatorAdjustParameters(newValue.floatValue(), -1, -1, -1);
-				
-				textCurrentPitch.setText(decimalFormat.format(newValue.doubleValue()));
+				controller.soundManipulatorSetPitchFactor(newValue.doubleValue());
+				textFieldPitch.setText(decimalFormat.format(newValue.doubleValue()));
+			}
+		});
+		
+		//Gain slider
+		sliderGain.valueProperty().addListener(new ChangeListener<Number>() {
+			@Override
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				controller.soundManipulatorSetGain(newValue.doubleValue());
+				textFieldGain.setText(decimalFormat.format(newValue.doubleValue()));
 			}
 		});
 		
 		//Echo length slider
 		sliderEchoLength.valueProperty().addListener(new ChangeListener<Number>() {
-
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-				System.out.println("echo length " + newValue);
-				controller.soundManipulatorAdjustParameters(-1, newValue.doubleValue(), -1, -1);
+				controller.soundManipulatorSetEchoLength(newValue.doubleValue());
+				textFieldEchoLength.setText(decimalFormat.format(newValue.doubleValue()));
 			}
 		});
 		
 		// Echo decay slider
 		sliderDecay.valueProperty().addListener(new ChangeListener<Number>() {
 			@Override
-			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number newValue) {
-				System.out.println("decay " + newValue);
-				controller.soundManipulatorAdjustParameters(-1, -1, newValue.doubleValue(), -1);
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				controller.soundManipulatorSetDecay(newValue.doubleValue());
+				textFieldDecay.setText(decimalFormat.format(newValue.doubleValue()));
 			}
 		});
 		
-		//Gain slider
-		sliderGain.valueProperty().addListener(new ChangeListener<Number>() {
-
+		//Flanger length slider
+		sliderFlangerLength.valueProperty().addListener(new ChangeListener<Number>() {
 			@Override
-			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number newValue) {
-				controller.soundManipulatorAdjustParameters(-1, -1, -1, newValue.doubleValue());
-				
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				controller.soundManipulatorSetFlangerLength(newValue.doubleValue());
+				textFieldFlangerLength.setText(decimalFormat.format(newValue.doubleValue()));
 			}
 		});
+		
+		sliderWetness.valueProperty().addListener(new ChangeListener<Number>() {
+			@Override
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				controller.soundManipulatorSetWetness(newValue.doubleValue());
+				textFieldWetness.setText(decimalFormat.format(newValue.doubleValue()));
+			}
+		});
+		
+		sliderLfoFrequency.valueProperty().addListener(new ChangeListener<Number>() {
+			@Override
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				controller.soundManipulatorSetLFO(newValue.doubleValue());
+				textFieldLfo.setText(decimalFormat.format(newValue.doubleValue()));
+			}
+		});
+		/*
+		sliderLowPass.valueProperty().addListener(new ChangeListener<Number>() {
+			@Override
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				controller.soundManipulatorSet(newValue.floatValue());
+				textFieldLfo.setText(decimalFormat.format(newValue.doubleValue()));
+			}
+		});*/
 	}
-
+	
+	//Methods for getting TextField input values
+	@FXML
+	public void getTextFieldPitch() {
+		String text = textFieldPitch.getText();
+		
+		try {
+			double number = Double.parseDouble(text);
+			System.out.println(number);
+			if (number <=4.0 && number >=0.1) {
+				System.out.println("hyväksytty numero");
+				controller.soundManipulatorSetPitchFactor((float) number);
+				sliderPitch.setValue(number);
+			} else {
+				System.out.println("Numero ei kelpaa");
+			}
+		} catch (Exception e) {
+			System.out.println("väärä syöte!!");
+		}
+		
+		
+	}
 	
 	@FXML
-	public void toistaAani() {
+	public void testFilter() {
+		controller.testFilter();
+	}
+	
+	@FXML
+	public void soundManipulatorPlayAudio() {
 		controller.soundManipulatorPlayAudio();
+	}
+	
+	@FXML
+	public void soundManipulatorStopAudio() {
+		controller.soundManipulatorStopAudio();
 	}
 	
 	@FXML
 	public void saveMixedFile() {
 		controller.soundManipulatorSaveFile();
+	}
+	
+	@FXML
+	public void resetAllSliders() {
+		controller.soundManipulatorResetAllSliders();
+	}
+	
+	@FXML
+	public void saveMixerSettings() {
+		
 	}
 	
 	
@@ -159,6 +252,7 @@ public class MainController {
 		try {
 			File file = AudioFileHandler.openFileExplorer(mainContainer.getScene().getWindow());
 			System.out.println(file);
+			controller.soundManipulatorOpenFile(file);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
