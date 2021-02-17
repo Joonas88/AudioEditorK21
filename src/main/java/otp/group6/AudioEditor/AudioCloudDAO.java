@@ -1,7 +1,6 @@
 package otp.group6.AudioEditor;
 
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,81 +20,38 @@ import java.time.LocalDate;
 public class AudioCloudDAO {
 	
 	/**
-	 * User class is used to create new users into the database.
+	 * User class is used to hold on logged in user
 	 * 
 	 * @author Joonas Soininen
 	 *
 	 */
 	public static class User {
 
-		private String username, password, salt;
-			
-		public User() {
+		private static String user;
+
+		public void setUser(String user) {
+			User.user = user;
 		}
 		
-		public User(String username, String password, String salt) {
-			this.username=username;
-			this.password=password;
-			this.salt=salt;
-		}
-		
-		public void setUsername(String username) {
-			this.username = username;
+		public String getUser() {
+			return User.user;
 		}
 
-		public void setPassword(String password) {
-			this.password = password;
-		}
-		
-		public void setSalt(String salt) {
-			this.salt = salt;
-		}
-		
-		public String getUsername() {
-			return username;
-		}
-
-		public String getPassword() {
-			return password;
-		}
-		
-		public String getSalt() {
-			return salt;
-		}
-
-		@Override
-		public String toString() {
-			return "User " + username;
-		}
-		
-		
-				
 	}
 	
 	/**
-	 * MixerSettings class is used to create new settings for the mixer and store them into the database.
+	 * MixerSettings class is used to store the database data in and pass it to the view
 	 * 
 	 * @author Joonas Soininen
 	 *
 	 */
 	public static class MixerSetting {
 		
-		private LocalDate date =  LocalDate.now();
+		
 		private String mixName, description, dateDAO, creatorName;
 		private double mix1, mix2, mix3, mix4, mix5, mix6;
 		
 		public MixerSetting( ) {			
-		}
-		
-		public MixerSetting(String name, String description, double d, double e, double f, double g, double h, double i) {
-			this.mixName = name;
-			this.description = description;
-			this.mix1 = d;
-			this.mix2 = e;
-			this.mix3 = f;
-			this.mix4 = g;
-			this.mix5 = h;
-			this.mix6 = i;
 		}
 		
 		public void setMixName(String mixName) {
@@ -177,10 +133,7 @@ public class AudioCloudDAO {
 		public double getMix6() {
 			return mix6;
 		}
-		
-		public LocalDate getDate() {
-			return date;
-		}
+
 
 		@Override
 		public String toString() {
@@ -193,6 +146,7 @@ public class AudioCloudDAO {
 	}
 
 	private Connection databaseConnection;
+	private User userclass = new User();
 	
 	//TODO Päätä missä salasana määritellään oikeaan muotoon!! Tarvitsee metodin isValid 
 	private static final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,20}$";
@@ -230,15 +184,15 @@ public class AudioCloudDAO {
 	 * @param user is the inputed user name
 	 * @return statement return true is the user name exist and false if it is available
 	 */
-	public boolean chekcforUser(User user) {
+	public boolean chekcforUser(String user) {
 		
 		try (PreparedStatement myStatement =  databaseConnection.prepareStatement("SELECT * FROM accountsTEST WHERE username = ? ");){
-			myStatement.setString(1, user.getUsername());
+			myStatement.setString(1, user);
 			ResultSet rset = myStatement.executeQuery();
 			if (!rset.next()) {
 				return false;
 			} else {
-				// TODO käyttäjälle palaute
+				// TODO käyttäjälle palaute, ehkäpä käyttöliittymään, ei tänne :)
 				// JOptionPane.showMessageDialog(null, "Käyttäjänimi ei kelpaa! Valitse toinen :)", "HUOMIO!", JOptionPane.INFORMATION_MESSAGE);//Nämä ponnahtaa myös testeissä!
 				System.out.println("KÄYTTÄJÄNIMI JO KÄYTÖSSÄ!");//Poistetteava
 				return true;
@@ -249,22 +203,24 @@ public class AudioCloudDAO {
 		}
 		
 	}
-	
+
 	/**
-	 * Method is used to deliver a new user in to the database. Method also makes sure that there are no dublicate users.
-	 * @param user 
-	 * @return tells the user that creating a new user has been granted or it has failed
+	 * Method is used to deliver a new user in to the database. Method also makes sure that there are no duplicate users.
+	 * @param user, new user name to be inputed into the database
+	 * @param pw, hashed password
+	 * @param salt, decipher key for the password
+	 * @return true or false according to completion of the code
 	 * @throws SQLException
 	 */
-	public boolean createUser(User user) throws SQLException {
+	public boolean createUser(String user, String pw, String salt) throws SQLException {
 
 				try (PreparedStatement query = databaseConnection.prepareStatement("INSERT INTO accountsTEST values (?,?,?,?)")) {
 					query.setString(1, null);
-					query.setString(2, user.getUsername());
-					query.setString(3, user.getPassword());
-					query.setString(4, user.getSalt());
+					query.setString(2, user);
+					query.setString(3, pw);
+					query.setString(4, salt);
 					query.executeUpdate();
-					// TODO Käyttäjälle palaute
+					// TODO käyttäjälle palaute, ehkäpä käyttöliittymään, ei tänne :)
 					//JOptionPane.showMessageDialog(null, "Uusi käyttäjä luotu!"); //Nämä ponnahtaa myös testeissä!
 					System.out.println("Uusi käyttäjä luotu!"); //Poistetteava
 					return true;
@@ -275,14 +231,14 @@ public class AudioCloudDAO {
 						System.err.println("SQL-tilakoodi: " + e.getSQLState());
 					} while (e.getNextException() != null);
 				}
+				// TODO käyttäjälle palaute, ehkäpä käyttöliittymään, ei tänne :)
 				// JOptionPane.showMessageDialog(null, "Jokin meni pahasti vikaan!", "ERROR", JOptionPane.WARNING_MESSAGE);//Nämä ponnahtaa myös testeissä!
+				System.out.println("Jokin meni pahasti vikaan!!");//Poistettava
 				return false;
 
 	}
 	
-	/**
-	 * TODO salasanan kryptaus, token tms markkeri kirjautumisesta, jokin boolean tms true, että saa mahdollisuuden tallentaa.
-	 * 
+	/** 
 	 * Method to login and check for correct credentials
 	 * @param u user name
 	 * @param p password
@@ -292,9 +248,9 @@ public class AudioCloudDAO {
 		try (PreparedStatement myStatement = databaseConnection.prepareStatement("SELECT username, password, salt FROM accountsTEST WHERE username = ?");) {
 			myStatement.setString(1, u);
 			ResultSet rset = myStatement.executeQuery();
-
 			
 			if (!rset.next()) {
+				// TODO käyttäjälle palaute, ehkäpä käyttöliittymään, ei tänne :)
 				//JOptionPane.showMessageDialog(null, "Validointi ei onnistu, koita uudelleen?"); //Ei voi kertoa ettei tunnusta ole //Nämä ponnahtaa myös testeissä!
 				System.out.println("Käyttäjätunnusta ei ole olemassa"); //Poistettava
 			}
@@ -305,75 +261,111 @@ public class AudioCloudDAO {
 			boolean pwMatch = PasswordUtils.verifyUserPassword(p, pw, salt);
 			
 			if (pwMatch) {
-				//TODO muuttuja kirjautuneelle käyttäjälle?
+				// TODO käyttäjälle palaute, ehkäpä käyttöliittymään, ei tänne :)
 				//JOptionPane.showMessageDialog(null, "Tervetuloa! "+rset.getString("username")); //Nämä ponnahtaa myös testeissä!
 				System.out.println("Tervetuloa "+rset.getString("username"));
+				userclass.setUser((rset.getString("username")));
 				return "Tervetuloa "+rset.getString("username");
 			} else {
+				// TODO käyttäjälle palaute, ehkäpä käyttöliittymään, ei tänne :)
 				//JOptionPane.showMessageDialog(null, "Käyttäjätunnus tai salasana väärä!", "HUOMIO!", JOptionPane.WARNING_MESSAGE); //Nämä ponnahtaa myös testeissä!
-				System.out.println(false);
+				System.out.println("Käyttäjätunnus tai salasana väärä!");//Poistettava
 				return "Käyttäjätunnus tai salasana väärä!";
 			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		// TODO käyttäjälle palaute, ehkäpä käyttöliittymään, ei tänne :)
 		return "Ei voi kirjautua sisälle!"; //Kunnollinen viesti!
 	}
 	
 	/**
-	 * TODO Kirjautuneen aktiivisen käyttäjän haku
+	 * Method to logout the user
+	 * @return
+	 */
+	public boolean logoutUser() {
+		if (!(userclass.getUser()==" ")) {
+			// TODO käyttäjälle palaute, ehkäpä käyttöliittymään, ei tänne :)
+			userclass.setUser(" ");
+			return true;	
+		} else {
+			// TODO käyttäjälle palaute, ehkäpä käyttöliittymään, ei tänne :)
+			return false;
+		}
+		
+	}
+	
+	/**
+	 * TODO Lopullinen muoto päättämättä!!
 	 * 
 	 * Create a new mix into the database
-	 * @param mix  is an instance of the class and possesses all necessary inputs
+	 * @param mixName
+	 * @param description
+	 * @param mix1
+	 * @param mix2
+	 * @param mix3
+	 * @param mix4
+	 * @param mix5
+	 * @param mix6
 	 * @return true or false according to the process
 	 * @throws SQLException
 	 */
-	public boolean createMix(MixerSetting mix) throws SQLException {
+	public boolean createMix(String mixName, String description, double mix1, double mix2, double mix3, double mix4, double mix5, double mix6) throws SQLException { //Tarkemmat tiedot, kun mixeri on valmis
 
-				try (PreparedStatement query = databaseConnection.prepareStatement("INSERT INTO mixerSETTINGSTEST values (?,?,?,?,?,?,?,?,?,?,?)")) {
-					query.setString(1, null);
-					query.setString(2, mix.getMixName());
-					query.setString(3, mix.getDescription());
-					query.setString(4, "69_-_YBERMIXAAJA_-_69");//TODO Kun kirjautunut käyttäjä, haetaan se tähän!!
-					query.setString(5, mix.getDate().toString());
-					query.setDouble(6, mix.getMix1());
-					query.setDouble(7, mix.getMix2());
-					query.setDouble(8, mix.getMix3());
-					query.setDouble(9, mix.getMix4());
-					query.setDouble(10, mix.getMix5());
-					query.setDouble(11, mix.getMix6());					
-					query.executeUpdate();
-					// TODO Käyttäjälle palaute
-					// JOptionPane.showMessageDialog(null, "Mikseriasetus tallennettu! :)"); //Nämä ponnahtaa myös testeissä!
-					System.out.println("Mix tallennettu!"); //Poistetteava
-					return true;
-				} catch (SQLException e) {
-					do {
-						System.err.println("Viesti: " + e.getMessage());
-						System.err.println("Virhekoodi: " + e.getErrorCode());
-						System.err.println("SQL-tilakoodi: " + e.getSQLState());
-					} while (e.getNextException() != null);
-				}
-				//TODO Käyttäjälle palaute
-//				JOptionPane.showMessageDialog(null, "Tallennus epäonnistui :( Yritä uudelleen!"); //Nämä ponnahtaa myös testeissä!
-				return false;
+		LocalDate date =  LocalDate.now(); //TODO Päivämäärä asetetaan jossain muualla?
+		
+		System.out.println("KIRJATUNUT KÄYTTÄJÄ: "+userclass.getUser());
+		
+		if (!(userclass.getUser()==" ")) {
+			
+			try (PreparedStatement query = databaseConnection.prepareStatement("INSERT INTO mixerSETTINGSTEST values (?,?,?,?,?,?,?,?,?,?,?)")) {
+				query.setString(1, null);
+				query.setString(2, mixName);
+				query.setString(3, description);
+				query.setString(4, userclass.getUser());
+				query.setString(5, date.toString());
+				query.setDouble(6, mix1);
+				query.setDouble(7, mix2);
+				query.setDouble(8, mix3);
+				query.setDouble(9, mix4);
+				query.setDouble(10, mix5);
+				query.setDouble(11, mix6);					
+				query.executeUpdate();
+				// TODO käyttäjälle palaute, ehkäpä käyttöliittymään, ei tänne :)
+				// JOptionPane.showMessageDialog(null, "Mikseriasetus tallennettu! :)"); //Nämä ponnahtaa myös testeissä!
+				System.out.println("Mix tallennettu!"); //Poistetteava
+				return true;
+			} catch (SQLException e) {
+				do {
+					System.err.println("Viesti: " + e.getMessage());
+					System.err.println("Virhekoodi: " + e.getErrorCode());
+					System.err.println("SQL-tilakoodi: " + e.getSQLState());
+				} while (e.getNextException() != null);
+			}
+			// TODO käyttäjälle palaute, ehkäpä käyttöliittymään, ei tänne :)
+//			JOptionPane.showMessageDialog(null, "Tallennus epäonnistui :( Yritä uudelleen!"); //Nämä ponnahtaa myös testeissä!
+			return false;
+		} else {
+			// TODO käyttäjälle palaute, ehkäpä käyttöliittymään, ei tänne :)
+			return false;
+		}
+
 	}
 	
 	/**
 	 * Get all users from accounts table, only for development
 	 * @return array of users
 	 */
-	public User[] getUsers() {
+	public String[] getUsers() {
 		Statement statement =null;
 		ResultSet rs =null;
-		ArrayList<User> list = new ArrayList<User>();
+		ArrayList<String> list = new ArrayList<String>();
 		try {
 			statement = databaseConnection.createStatement();
 			rs = statement.executeQuery("SELECT * FROM accountsTEST");
 			while (rs.next()) {
-				User user = new User();
-				user.setUsername(rs.getString("username"));
+				String user = (rs.getString("username"));
 				list.add(user);
 			}
 		} catch(SQLException e) {
@@ -383,8 +375,8 @@ public class AudioCloudDAO {
 				System.err.println("SQL-tilakoodi: " + e.getSQLState());
 			} while (e.getNextException() != null);
 		}
-		User[] returnArray = new User[list.size()];
-		return (User[]) list.toArray(returnArray);
+		String[] returnArray = new String[list.size()];
+		return (String[]) list.toArray(returnArray);
 	}
 	
 	/**
@@ -565,40 +557,51 @@ public class AudioCloudDAO {
 	}
 	
 	/**
+	 * TODO määritä millä tavalla poistetaan! ID?
 	 * Used to delete a mixer setting.
 	 * @param specify is a variable that specifies the id.
 	 * @return true or false according to the success of the method.
 	 */
 	public boolean deleteMix(String specify) {
-		try (PreparedStatement statement = databaseConnection.prepareStatement("DELETE FROM mixerSETTINGSTEST WHERE mixName = ?")) {
-			statement.setString(1, specify);
-			statement.executeUpdate();
-			// TODO Käyttäjälle palaute
-			//JOptionPane.showMessageDialog(null, "Poistaminen onnistui! :)"); //Nämä ponnahtaa myös testeissä!
-			System.out.println("Mix poistettu!"); //Tämä poistoon
-			return true;
-		} catch (Exception e) {
-			e.printStackTrace();
-			//JOptionPane.showMessageDialog(null, "Epäonnistui poistaminen :(("); //Nämä ponnahtaa myös testeissä!
+		
+		if(!(userclass.getUser()==" ")) {
+			try (PreparedStatement statement = databaseConnection.prepareStatement("DELETE FROM mixerSETTINGSTEST WHERE mixName = ?")) {
+				statement.setString(1, specify);
+				statement.executeUpdate();
+				// TODO käyttäjälle palaute, ehkäpä käyttöliittymään, ei tänne :)
+				//JOptionPane.showMessageDialog(null, "Poistaminen onnistui! :)"); //Nämä ponnahtaa myös testeissä!
+				System.out.println("Mix poistettu!"); //Tämä poistoon
+				return true;
+			} catch (Exception e) {
+				e.printStackTrace();
+				// TODO käyttäjälle palaute, ehkäpä käyttöliittymään, ei tänne :)
+				//JOptionPane.showMessageDialog(null, "Epäonnistui poistaminen :(("); //Nämä ponnahtaa myös testeissä!
+				return false;
+			}
+		} else {
+			// TODO käyttäjälle palaute, ehkäpä käyttöliittymään, ei tänne :)
 			return false;
 		}
+
 	}
 	
 	/**
-	 * Used to delete a user from the database.
-	 * @param specify variable for the user name.
+	 * Used to delete a user from the database. Only functions for logged users.
 	 * @return true or false
 	 */
-	public boolean deleteUser(String specify) {
+	public boolean deleteUser() {
+		
 		try (PreparedStatement statement = databaseConnection.prepareStatement("DELETE FROM accountsTEST WHERE username = ?")) {
-			statement.setString(1, specify);
+			statement.setString(1, userclass.getUser());
 			statement.executeUpdate();
-			// TODO Käyttäjälle palaute
+			// TODO käyttäjälle palaute, ehkäpä käyttöliittymään, ei tänne :)
 			//JOptionPane.showMessageDialog(null, "Käyttäjätunnus poistettu! :)"); //Nämä ponnahtaa myös testeissä!
 			System.out.println("Käyttäjä poistettu!"); //Tämä poistoon
+			userclass.setUser(" ");
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
+			// TODO käyttäjälle palaute, ehkäpä käyttöliittymään, ei tänne :)
 			//JOptionPane.showMessageDialog(null, "Ei toimi ei tää poisto ei! :(("); //Nämä ponnahtaa myös testeissä!
 			return false;
 		}
@@ -613,101 +616,6 @@ public class AudioCloudDAO {
 	public static boolean isValid(final String password) {
 		Matcher matcher = pattern.matcher(password);
 		return matcher.matches();
-	}
-	
-	// TODO filtteriasetuksia lisätessä on käyttäjän kirjauduttava sisälle ja siitä otetaan käyttäjätunnus lisättävän asetuksen mukaan!!
-	
-	// TESTIYMPÄRISTÖ
-	public static void main(String[] args) throws SQLException {
-
-		String salt = PasswordUtils.getSalt(30); //Tämä tarvitaan uuden käyttäjän luomiseksi
-		
-		AudioCloudDAO dao = new AudioCloudDAO();
-		
-		User user = new User();
-		/*
-		boolean testikkeli = true;
-		
-		while (testikkeli) {
-			String newuser = JOptionPane.showInputDialog("Uusi käyttäjä");
-			user.setUsername(newuser);
-			if (!dao.chekcforUser(user)) {
-				
-
-				String newpw = new String(JOptionPane.showInputDialog("Password must contain 8-20 characters, at least 1 uppercase, 1 number, 1 specia", "Example1!"));
-				
-				if (AudioCloudDAO.isValid(newpw)) {
-					String newpw2 = new String(JOptionPane.showInputDialog("Re-enter your password"));
-					
-					if (!newpw.equals(newpw2)) {
-						JOptionPane.showMessageDialog(null, "Salasanat eivät täsmää!", "HUOM!", JOptionPane.ERROR_MESSAGE);
-					} else {
-						 String mySecurePassword = PasswordUtils.generateSecurePassword(newpw, salt); // TÄMÄ TARVITAAN!!
-						 user.setPassword(mySecurePassword);
-						 user.setSalt(salt);
-						 dao.createUser(user);
-						 testikkeli = false;
-					}
-				} else {
-					JOptionPane.showMessageDialog(null, "Salasanan pitää sisältää sitä ja tätä!", "HUOM!", JOptionPane.ERROR_MESSAGE); //Pitää määrittää minkälainen salasana halutaan! Nyt on vitusti liikaa vaatimuksia :D
-				}
-			}
-		}
-		
-		String userLogin;
-		userLogin = JOptionPane.showInputDialog("Käyttäjä");
-		String pw;
-		pw  = JOptionPane.showInputDialog("Salasana");
-		
-		dao.loginUser(userLogin, pw);
-		
-		//Random rand = new Random();
-		//int random = rand.nextInt(10000);
-		
-		//User user = new User("testikäyttäjä1", "salasana", salt);
-		
-		//MixerSetting mix = new MixerSetting("testi", "Filtteriä kuvaava teksti", 1.1+random, 2.2+random, 3.3+random, 4.4+random, 5.5+random, 6.6+random);				
-		
-		/*
-		if (!dao.chekcforUser(user)) {
-			dao.createUser(user);
-		}
-		*/
-		
-		//dao.createUser(new User("testUser", "1234"));
-		
-		//dao.createMix(new MixerSetting("testi", "Filtteriä kuvaava teksti", 1.1+random, 2.2+random, 3.3+random, 4.4+random, 5.5+random, 6.6+random));
-		
-		//dao.deleteMix("2");
-		
-		//dao.deleteUser("85");
-		
-		//dao.loginUser("testikäyttäjä1234", "1234");
-		
-		/*
-		User taulukko[] = dao.getUsers();
-		for (User testUser : taulukko) {
-			System.out.println(testUser);
-		}
-		 */
-		
-		/*
-		MixerSetting allList[] = dao.getAllMixArray();
-		for (MixerSetting ms : allList) {
-			System.out.println(ms);
-		}
-		*/			
-		
-		/*
-		MixerSetting someList[] = dao.getCertainMixesArray(2,"8");
-		for (MixerSetting ms : someList) {
-			System.out.println(ms);
-		}
-		*/
-		
-		//System.out.println(dao.getCertainMixesJSON(1, "69"));
-		
-		//System.out.println(dao.getAllMixJSON());				
 	}
 	
 }

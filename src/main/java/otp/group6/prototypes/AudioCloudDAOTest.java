@@ -14,17 +14,14 @@ public class AudioCloudDAOTest {
 	// HUOM! Vaatii tietokantayhteyden!!!
 	public static void main(String[] args) throws SQLException {
 		AudioCloudDAO dao = new AudioCloudDAO();
-		
-		AudioCloudDAO.User user = new User();
-		
+			
 		String salt = PasswordUtils.getSalt(30); 
 		
 		boolean testikkeli = true;
 		
 		while (testikkeli) {
 			String newuser = JOptionPane.showInputDialog("Uusi käyttäjä");
-			user.setUsername(newuser);
-			if (!dao.chekcforUser(user)) {
+			if (!dao.chekcforUser(newuser)) {
 				
 
 				String newpw = new String(JOptionPane.showInputDialog("Password must contain 8-20 characters, at least 1 uppercase, 1 number, 1 specia", "Example1!"));
@@ -36,9 +33,7 @@ public class AudioCloudDAOTest {
 						JOptionPane.showMessageDialog(null, "Salasanat eivät täsmää!", "HUOM!", JOptionPane.ERROR_MESSAGE);
 					} else {
 						 String mySecurePassword = PasswordUtils.generateSecurePassword(newpw, salt); // TÄMÄ TARVITAAN!!
-						 user.setPassword(mySecurePassword);
-						 user.setSalt(salt);
-						 dao.createUser(user);
+						 dao.createUser(newuser, mySecurePassword, salt);
 						 testikkeli = false;
 					}
 				} else {
