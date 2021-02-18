@@ -1,10 +1,7 @@
 package otp.group6.AudioEditor;
 
 import java.io.File;
-
 import java.io.IOException;
-import java.io.FilterInputStream;
-import java.util.HashMap;
 import java.util.Scanner;
 
 import javax.sound.sampled.AudioFileFormat;
@@ -17,6 +14,19 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.SourceDataLine;
+import javax.sound.sampled.UnsupportedAudioFileException;
+
+import be.tarsos.dsp.AudioDispatcher;
+import be.tarsos.dsp.MultichannelToMono;
+import be.tarsos.dsp.PitchShifter;
+import be.tarsos.dsp.WaveformSimilarityBasedOverlapAdd;
+import be.tarsos.dsp.WaveformSimilarityBasedOverlapAdd.Parameters;
+import be.tarsos.dsp.io.jvm.AudioDispatcherFactory;
+import be.tarsos.dsp.io.jvm.WaveformWriter;
+import be.tarsos.dsp.resample.RateTransposer;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+
 
 import be.tarsos.dsp.AudioEvent;
 import be.tarsos.dsp.PitchShifter;
@@ -47,7 +57,16 @@ public class SoundManipulator {
 			break;
 		}
 	}
+	
+	public static double centToFactor(double cents){
+		return 1 / Math.pow(Math.E,cents*Math.log(2)/1200/Math.log(Math.E)); 
+	}
+	private static double factorToCents(double factor){
+		return 1200 * Math.log(1/factor) / Math.log(2); 
+		}
+	
 
+	
 	public static AudioFormat getOutFormat(AudioFormat inFormat) {
 		// vaihda muuttaaksesi nopeutta
 		float multiplier = 0.5f;

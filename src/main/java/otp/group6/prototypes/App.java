@@ -1,4 +1,4 @@
-package otp.group6.AudioEditor;
+package otp.group6.prototypes;
 import javax.sound.sampled.*;
 import java.io.File;
 import java.util.Scanner;
@@ -7,10 +7,10 @@ public class App {
     Clip clip;
     Long currentFrame;
     String status;
-    TargetDataLine line;
+    static TargetDataLine line;
 
     //audio tiedosto johon data tallennetaan
-    File wavFile = new File("src/audio/test5.wav").getAbsoluteFile();
+    File wavFile = new File("src/audio/test3.wav").getAbsoluteFile();
 
     AudioFileFormat.Type fileType = AudioFileFormat.Type.WAVE;
     static String path = "src/audio/";
@@ -19,40 +19,34 @@ public class App {
 
     }
     public static void main(String[] args){
+    	Scanner sc = new Scanner(System.in);
         try{
             App tt = new App();
-            Thread stopper = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try{
-                    	System.out.println("Syötä numero pysäyttääksesi");
-                        Thread.sleep(sc.nextInt());
-                    }catch (Exception ex){
-                        ex.printStackTrace();
-                    }
-                 tt.stop();
-                }
-            });
-            stopper.start();
-            tt.recordAudio();
+                 int i;
+                 while (true) {
+                	i = sc.nextInt();
+                	choice(tt, i);
+                	 	if (i==0) {                	
+                	 		break;
+                	 	}
+                 	}
 
         }catch (Exception ex){
            ex.printStackTrace();
         }
     }
-    @SuppressWarnings("resource")
-	public void recordAudio(){
+    public void recordAudio(){
     try{
         AudioFormat format = getAudioFormat();
+        System.out.print(format.getFrameSize());
         DataLine.Info info = new DataLine.Info(TargetDataLine.class, format);
         line = (TargetDataLine) AudioSystem.getLine(info);
         line.open(format);
         System.out.println(line.isOpen());
         line.start();
         AudioInputStream ais = new AudioInputStream(line);
-        //AudioInputStream monoAis = convertToMono(ais);
-        AudioSystem.write(ais, fileType,wavFile);
-        
+        AudioInputStream monoAis = convertToMono(ais);
+        AudioSystem.write(monoAis, fileType,wavFile);
 
     }catch(Exception ex){
         ex.printStackTrace();
@@ -61,15 +55,40 @@ public class App {
     public AudioFormat getAudioFormat(){
         float sampleRate = 44100;
         int sampleSizeBits = 16;
-        int channels = 1;
+        int channels = 2;
         boolean signed = true;
         boolean bigEndian = false;
         AudioFormat format = new AudioFormat(sampleRate,sampleSizeBits,channels,signed, bigEndian);
-        
-
         return format;
     }
+    public void stop(){
+        App.line.stop();
+        App.line.close();
+    }
     
+    public static void choice(App app, int i) {
+    	
+    	switch (i) {
+    	case 1 : System.out.println("nauhoittaa");
+    	createThread(app);
+    	break;
+    	case 2: System.out.println("seis");
+    	app.stop();
+    	break;
+    	}
+    }
+    
+    public static void createThread(App app) {
+    	Thread stopper = new Thread(new Runnable() {
+    		@Override
+			public void run() {
+				app.recordAudio();
+			}
+    	});
+    	stopper.start();
+    }
+    
+    //Muuttaa äänen stereosta monoksi
     public static AudioInputStream convertToMono(AudioInputStream sourceStream) {
         AudioFormat sourceFormat = sourceStream.getFormat();
 
@@ -90,11 +109,4 @@ public class App {
                 sourceFormat.isBigEndian());
         return AudioSystem.getAudioInputStream(targetFormat, sourceStream);
     }
-    
-    public void stop(){
-        line.stop();
-        line.close();
-    }
-    
-    
 }
