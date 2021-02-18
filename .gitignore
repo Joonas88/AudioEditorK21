@@ -2,3 +2,4 @@
 /src/audio/*
 /.idea
 /AudioEditor.iml
+.classpath

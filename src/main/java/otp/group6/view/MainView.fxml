@@ -11,6 +11,7 @@
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -223,9 +224,9 @@
                         <AnchorPane layoutX="138.0" layoutY="159.0" prefHeight="220.0" prefWidth="620.0">
                            <children>
                               <Button layoutX="96.0" layoutY="96.0" mnemonicParsing="false" prefHeight="29.0" prefWidth="118.0" text="play/pause" AnchorPane.bottomAnchor="95.0" AnchorPane.leftAnchor="96.0" AnchorPane.rightAnchor="406.0" AnchorPane.topAnchor="96.0" />
-                              <Button layoutX="394.0" layoutY="96.0" mnemonicParsing="false" prefHeight="29.0" prefWidth="115.0" text="Record" AnchorPane.bottomAnchor="95.0" AnchorPane.leftAnchor="394.0" AnchorPane.rightAnchor="111.0" AnchorPane.topAnchor="96.0" />
                               <Slider layoutX="83.0" layoutY="179.0" prefHeight="16.0" prefWidth="427.0" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="83.0" AnchorPane.rightAnchor="110.0" AnchorPane.topAnchor="179.0" />
-                              <Text layoutX="472.0" layoutY="176.0" strokeType="OUTSIDE" strokeWidth="0.0" text=":" />
+                              <Text fx:id="textFieldRecordDuration" layoutX="472.0" layoutY="176.0" strokeType="OUTSIDE" strokeWidth="0.0" text=":" />
+                              <ToggleButton layoutX="421.0" layoutY="98.0" mnemonicParsing="false" onAction="#recordAudio" text="Record" />
                            </children>
                         </AnchorPane>
                      </children>

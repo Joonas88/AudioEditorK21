@@ -37,7 +37,7 @@ import be.tarsos.dsp.synthesis.NoiseGenerator;
 
 public class PitchShiftingTest {
 
-	static File wavFile = new File("src/audio/test3.wav").getAbsoluteFile();
+	static File wavFile = new File("src/audio/testiaani.wav").getAbsoluteFile();
 	static AudioFormat format;
 	static AudioDispatcher adp;
 	static AudioDispatcher liveDispatcher;
@@ -47,14 +47,14 @@ public class PitchShiftingTest {
 		try {
 			// Vaihtaa tiedoston äänenkorkeutta, arvot 0.1 - 4.0 (voi olla, että pienimmät
 			// arvot eivät toimi)
-			float pitchFactor = 1.3f;
+			float pitchFactor = 1.0f;
 			
 			//Kaiun pituus sekunteina
 			float delayLength = 0.006F; 
 			//Kaiun heikentyvyys 0-1. 1 = ei heikenny, 0 = ei lainkaan kaikua.
 			float delayDecay = 0.6f;
 
-			format = AudioSystem.getAudioFileFormat(wavFile).getFormat();
+			format = getAudioFormat();
 			
 			//Tiedoston nopeuden/pituuden muuttaja
 			WaveformSimilarityBasedOverlapAdd wsola = new WaveformSimilarityBasedOverlapAdd(
@@ -91,18 +91,9 @@ public class PitchShiftingTest {
 			System.out.println("Mono(1) vai Stereo(2): " + format.getChannels());
 			
 
-			// Tarkistaa onko tiedosto stereo vai mono
-			if (format.getChannels() != 1) {
-				adp = AudioDispatcherFactory.fromFile(wavFile, wsola.getInputBufferSize() * format.getChannels(),
-						wsola.getOverlap() * format.getChannels());
-
-				// ***Ei toimi***, jos tiedosto on stereo täytyy se ensin muuttaa Javan audio
-				// systeemillä
-				adp.addAudioProcessor(new MultichannelToMono(format.getChannels(), true));
-				System.out.println("Mono(1) vai Stereo(2): " + format.getChannels());
-			} else {
-				adp = AudioDispatcherFactory.fromFile(wavFile, wsola.getInputBufferSize(), wsola.getOverlap());
-			}
+			
+			adp = AudioDispatcherFactory.fromFile(wavFile, wsola.getInputBufferSize(), wsola.getOverlap());
+			
 			
 			
 			Scanner sc = new Scanner(System.in);
@@ -158,7 +149,8 @@ public class PitchShiftingTest {
 			wsola.setDispatcher(liveDispatcher);
 			liveDispatcher.addAudioProcessor(wsola);
 			liveDispatcher.addAudioProcessor(rateTransposer);
-			liveDispatcher.addAudioProcessor(audioPlayer);
+//			liveDispatcher.addAudioProcessor(audioPlayer);
+			liveDispatcher.addAudioProcessor(writer);
 			liveDispatcher.run();
 
 			

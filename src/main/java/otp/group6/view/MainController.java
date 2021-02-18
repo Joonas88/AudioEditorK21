@@ -100,6 +100,8 @@ public class MainController {
 	private TextField textFieldLfo;
 	@FXML
 	private TextField textFieldLowPass;
+	@FXML
+	private Text textFieldRecordDuration;
 	
 	/*
 	//(double maxFlangerLength,double wet,
@@ -238,14 +240,13 @@ public class MainController {
 	 * TODO REGEX tarkistus tiedostonimille
 	 */
 	@FXML
+	
 	public void recordAudio() {
-		// controller.recordAudio(tf.getText());
+		controller.recordAudioToggle();
+		
 	}
 
-	@FXML
-	public void stopRecord() {
-		controller.stopRecord();
-	}
+	
 
 	@FXML
 	public void openFile() {

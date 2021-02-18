@@ -23,11 +23,8 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Program Files (x86)/MySQL/Connector J 5.1/mysql-connector-java-5.1.49-bin.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Roosa/KOULUHOMMAT/2. vuosi/3. periodi/Projekti/TarsosDSP-latest.jar"/>
-<<<<<<< HEAD
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JavaFX"/>
-=======
->>>>>>> a47b293365a9d0c40f34c7d4b26d5cba77c42408
+	<classpathentry kind="lib" path="D:/Downloads/TarsosDSP-latest.jar"/>
+	<classpathentry kind="lib" path="D:/Downloads/mysql-connector-java-5.1.49-bin.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JavaFx"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

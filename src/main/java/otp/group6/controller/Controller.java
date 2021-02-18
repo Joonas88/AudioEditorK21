@@ -126,23 +126,27 @@ public class Controller {
 	//Soundboard methods stop
 	
 	// AudioRecorder methods start
-	public void recordAudio(String file_name) {
-		try {
-			recorder.setTargetFile(new File("src/audio/" + file_name + ".wav").getAbsoluteFile());
-		}catch(Exception e) {
-			e.printStackTrace();
+	boolean isRecording = false;
+	public void recordAudioToggle() {
+		if(!isRecording) {
+			recorder.recordAudio();
+			isRecording = true;
+		}else {
+			recorder.stopRecord();
+			isRecording = false;
 		}
-		recorder.start();
+		
 	}
 	
+	// AudioRecorder methods stop
 	public void stopRecord() {
 		try {
-		recorder.stopRecord();
+			recorder.stopRecord();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	// AudioRecorder methods stop
+	
 
 	
 }

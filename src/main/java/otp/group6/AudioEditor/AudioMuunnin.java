@@ -2,6 +2,8 @@ package otp.group6.AudioEditor;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.PublicKey;
+
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -66,6 +68,7 @@ public class AudioMuunnin {
 			adp = AudioDispatcherFactory.fromFile(wavFile, wsola.getInputBufferSize(), wsola.getOverlap());
 
 			wsola.setDispatcher(adp);
+			adp.addAudioProcessor(wsola);
 			audioPlayer = new AudioPlayer(format);
 			
 			// Pitch-arvon muuttaja
@@ -165,6 +168,7 @@ public class AudioMuunnin {
 
 	}
 
+	
 	public void testFilter() {
 		AudioFormat format2 = getAudioFormat();
 		DataLine.Info info = new DataLine.Info(TargetDataLine.class, format2);
@@ -185,20 +189,21 @@ public class AudioMuunnin {
 		wsola.setDispatcher(liveDispatcher);
 		liveDispatcher.addAudioProcessor(wsola);
 		liveDispatcher.addAudioProcessor(rateTransposer);
-		liveDispatcher.addAudioProcessor(audioPlayer);
-		liveDispatcher.addAudioProcessor(audioPlayer);
-		liveDispatcher.addAudioProcessor(rateTransposer);
 		liveDispatcher.addAudioProcessor(delayEffect);
 		liveDispatcher.addAudioProcessor(gainProcessor);
 		liveDispatcher.addAudioProcessor(flangerEffect);
+		liveDispatcher.addAudioProcessor(audioPlayer);
 		// liveDispatcher.run();
 
+		
+		
 		try {
 			Thread t = new Thread(liveDispatcher);
 			t.start();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
 
 	}
 
@@ -207,13 +212,13 @@ public class AudioMuunnin {
 		int sampleSizeBits = 16;
 		int channels = 1;
 		boolean signed = true;
-		boolean bigEndian = true;
+		boolean bigEndian = false;
 		AudioFormat format = new AudioFormat(sampleRate, sampleSizeBits, channels, signed, bigEndian);
 		return format;
 	}
 
 	public void playAudio() {
-		/*if (adp != null) {
+		if (adp != null) {
 			adp.stop();
 		
 
@@ -226,19 +231,20 @@ public class AudioMuunnin {
 			wsola.setDispatcher(adp);
 			adp.addAudioProcessor(wsola);
 			audioPlayer = new AudioPlayer(format);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		adp.addAudioProcessor(audioPlayer);
+		
 
 		// Pitch-arvon muuttaja
 		rateTransposer = new RateTransposer(pitchFactor);
 		adp.addAudioProcessor(rateTransposer);
 
 		// Kaikuefekti
-		delayEffect = new DelayEffect(echoLength, decay, sampleRate); // Kaiun oletusarvot: kesto 0.0001s (koska nollaa
-																		// ei
+		delayEffect = new DelayEffect(echoLength, decay, sampleRate); 
+		// Kaiun oletusarvot: kesto 0.0001s (koska nollaa ei
 		// voi laittaa), efekti ei käytössä eli 0 ja
 		// normi sampleRate
 		adp.addAudioProcessor(delayEffect);
@@ -250,7 +256,7 @@ public class AudioMuunnin {
 		// Flangerefekti
 		flangerEffect = new FlangerEffect(flangerLength, wetness, sampleRate, format.getSampleRate() * 1);
 		adp.addAudioProcessor(flangerEffect);
-*/
+		}
 		
 		try {audioPlayer = new AudioPlayer(format);
 			adp.addAudioProcessor(audioPlayer);
