@@ -50,6 +50,7 @@ public class AudioCloudDAO {
 		
 		private String mixName, description, dateDAO, creatorName;
 		private double mix1, mix2, mix3, mix4, mix5, mix6;
+		private int mixID;
 		
 		public MixerSetting( ) {			
 		}
@@ -140,7 +141,15 @@ public class AudioCloudDAO {
 			return "MixerSetting date=" + dateDAO + ", mixName=" + mixName + ", description=" + description + ", Creator="
 					+creatorName+", mix1="
 					+ mix1 + ", mix2=" + mix2 + ", mix3=" + mix3 + ", mix4=" + mix4 + ", mix5=" + mix5 + ", mix6="
-					+ mix6;
+					+ mix6+ "mixID="+mixID;
+		}
+
+		public int getMixID() {
+			return mixID;
+		}
+
+		public void setMixID(int mixID) {
+			this.mixID = mixID;
 		}
 
 	}
@@ -148,9 +157,7 @@ public class AudioCloudDAO {
 	private Connection databaseConnection;
 	private User userclass = new User();
 	
-	//TODO Päätä missä salasana määritellään oikeaan muotoon!! Tarvitsee metodin isValid 
-	private static final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,20}$";
-	private static final Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
+
 	
 	/**
 	 * Connection to the database
@@ -192,8 +199,6 @@ public class AudioCloudDAO {
 			if (!rset.next()) {
 				return false;
 			} else {
-				// TODO käyttäjälle palaute, ehkäpä käyttöliittymään, ei tänne :)
-				// JOptionPane.showMessageDialog(null, "Käyttäjänimi ei kelpaa! Valitse toinen :)", "HUOMIO!", JOptionPane.INFORMATION_MESSAGE);//Nämä ponnahtaa myös testeissä!
 				System.out.println("KÄYTTÄJÄNIMI JO KÄYTÖSSÄ!");//Poistetteava
 				return true;
 			}
@@ -212,12 +217,15 @@ public class AudioCloudDAO {
 	 * @return true or false according to completion of the code
 	 * @throws SQLException
 	 */
-	public boolean createUser(String user, String pw, String salt) throws SQLException {
+	public boolean createUser(String user, String pw) throws SQLException {
+		String salt = PasswordUtils.getSalt(30); 
+		String securePW = PasswordUtils.generateSecurePassword(pw, salt);
+		
 
 				try (PreparedStatement query = databaseConnection.prepareStatement("INSERT INTO accountsTEST values (?,?,?,?)")) {
 					query.setString(1, null);
 					query.setString(2, user);
-					query.setString(3, pw);
+					query.setString(3, securePW);
 					query.setString(4, salt);
 					query.executeUpdate();
 					// TODO käyttäjälle palaute, ehkäpä käyttöliittymään, ei tänne :)
@@ -253,6 +261,7 @@ public class AudioCloudDAO {
 				// TODO käyttäjälle palaute, ehkäpä käyttöliittymään, ei tänne :)
 				//JOptionPane.showMessageDialog(null, "Validointi ei onnistu, koita uudelleen?"); //Ei voi kertoa ettei tunnusta ole //Nämä ponnahtaa myös testeissä!
 				System.out.println("Käyttäjätunnusta ei ole olemassa"); //Poistettava
+				return "No user";
 			}
 			
 			String pw = rset.getString("password");
@@ -265,12 +274,12 @@ public class AudioCloudDAO {
 				//JOptionPane.showMessageDialog(null, "Tervetuloa! "+rset.getString("username")); //Nämä ponnahtaa myös testeissä!
 				System.out.println("Tervetuloa "+rset.getString("username"));
 				userclass.setUser((rset.getString("username")));
-				return "Tervetuloa "+rset.getString("username");
+				return "Welcome "+rset.getString("username");
 			} else {
 				// TODO käyttäjälle palaute, ehkäpä käyttöliittymään, ei tänne :)
 				//JOptionPane.showMessageDialog(null, "Käyttäjätunnus tai salasana väärä!", "HUOMIO!", JOptionPane.WARNING_MESSAGE); //Nämä ponnahtaa myös testeissä!
 				System.out.println("Käyttäjätunnus tai salasana väärä!");//Poistettava
-				return "Käyttäjätunnus tai salasana väärä!";
+				return "Incorrect user or pw";
 			}
 
 		} catch (Exception e) {
@@ -278,6 +287,14 @@ public class AudioCloudDAO {
 		}
 		// TODO käyttäjälle palaute, ehkäpä käyttöliittymään, ei tänne :)
 		return "Ei voi kirjautua sisälle!"; //Kunnollinen viesti!
+	}
+	
+	public String loggedIn() {
+		if ((userclass.getUser()==null)){
+			return " ";
+		} else {
+			return userclass.getUser();
+		}
 	}
 	
 	/**
@@ -332,8 +349,6 @@ public class AudioCloudDAO {
 				query.setDouble(10, mix5);
 				query.setDouble(11, mix6);					
 				query.executeUpdate();
-				// TODO käyttäjälle palaute, ehkäpä käyttöliittymään, ei tänne :)
-				// JOptionPane.showMessageDialog(null, "Mikseriasetus tallennettu! :)"); //Nämä ponnahtaa myös testeissä!
 				System.out.println("Mix tallennettu!"); //Poistetteava
 				return true;
 			} catch (SQLException e) {
@@ -343,11 +358,9 @@ public class AudioCloudDAO {
 					System.err.println("SQL-tilakoodi: " + e.getSQLState());
 				} while (e.getNextException() != null);
 			}
-			// TODO käyttäjälle palaute, ehkäpä käyttöliittymään, ei tänne :)
-//			JOptionPane.showMessageDialog(null, "Tallennus epäonnistui :( Yritä uudelleen!"); //Nämä ponnahtaa myös testeissä!
 			return false;
 		} else {
-			// TODO käyttäjälle palaute, ehkäpä käyttöliittymään, ei tänne :)
+			JOptionPane.showMessageDialog(null, "Not logged in! Please log in to use this function.","Alert",JOptionPane.WARNING_MESSAGE); //Nämä ponnahtaa myös testeissä!
 			return false;
 		}
 
@@ -404,6 +417,7 @@ public class AudioCloudDAO {
 				ms.setMix4(rs.getDouble("mix4"));
 				ms.setMix5(rs.getDouble("mix5"));
 				ms.setMix6(rs.getDouble("mix6"));
+				ms.setMixID(rs.getInt("id"));
 				list.add(ms);
 			}
 
@@ -478,7 +492,7 @@ public class AudioCloudDAO {
 			statement = "SELECT * FROM mixerSETTINGSTEST where mixName LIKE '%"+specify+"%'";
 		} else if (select==3) {
 			statement = "SELECT * FROM mixerSETTINGSTEST where mixDescribtion LIKE '%"+specify+"%'";
-		}
+		} 
 		
 		try (PreparedStatement query = databaseConnection.prepareStatement(statement)) {
 			ResultSet rs = query.executeQuery();
@@ -494,6 +508,7 @@ public class AudioCloudDAO {
 				ms.setMix4(rs.getDouble("mix4"));
 				ms.setMix5(rs.getDouble("mix5"));
 				ms.setMix6(rs.getDouble("mix6"));
+				ms.setMixID(rs.getInt("id"));
 				list.add(ms);
 			}
 		} catch (SQLException e) {
@@ -606,6 +621,10 @@ public class AudioCloudDAO {
 			return false;
 		}
 	}
+	
+	//TODO Päätä missä salasana määritellään oikeaan muotoon!! Tarvitsee metodin isValid 
+	private static final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,20}$";
+	private static final Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
 	
 	/**
 	 * TODO Pitää päättää missä tarkitsetaan salasanan oikeellisuus!
