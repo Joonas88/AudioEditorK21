@@ -102,6 +102,12 @@ public class Controller {
 			System.out.println("index not found - sample array: " + index);
 		}
 	}
+	public String getSampleName(int index) {
+		return soundboard.getSampleName(index);
+	}
+	public void setSampleName(int index, String name) {
+		soundboard.setSampleName(index, name);
+	}
 
 	public int getSampleArrayLength() {
 		return soundboard.getSampleArrayLength();

@@ -11,6 +11,7 @@ import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
@@ -208,139 +209,82 @@ public class MainController {
 			e.printStackTrace();
 		}
 	}
-	int indexOfAddButton = 0;
 	
-	public Button addButton(int index) {
-		AnchorPane ap = (AnchorPane) newSoundButton.getParent();
-		Button temp = (Button) ap.getChildren().remove(0);
-		Button button = new Button();
-		button.layoutXProperty().set(65);
-		button.layoutYProperty().set(45);
-		button.setText("Play");
-		button.setId(Integer.toString(index));
-		button.setOnAction(new EventHandler<ActionEvent>() {
+	public void addButton(int index) {
+		
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(MainApplication.class.getResource("SoundBoardButton.fxml"));
+		
+		AnchorPane gridRoot = (AnchorPane) buttonGrid.getChildren().get(index);
+		Node soundButtonRoot;
+		
+		try {
+			soundButtonRoot = (Node) loader.load();
+			
+			Button temp = (Button) gridRoot.getChildren().remove(0);
+			
+			if (index < buttonGrid.getChildren().size() - 1) {
+				AnchorPane ap = (AnchorPane) buttonGrid.getChildren().get(index + 1);
+				ap.getChildren().add(temp);
+			}
+					
+			gridRoot.getChildren().add(soundButtonRoot);
+			configureSoundButton( (AnchorPane) soundButtonRoot,index);
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return;
+		}
+	}
+	public void configureSoundButton (AnchorPane ap, int index) {
+		Button play = (Button) ap.getChildren().get(0);
+		Text description = (Text) ap.getChildren().get(1);
+		MenuButton mp = (MenuButton) ap.getChildren().get(2);
+		
+		play.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
 				controller.playSound(index);
 			}
 		});
-		ap.getChildren().add(button);
-		setButtonDescription(ap);
-		
-		createEditMenuButton(ap);
-		
-		if (buttonGrid.getChildren().indexOf(ap) < buttonGrid.getChildren().size() - 1) {
-			ap = (AnchorPane) buttonGrid.getChildren().get(buttonGrid.getChildren().indexOf(ap) + 1);
-			ap.getChildren().add(temp);
-			indexOfAddButton = buttonGrid.getChildren().indexOf((AnchorPane)temp.getParent());
-			System.out.println(indexOfAddButton);
-			return temp;
-		} else {
-			indexOfAddButton = (Integer) null;
-			return null;
-		}
-	}
-	
-	public void createEditMenuButton(AnchorPane ap) {
-		MenuButton mb = new MenuButton();
-		mb.layoutXProperty().set(10);
-		mb.layoutYProperty().set(10);
-		mb.setText("");
-		
-		MenuItem deleteButton = new MenuItem();
-			deleteButton.setText("Delete");
-			deleteButton.setOnAction(new EventHandler<ActionEvent>() {
-				@Override
-				public void handle(ActionEvent event) {
-					System.out.println("delete button pressed " + this.getClass().toString());
-					ContextMenu cm = deleteButton.getParentPopup();
-					MenuButton parentMenu = (MenuButton) cm.getStyleableParent();
-					AnchorPane parentAnchor = (AnchorPane) parentMenu.getParent();
-					int index = Integer.parseInt(parentAnchor.getChildren().get(0).getId());
-					//controller.removeSample(index);
-					rearrangeButtons(index);
-					/**
-					 * TODO AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAaaaa
-					 * miten vitussa
-					 * ei helvetti
-					 * hakee ylimmän parentin?, muuttaa muiden nappien indexin??
-					 * TODO Keksi miten muuttaa kaikki muut sample arrayn indexit tai miten pitää kirjaa olemattomista napeista yms......
-					 */
-				}
-			});
-			
-		MenuItem editButton = new MenuItem();
-			editButton.setText("Edit");
-			editButton.setOnAction(new EventHandler<ActionEvent>() {
+		description.setText(controller.getSampleName(index));
+		description.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
-				@Override
-				public void handle(ActionEvent event) {
-					// TODO Auto-generated method stub
-					System.out.println("Edit button pressed " + this.getClass().toString());
-					ContextMenu cm = editButton.getParentPopup();
-					MenuButton parentMenu = (MenuButton) cm.getStyleableParent();
-					AnchorPane parentAnchor = (AnchorPane) parentMenu.getParent();
-					int index = Integer.parseInt(parentAnchor.getChildren().get(0).getId());
-					try {
-						openFile(index);
-					}catch(Exception e) {
-						e.printStackTrace();
-					}
-					
-					//System.out.println(parentAnchor.getChildren().toString());
-				}
-			});
-			
-		/**	UNUSED 
-		MenuItem renameButton = new MenuItem();
-			renameButton.setText("Rename");
-			renameButton.setOnAction(new EventHandler<ActionEvent>() {
-				@Override
-				public void handle(ActionEvent event) {
-					System.out.println("Rename button pressed " + this.getClass().toString());
-			
-					
-					// TODO lisää joko teksti prompt tai valitse kuvausteksti ja tee siitä tilapäisesti muokattava
-					// ??tarpeellinen?? -- ehkä parempi tehdä kuvauksesta suoraan muokattava. 
-					 
-				}
-			});*/
-			
-		mb.getItems().add(editButton);
-		
-		//UNUSED
-		//mb.getItems().add(renameButton);
-		mb.getItems().add(deleteButton);
-		
-		ap.getChildren().add(mb);
-	}
-	
-	@FXML
-	AnchorPane test1,test2;
-	
-	@SuppressWarnings("static-access")
-	public void rearrangeButtons(int index) {
-		int size = controller.getSampleArrayLength();
-		for(int i = index; i < size;  i++) {
-			System.out.println("index: " + i);
-				
-		}
-	}
-	public void setButtonDescription(AnchorPane ap) {
-		Text text = new Text();
-		text.setText("Insert name");
-		text.layoutXProperty().set(65);
-		text.layoutYProperty().set(30);
-		ap.getChildren().add(text);
-		text.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				renameButton(text,ap);
+				renameButton(description,ap,index);
 			}
+			
 		});
+		
+		MenuItem editButton = mp.getItems().get(0);
+		editButton.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				openFile(index);
+			}
+			
+		});
+		
+		MenuItem deleteButton = mp.getItems().get(1);
+		deleteButton.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				controller.removeSample(index);
+				refreshButtons();
+				removeLast();
+			}
+			
+		});
+		
+		//add edit and delete functionality
 	}
+	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public void renameButton(Text text, AnchorPane ap) {
+	public void renameButton(Text text, AnchorPane ap, int index) {
 		
 		TextField tf = new TextField();
 		tf.layoutXProperty().set(text.getLayoutX());
@@ -354,6 +298,7 @@ public class MainController {
 				// TODO Auto-generated method stub
 				if(!tf.isFocused()) {
 					text.setText(tf.getText());
+					controller.setSampleName(index, tf.getText());
 					ap.getChildren().remove(ap.getChildren().indexOf(tf));
 				}
 			}
@@ -364,6 +309,7 @@ public class MainController {
 			public void handle(KeyEvent event) {
 				if(event.getCode() == KeyCode.ENTER) {
 					text.setText(tf.getText());
+					controller.setSampleName(index, tf.getText());
 					tf.focusedProperty().removeListener(cl);
 					ap.getChildren().remove(ap.getChildren().indexOf(tf));
 				}
@@ -372,5 +318,30 @@ public class MainController {
 		});
 		ap.getChildren().add(tf);
 	}
-	
+	public void refreshButtons() {
+		int length = controller.getSampleArrayLength();
+		for(int i = 0; i < length; i++) {
+			AnchorPane gridRoot = (AnchorPane) buttonGrid.getChildren().get(i);
+			AnchorPane root = (AnchorPane) gridRoot.getChildren().get(0);
+			Text description = (Text) root.getChildren().get(1);
+			description.setText(controller.getSampleName(i));
+		}
+	}
+	public void removeLast() {
+		int length = controller.getSampleArrayLength();
+		AnchorPane gridRoot = (AnchorPane) buttonGrid.getChildren().get(length);
+		System.out.println(buttonGrid.getChildren().size());
+		if(length + 1 < buttonGrid.getChildren().size()) {
+			AnchorPane newSoundRoot = (AnchorPane) buttonGrid.getChildren().get(length +1);
+			Button temp = (Button) newSoundRoot.getChildren().remove(0);
+			
+			gridRoot.getChildren().remove(0);
+			gridRoot.getChildren().add(temp);
+		}
+		else {
+			gridRoot.getChildren().remove(0);
+			gridRoot.getChildren().add(newSoundButton);
+		}
+	}
+
 }

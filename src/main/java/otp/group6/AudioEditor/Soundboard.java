@@ -21,6 +21,7 @@ public class Soundboard {
 
 		private AudioInputStream file;
 		private String filepath;
+		private String name;
 
 		/**
 		 * 
@@ -28,9 +29,16 @@ public class Soundboard {
 		 */
 		public Sample(String filepath) {
 			this.filepath = filepath;
+			this.name = "New Sound(" + sampleArray.size() + ")";
 		}
 		public void setSamplePath(String filepath) {
 			this.filepath = filepath;
+		}
+		public void setName(String name) {
+			this.name = name;
+		}
+		public String getName() {
+			return this.name;
 		}
 
 		/**
@@ -92,6 +100,12 @@ public class Soundboard {
 	}
 	public void editSample(String path, int index) {
 		sampleArray.get(index).setSamplePath(path);
+	}
+	public String getSampleName(int index) {
+		return sampleArray.get(index).getName();
+	}
+	public void setSampleName(int index, String name) {
+		sampleArray.get(index).setName(name);
 	}
 
 	/**
