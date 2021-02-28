@@ -287,18 +287,19 @@ public class MainController {
 	public void renameButton(Text text, AnchorPane ap, int index) {
 		
 		TextField tf = new TextField();
-		tf.layoutXProperty().set(text.getLayoutX());
-		tf.layoutYProperty().set(text.getLayoutY());
 		tf.setText(text.getText());
 		tf.forward();
-		
 		ChangeListener cl = new ChangeListener() {
 			@Override
 			public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-				// TODO Auto-generated method stub
+				
 				if(!tf.isFocused()) {
-					text.setText(tf.getText());
-					controller.setSampleName(index, tf.getText());
+					String temp = tf.getText();
+					if(temp.length() > 20) {
+						temp = temp.substring(0,20);
+					}
+					text.setText(temp);
+					controller.setSampleName(index, temp);
 					ap.getChildren().remove(ap.getChildren().indexOf(tf));
 				}
 			}
@@ -308,8 +309,12 @@ public class MainController {
 			@Override
 			public void handle(KeyEvent event) {
 				if(event.getCode() == KeyCode.ENTER) {
-					text.setText(tf.getText());
-					controller.setSampleName(index, tf.getText());
+					String temp = tf.getText();
+					if(temp.length() > 20) {
+						temp = temp.substring(0,20);
+					}
+					text.setText(temp);
+					controller.setSampleName(index, temp);
 					tf.focusedProperty().removeListener(cl);
 					ap.getChildren().remove(ap.getChildren().indexOf(tf));
 				}
@@ -317,6 +322,9 @@ public class MainController {
 			
 		});
 		ap.getChildren().add(tf);
+		tf.layoutXProperty().set(text.getLayoutX());
+		tf.layoutYProperty().set(text.getLayoutY() - 20);
+		tf.requestFocus();
 	}
 	public void refreshButtons() {
 		int length = controller.getSampleArrayLength();
@@ -330,7 +338,6 @@ public class MainController {
 	public void removeLast() {
 		int length = controller.getSampleArrayLength();
 		AnchorPane gridRoot = (AnchorPane) buttonGrid.getChildren().get(length);
-		System.out.println(buttonGrid.getChildren().size());
 		if(length + 1 < buttonGrid.getChildren().size()) {
 			AnchorPane newSoundRoot = (AnchorPane) buttonGrid.getChildren().get(length +1);
 			Button temp = (Button) newSoundRoot.getChildren().remove(0);
