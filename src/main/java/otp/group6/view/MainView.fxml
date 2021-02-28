@@ -43,7 +43,7 @@
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                              <AnchorPane fx:id="test2" prefHeight="200.0" prefWidth="200.0">
                                  <children>
                                     <Button fx:id="newSoundButton" layoutX="65.0" layoutY="45.0" mnemonicParsing="false" onAction="#openSample" text="+" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="65.0" AnchorPane.rightAnchor="65.0" AnchorPane.topAnchor="45.0" />
                                  </children>
@@ -91,7 +91,7 @@
                                     <AnchorPane prefHeight="200.0" prefWidth="200.0">
                                        <children>
                                           <Text layoutX="79.0" layoutY="36.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Select file" textAlignment="CENTER" wrappingWidth="101.03515625" AnchorPane.leftAnchor="79.0" AnchorPane.rightAnchor="80.0" />
-                                          <Button layoutX="99.0" layoutY="74.0" mnemonicParsing="false" onAction="#openFile" text="File..." AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="99.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="74.0" />
+                                          <Button layoutX="99.0" layoutY="74.0" mnemonicParsing="false" onAction="#openSample" text="File..." AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="99.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="74.0" />
                                        </children>
                                     </AnchorPane>
                                     <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">

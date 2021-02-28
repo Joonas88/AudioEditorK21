@@ -29,6 +29,9 @@ public class Soundboard {
 		public Sample(String filepath) {
 			this.filepath = filepath;
 		}
+		public void setSamplePath(String filepath) {
+			this.filepath = filepath;
+		}
 
 		/**
 		 * Uses AudioFileHandler to open a new audio file into AudioInputStream Closes
@@ -87,6 +90,9 @@ public class Soundboard {
 	public void addSample(String path) {
 		sampleArray.add(new Sample(path));
 	}
+	public void editSample(String path, int index) {
+		sampleArray.get(index).setSamplePath(path);
+	}
 
 	/**
 	 * Removes sample with a given index value from the sample array
@@ -95,6 +101,7 @@ public class Soundboard {
 	 */
 	public void removeSample(int sampleIndex) {
 		sampleArray.remove(sampleIndex);
+		//update button positions
 	}
 
 	/**

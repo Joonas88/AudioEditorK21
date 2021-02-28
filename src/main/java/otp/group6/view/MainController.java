@@ -17,6 +17,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
@@ -167,10 +168,20 @@ public class MainController {
 
 
 	@FXML
-	public void openFile() {
+	public void openFile(int index) {
+		Pattern pattern = Pattern.compile("(\\.wav)$", Pattern.CASE_INSENSITIVE);
 		try {
 			File file = AudioFileHandler.openFileExplorer(mainContainer.getScene().getWindow());
-			System.out.println(file);
+
+			
+			// File must be not null to add button
+			if (file != null) {
+				Matcher matcher = pattern.matcher(file.getName());
+				if (matcher.find()) {
+					controller.editSample(file.getAbsolutePath(), index);
+				}
+			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -197,15 +208,16 @@ public class MainController {
 			e.printStackTrace();
 		}
 	}
-
+	int indexOfAddButton = 0;
+	
 	public Button addButton(int index) {
 		AnchorPane ap = (AnchorPane) newSoundButton.getParent();
-		
 		Button temp = (Button) ap.getChildren().remove(0);
 		Button button = new Button();
 		button.layoutXProperty().set(65);
 		button.layoutYProperty().set(45);
 		button.setText("Play");
+		button.setId(Integer.toString(index));
 		button.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -220,8 +232,11 @@ public class MainController {
 		if (buttonGrid.getChildren().indexOf(ap) < buttonGrid.getChildren().size() - 1) {
 			ap = (AnchorPane) buttonGrid.getChildren().get(buttonGrid.getChildren().indexOf(ap) + 1);
 			ap.getChildren().add(temp);
+			indexOfAddButton = buttonGrid.getChildren().indexOf((AnchorPane)temp.getParent());
+			System.out.println(indexOfAddButton);
 			return temp;
 		} else {
+			indexOfAddButton = (Integer) null;
 			return null;
 		}
 	}
@@ -238,6 +253,12 @@ public class MainController {
 				@Override
 				public void handle(ActionEvent event) {
 					System.out.println("delete button pressed " + this.getClass().toString());
+					ContextMenu cm = deleteButton.getParentPopup();
+					MenuButton parentMenu = (MenuButton) cm.getStyleableParent();
+					AnchorPane parentAnchor = (AnchorPane) parentMenu.getParent();
+					int index = Integer.parseInt(parentAnchor.getChildren().get(0).getId());
+					//controller.removeSample(index);
+					rearrangeButtons(index);
 					/**
 					 * TODO AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAaaaa
 					 * miten vitussa
@@ -256,10 +277,17 @@ public class MainController {
 				public void handle(ActionEvent event) {
 					// TODO Auto-generated method stub
 					System.out.println("Edit button pressed " + this.getClass().toString());
-					/**
-					 * Avaa fileExplorerin uudestaan -- Tarkista että vain referenssi sampleen muuttuu
-					 * JOKO muuta sample arrayn kohtaa johon nappi kiinnitetty tai jotain
-					 */
+					ContextMenu cm = editButton.getParentPopup();
+					MenuButton parentMenu = (MenuButton) cm.getStyleableParent();
+					AnchorPane parentAnchor = (AnchorPane) parentMenu.getParent();
+					int index = Integer.parseInt(parentAnchor.getChildren().get(0).getId());
+					try {
+						openFile(index);
+					}catch(Exception e) {
+						e.printStackTrace();
+					}
+					
+					//System.out.println(parentAnchor.getChildren().toString());
 				}
 			});
 			
@@ -285,6 +313,18 @@ public class MainController {
 		mb.getItems().add(deleteButton);
 		
 		ap.getChildren().add(mb);
+	}
+	
+	@FXML
+	AnchorPane test1,test2;
+	
+	@SuppressWarnings("static-access")
+	public void rearrangeButtons(int index) {
+		int size = controller.getSampleArrayLength();
+		for(int i = index; i < size;  i++) {
+			System.out.println("index: " + i);
+				
+		}
 	}
 	public void setButtonDescription(AnchorPane ap) {
 		Text text = new Text();

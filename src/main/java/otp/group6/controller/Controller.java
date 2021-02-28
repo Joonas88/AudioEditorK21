@@ -91,6 +91,9 @@ public class Controller {
 			e.printStackTrace();
 		}
 	}
+	public void editSample(String path, int index) {
+		soundboard.editSample(path, index);
+	}
 
 	public void removeSample(int index) {
 		if (soundboard.checkSampleArray(index)) {
