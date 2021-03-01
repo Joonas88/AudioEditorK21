@@ -165,7 +165,7 @@ public class AudioCloudDAO {
 			Class.forName("com.mysql.jdbc.Driver");
 			databaseConnection = DriverManager.getConnection("jdbc:mysql://10.114.32.5/audiocloud", "yleinen", "J0k3OnR0");
 		} catch (Exception e) {
-			System.err.println("Virhe tietokantayhteyden muodostamisessa.");
+			System.err.println("Virhe tietokantayhteyden muodostamisessa. "+e);
 			System.exit(-1);
 		}
 	}
