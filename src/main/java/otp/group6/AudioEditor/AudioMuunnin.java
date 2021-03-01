@@ -92,13 +92,11 @@ public class AudioMuunnin {
 			flangerEffect = new FlangerEffect(flangerLength, wetness, sampleRate, (lfo));
 			adp.addAudioProcessor(flangerEffect);
 
-			System.out.println("!!!!!!!!!!!!!!!!!!!!" + lowPass);
 			// LowPass
 			lowPassSP = new LowPassSP(lowPass, sampleRate);
 			adp.addAudioProcessor(lowPassSP);
 
 		} catch (UnsupportedAudioFileException e) {
-			System.out.println("Väärä tiedostomuoto");
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.setTitle("Virhe!");
 			alert.setHeaderText("Väärä tiedostomuoto");
@@ -123,7 +121,6 @@ public class AudioMuunnin {
 		// Vaihdetaan arvot Rate Transposeriin..
 		this.pitchFactor = pitchFactor;
 		rateTransposer.setFactor(pitchFactor);
-		System.out.println("pitch " + pitchFactor);
 		// ..ja WaveFormSimilarityOverlappAddiin
 		wsola.setParameters(WaveformSimilarityBasedOverlapAdd.Parameters.musicDefaults(pitchFactor, sampleRate));
 	}
@@ -131,7 +128,6 @@ public class AudioMuunnin {
 	public void setGain(double gain) {
 		this.gain = gain;
 		gainProcessor.setGain(gain);
-		System.out.println("gain " + gain);
 	}
 
 	public void setEchoLength(double echoLength) {
@@ -140,11 +136,9 @@ public class AudioMuunnin {
 			echoLength = 0.0001;
 			this.echoLength = echoLength;
 			delayEffect.setEchoLength(echoLength);
-			System.out.println("echo " + echoLength);
 		} else {
 			this.echoLength = echoLength;
 			delayEffect.setEchoLength(echoLength);
-			System.out.println("echo " + echoLength);
 		}
 
 	}
@@ -152,7 +146,6 @@ public class AudioMuunnin {
 	public void setDecay(double decay) {
 		this.decay = decay;
 		delayEffect.setDecay(decay);
-		System.out.println("decay " + decay);
 	}
 
 	public void setFlangerLength(double flangerLength) {
@@ -161,28 +154,23 @@ public class AudioMuunnin {
 			flangerLength = 0.001;
 			this.flangerLength = flangerLength;
 			flangerEffect.setFlangerLength(flangerLength);
-			System.out.println("flanger l " + flangerLength);
 		}
 		this.flangerLength = flangerLength;
 		flangerEffect.setFlangerLength(flangerLength);
-		System.out.println("flanger l " + flangerLength);
 	}
 
 	public void setWetness(double wetness) {
 		this.wetness = wetness;
 		flangerEffect.setWet(wetness);
-		System.out.println("wet" + wetness);
 	}
 
 	public void setLFO(double lfo) {
 		this.lfo = lfo;
 		flangerEffect.setLFOFrequency(lfo);
-		System.out.println("lfo " + lfo);
 	}
 
 	public void setLowPass(float lowPass) {
 		this.lowPass = lowPass;
-		System.out.println("lowpass " +lowPass);
 		lowPassSP = new LowPassSP(lowPass, sampleRate);
 		adp.addAudioProcessor(lowPassSP);
 
@@ -261,7 +249,6 @@ public class AudioMuunnin {
 		adp.addAudioProcessor(flangerEffect);
 
 		// LowPass
-		System.out.println("!!!!!!!!!!!!!!!!!!!!" + lowPass);
 		lowPassSP = new LowPassSP(lowPass, sampleRate);
 		adp.addAudioProcessor(lowPassSP);
 
@@ -272,7 +259,6 @@ public class AudioMuunnin {
 			@Override
 				public void processingFinished() {
 				//TODO Tähän pitäis laittaa viesti main controllerille play-napin aktivoinnista!
-					System.out.println("TODO: play-napin aktivointi tässä kohtaa");
 				}
 				
 				@Override
@@ -313,7 +299,6 @@ public class AudioMuunnin {
 		adp.addAudioProcessor(writer);
 		Thread t = new Thread(adp);
 		t.start();
-		System.out.println("Mikserin tiedosto tallennettu");
 	}
 
 	private AudioFormat getAudioFormat() {

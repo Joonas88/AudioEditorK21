@@ -57,74 +57,7 @@ public class MainController {
 	Button newSoundButton;
 	@FXML
 	GridPane buttonGrid;
-	
 
-	@FXML
-	public void recordAudio() {
-		// controller.recordAudio(tf.getText());
-	}
-
-	@FXML
-	public void stopRecord() {
-		controller.stopRecord();
-	}
-
-	@FXML
-	public void openFile() {
-		try {
-			File file = AudioFileHandler.openFileExplorer(mainContainer.getScene().getWindow());
-			System.out.println(file);
-			controller.soundManipulatorOpenFile(file);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	@FXML
-	public void openSample() {
-		try {
-			File file = AudioFileHandler.openFileExplorer(mainContainer.getScene().getWindow());
-			controller.addSample(file.getAbsolutePath());
-			addButton(controller.getSampleArrayLength() - 1);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	public Button addButton(int index) {
-		AnchorPane ap = (AnchorPane) newSoundButton.getParent();
-		Button temp = (Button) ap.getChildren().remove(0);
-		Button button = new Button();
-		button.layoutXProperty().set(65);
-		button.layoutYProperty().set(45);
-		button.setText("Play");
-		button.setOnAction(new EventHandler() {
-			@Override
-			public void handle(Event event) {
-				controller.playSound(index);
-			}
-		});
-		ap.getChildren().add(button);
-		setButtonDescription(ap);
-
-		if (buttonGrid.getChildren().indexOf(ap) < buttonGrid.getChildren().size() - 1) {
-			ap = (AnchorPane) buttonGrid.getChildren().get(buttonGrid.getChildren().indexOf(ap) + 1);
-			ap.getChildren().add(temp);
-			return temp;
-		} else {
-			return null;
-		}
-	}
-
-	public void setButtonDescription(AnchorPane ap) {
-		Text text = new Text();
-		text.setText("Insert name");
-		text.layoutXProperty().set(65);
-		text.layoutYProperty().set(30);
-		text.setTextAlignment(TextAlignment.CENTER);
-		ap.getChildren().add(text);
-	}
 
 ////// MIXER //////
 	@FXML
@@ -271,15 +204,13 @@ public class MainController {
 		String text = textFieldPitch.getText();
 		try {
 			double number = Double.parseDouble(text);
-			System.out.println(number);
 			if (number <= 4.0 && number >= 0.1) {
 				controller.soundManipulatorSetPitchFactor(number);
 				sliderPitch.setValue(number);
 			} else {
-				System.out.println("Arvo yli viiterajojen");
 			}
 		} catch (Exception e) {
-			System.out.println("Virheellinen syöte");
+			e.printStackTrace();
 		}
 	}
 
@@ -486,70 +417,14 @@ public class MainController {
 		sliderLowPass.valueProperty().addListener(new ChangeListener<Number>() {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-				controller.soundManipulatorSet(newValue.floatValue());
+				controller.soundManipulatorSetLowPass(newValue.floatValue());
 				textFieldLfo.setText(decimalFormat.format(newValue.doubleValue()));
 			}
-		});*/
-	}
-	
-	//Methods for getting TextField input values
-	@FXML
-	public void getTextFieldPitch() {
-		String text = textFieldPitch.getText();
-		
-		try {
-			double number = Double.parseDouble(text);
-			System.out.println(number);
-			if (number <=4.0 && number >=0.1) {
-				System.out.println("hyväksytty numero");
-				controller.soundManipulatorSetPitchFactor((float) number);
-				sliderPitch.setValue(number);
-			} else {
-				System.out.println("Numero ei kelpaa");
-			}
-		} catch (Exception e) {
-			System.out.println("väärä syöte!!");
-		}
-		
-		
-	}
-	
-	@FXML
-	public void testFilter() {
-		controller.testFilter();
-	}
-	
-	@FXML
-	public void soundManipulatorPlayAudio() {
-		controller.soundManipulatorPlayAudio();
-	}
-	
-	@FXML
-	public void soundManipulatorStopAudio() {
-		controller.soundManipulatorStopAudio();
-	}
-	
-	@FXML
-	public void saveMixedFile() {
-		controller.soundManipulatorSaveFile();
-	}
-	
-	@FXML
-	public void resetAllSliders() {
-		controller.soundManipulatorResetAllSliders();
-	}
-	
-	@FXML
-	public void saveMixerSettings() {
-		
+		});
 	}
 	
 	
-		///////////////////////////////////////////////////////////
-
-	/**
-	 * TODO REGEX tarkistus tiedostonimille
-	 */
+	
 	@FXML
 	
 	public void recordAudio() {
@@ -824,8 +699,6 @@ public class MainController {
 	 */
 	public void checkForloggedin() {
 		if (!(controller.loggedIn()==" ")) {
-			System.out.println(controller.loggedIn()); //Poistettava
-			//TODO metodi avata suoraan oikea valintaikkuna!! Ehkä tämä on valmis :thinking:
 			openMixerSave();
 		} else {
 			openLoginRegister();
