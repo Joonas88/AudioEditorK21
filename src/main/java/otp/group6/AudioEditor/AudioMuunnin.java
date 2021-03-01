@@ -10,6 +10,8 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.TargetDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import be.tarsos.dsp.AudioDispatcher;
+import be.tarsos.dsp.AudioEvent;
+import be.tarsos.dsp.AudioProcessor;
 import be.tarsos.dsp.GainProcessor;
 import be.tarsos.dsp.WaveformSimilarityBasedOverlapAdd;
 import be.tarsos.dsp.WaveformSimilarityBasedOverlapAdd.Parameters;
@@ -45,8 +47,11 @@ public class AudioMuunnin {
 	private double decay = 0;
 	private double flangerLength = 0.0001;
 	private double wetness = 0;
-	private double lfo = sampleRate;
-	private double lowPass = sampleRate;
+	private double lfo = 0;
+	private float lowPass = 44100;
+
+	//Tämä pause-nappia varten
+	private float secondsProcessed = (float) 0.0;
 
 	// Konstruktori
 	public AudioMuunnin() {
@@ -61,19 +66,20 @@ public class AudioMuunnin {
 			// TODO: tee audioformaatin tarkistus!! stereo vs mono
 			this.format = AudioSystem.getAudioFileFormat(wavFile).getFormat();
 			this.sampleRate = format.getSampleRate();
-			
-			wsola = new WaveformSimilarityBasedOverlapAdd(Parameters.musicDefaults(pitchFactor, sampleRate));
+
+			wsola = new WaveformSimilarityBasedOverlapAdd(Parameters.musicDefaults(sampleRate, sampleRate));
 			adp = AudioDispatcherFactory.fromFile(wavFile, wsola.getInputBufferSize(), wsola.getOverlap());
 
 			wsola.setDispatcher(adp);
+			adp.addAudioProcessor(wsola);
 			audioPlayer = new AudioPlayer(format);
-			
+
 			// Pitch-arvon muuttaja
 			rateTransposer = new RateTransposer(pitchFactor);
 			adp.addAudioProcessor(rateTransposer);
 
 			// Kaikuefekti
-			delayEffect = new DelayEffect(echoLength, decay, sampleRate); 
+			delayEffect = new DelayEffect(echoLength, decay, sampleRate);
 			adp.addAudioProcessor(delayEffect);
 
 			// Gain
@@ -81,8 +87,13 @@ public class AudioMuunnin {
 			adp.addAudioProcessor(gainProcessor);
 
 			// Flangerefekti
-			flangerEffect = new FlangerEffect(flangerLength, wetness, sampleRate, format.getSampleRate() * 1);
+			flangerEffect = new FlangerEffect(flangerLength, wetness, sampleRate, (lfo));
+			adp.addAudioProcessor(flangerEffect);
 
+			System.out.println("!!!!!!!!!!!!!!!!!!!!" + lowPass);
+			// LowPass
+			lowPassSP = new LowPassSP(lowPass, sampleRate);
+			adp.addAudioProcessor(lowPassSP);
 
 		} catch (UnsupportedAudioFileException e) {
 			System.out.println("Väärä tiedostomuoto");
@@ -143,6 +154,13 @@ public class AudioMuunnin {
 	}
 
 	public void setFlangerLength(double flangerLength) {
+		// Flanger length cannot be zero
+		if (flangerLength == 0) {
+			flangerLength = 0.001;
+			this.flangerLength = flangerLength;
+			flangerEffect.setFlangerLength(flangerLength);
+			System.out.println("flanger l " + flangerLength);
+		}
 		this.flangerLength = flangerLength;
 		flangerEffect.setFlangerLength(flangerLength);
 		System.out.println("flanger l " + flangerLength);
@@ -162,6 +180,9 @@ public class AudioMuunnin {
 
 	public void setLowPass(float lowPass) {
 		this.lowPass = lowPass;
+		System.out.println("lowpass " +lowPass);
+		lowPassSP = new LowPassSP(lowPass, sampleRate);
+		adp.addAudioProcessor(lowPassSP);
 
 	}
 
@@ -174,7 +195,6 @@ public class AudioMuunnin {
 			line.open(format2);
 			line.start();
 		} catch (LineUnavailableException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -185,12 +205,10 @@ public class AudioMuunnin {
 		wsola.setDispatcher(liveDispatcher);
 		liveDispatcher.addAudioProcessor(wsola);
 		liveDispatcher.addAudioProcessor(rateTransposer);
-		liveDispatcher.addAudioProcessor(audioPlayer);
-		liveDispatcher.addAudioProcessor(audioPlayer);
-		liveDispatcher.addAudioProcessor(rateTransposer);
 		liveDispatcher.addAudioProcessor(delayEffect);
 		liveDispatcher.addAudioProcessor(gainProcessor);
 		liveDispatcher.addAudioProcessor(flangerEffect);
+		liveDispatcher.addAudioProcessor(audioPlayer);
 		// liveDispatcher.run();
 
 		try {
@@ -202,21 +220,10 @@ public class AudioMuunnin {
 
 	}
 
-	private AudioFormat getAudioFormat() {
-		float sampleRate = 44100;
-		int sampleSizeBits = 16;
-		int channels = 1;
-		boolean signed = true;
-		boolean bigEndian = true;
-		AudioFormat format = new AudioFormat(sampleRate, sampleSizeBits, channels, signed, bigEndian);
-		return format;
-	}
-
 	public void playAudio() {
-		/*if (adp != null) {
+		if (adp != null) {
 			adp.stop();
-		
-
+		}
 		// WaveformSimilarityBasedOverlapAdd pitää tiedoston samanmittaisena
 		// pitch-arvosta riippumatta
 		try {
@@ -225,13 +232,9 @@ public class AudioMuunnin {
 
 			wsola.setDispatcher(adp);
 			adp.addAudioProcessor(wsola);
-			audioPlayer = new AudioPlayer(format);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-		adp.addAudioProcessor(audioPlayer);
-
 		// Pitch-arvon muuttaja
 		rateTransposer = new RateTransposer(pitchFactor);
 		adp.addAudioProcessor(rateTransposer);
@@ -248,22 +251,53 @@ public class AudioMuunnin {
 		adp.addAudioProcessor(gainProcessor);
 
 		// Flangerefekti
-		flangerEffect = new FlangerEffect(flangerLength, wetness, sampleRate, format.getSampleRate() * 1);
+		flangerEffect = new FlangerEffect(flangerLength, wetness, sampleRate, (lfo));
 		adp.addAudioProcessor(flangerEffect);
-*/
-		
-		try {audioPlayer = new AudioPlayer(format);
+
+		// LowPass
+		System.out.println("!!!!!!!!!!!!!!!!!!!!" + lowPass);
+		lowPassSP = new LowPassSP(lowPass, sampleRate);
+		adp.addAudioProcessor(lowPassSP);
+
+		try {
+			audioPlayer = new AudioPlayer(format);
 			adp.addAudioProcessor(audioPlayer);
-			Thread t = new Thread(adp);
-			t.start();
+			adp.addAudioProcessor(new AudioProcessor() {
+			@Override
+				public void processingFinished() {
+				//TODO Tähän pitäis laittaa viesti main controllerille play-napin aktivoinnista!
+					System.out.println("TODO: play-napin aktivointi tässä kohtaa");
+				}
+				
+				@Override
+				public boolean process(AudioEvent audioEvent) {
+					return false;
+				}
+			});
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+			Thread t = new Thread(adp);
+			t.start();
+			if(secondsProcessed != (float)0.0) {
+				adp.skip(secondsProcessed);
+				secondsProcessed =(float)0.0;
+			}
+			
 
 	}
 
 	public void stopAudio() {
 		if (adp != null) {
+			adp.stop();
+			secondsProcessed = (float)0.0;
+		}
+	}
+
+	public void pauseAudio() {
+		if (adp != null) {
+			// kohta mihin jäätiin
+			secondsProcessed = adp.secondsProcessed();
 			adp.stop();
 		}
 	}
@@ -271,8 +305,18 @@ public class AudioMuunnin {
 	public void saveFile() {
 		writer = new WaveformWriter(format, "src/audio/miksattuAudio.wav"); // Tiedoston nimi miksattuAudio!!
 		adp.addAudioProcessor(writer);
-		adp.run();
+		Thread t = new Thread(adp);
+		t.start();
 		System.out.println("Mikserin tiedosto tallennettu");
 	}
 
+	private AudioFormat getAudioFormat() {
+		float sampleRate = 44100;
+		int sampleSizeBits = 16;
+		int channels = 1;
+		boolean signed = true;
+		boolean bigEndian = true;
+		AudioFormat format = new AudioFormat(sampleRate, sampleSizeBits, channels, signed, bigEndian);
+		return format;
+	}
 }
