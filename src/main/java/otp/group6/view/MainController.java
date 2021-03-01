@@ -1,38 +1,17 @@
 package otp.group6.view;
-import java.awt.Desktop;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.regex.*;
 import java.text.DecimalFormat;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import java.sql.SQLException;
-import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.swing.JOptionPane;
-
-import com.sun.glass.ui.MenuItem;
-
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar.ButtonData;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.Menu;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
@@ -42,32 +21,14 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.OverrunStyle;
-import javafx.scene.control.SingleSelectionModel;
-import javafx.scene.control.Slider;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
-import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.stage.Window;
-import otp.group6.AudioEditor.AudioCloudDAO.MixerSetting;
 import otp.group6.AudioEditor.AudioFileHandler;
-import otp.group6.AudioEditor.Car;
-import otp.group6.AudioEditor.Soundboard.Sample;
 import otp.group6.controller.*;
-import otp.group6.prototypes.testFileOpener;
 
 /**
  * Main controller for the view
@@ -78,22 +39,8 @@ import otp.group6.prototypes.testFileOpener;
 public class MainController {
 	Controller controller;
 
-	// Dev test code. REMOVE FROM FINAL
-	int button_count;
-
 	public MainController() {
-		// Dev test code. REMOVE FROM FINAL
-		button_count = 0;
-
 		controller = new Controller();
-		
-		
-		///ROOSAN TESTI
-		
-		//alustaMikseri();
-		///
-		
-		
 	}
 
 	/**
@@ -196,10 +143,6 @@ public class MainController {
 	public void stopRecord() {
 		controller.stopRecord();
 	}
-
-
-
-	@FXML
 	public void openFile(int index) {
 		Pattern pattern = Pattern.compile("(\\.wav)$", Pattern.CASE_INSENSITIVE);
 		try {
@@ -289,7 +232,7 @@ public class MainController {
 			
 		});
 		
-		MenuItem editButton = mp.getItems().get(0);
+		MenuItem editButton = (MenuItem) mp.getItems().get(0);
 		editButton.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override

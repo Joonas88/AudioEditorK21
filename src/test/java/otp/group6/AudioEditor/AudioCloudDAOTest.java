@@ -42,7 +42,7 @@ class AudioCloudDAOTest {
 	void testCreateUser() throws SQLException {			
 		assertFalse(AudioCloudDAO.isValid(pw1), "isValid(String): false, when the password does not match the requirements");		
 		assertTrue(AudioCloudDAO.isValid(pw2), "isValid(String): true, when the password is in a correct format");				
-		assertTrue(dao.createUser(user2, mySecurePassword, salt), "createUser(user): true when there is a problem creatin the user");
+		assertTrue(dao.createUser(user2, salt), "createUser(user): true when there is a problem creatin the user");
 	}
 
 	@Test
@@ -85,25 +85,11 @@ class AudioCloudDAOTest {
 	}
 
 	@Test
-	@DisplayName("Gettign mixer settings in JSON")
-	void testGetAllMixJSON() {
-		int expected = 1;
-		int actual = dao.getAllMixJSON().size();
-		assertEquals(expected, actual, "Only one JSON String should be created");
-	}
-
-	@Test
 	@DisplayName("Getting specific mixer setting")
 	void testGetCertainMixesArray() {
 		assertEquals(dao.getCertainMixesArray(1, "69").length, 4, "Checks for the amount of entries including specified symbols");
 		assertEquals(dao.getCertainMixesArray(2, "7").length, 2,"Checks for the amount of entries including specified symbols");
 		assertEquals(dao.getCertainMixesArray(3, "uvaava").length, 4, "Checks for the amount of entries including specified symbols");
-	}
-
-	@Test
-	@DisplayName("Getting specific mixer settings JSON")
-	void testGetCertainMixesJSON() {
-		assertEquals(dao.getCertainMixesJSON(1, "69").size(), 1);
 	}
 
 	@Test

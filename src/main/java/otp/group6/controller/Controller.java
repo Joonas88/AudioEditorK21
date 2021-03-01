@@ -3,7 +3,6 @@ package otp.group6.controller;
 import java.io.File;
 import java.sql.SQLException;
 import otp.group6.AudioEditor.AudioMuunnin;
-import org.json.simple.JSONObject;
 import otp.group6.AudioEditor.AudioCloudDAO;
 import otp.group6.AudioEditor.AudioCloudDAO.MixerSetting;
 import otp.group6.AudioEditor.AudioFileHandler;
@@ -37,7 +36,7 @@ public class Controller {
 		recorder = new AudioRecorder();
 		soundManipulator = new AudioMuunnin();
 		soundManipulator.setAudioSourceFile("src/audio/testiaani.wav");
-		audioDAO = new AudioCloudDAO();
+		//audioDAO = new AudioCloudDAO();
 	}
 
 	
@@ -68,7 +67,7 @@ public class Controller {
 		soundManipulator.saveFile();
 	}
 	
-	// SoundManipulator methods end
+	// SoundManipulator methods endimport org.json.simple.JSONObject;
 
 	// Soundboard methods start
 	// TODO MainController tarvitsee try/catch-lohkon tätä metodia käyttäessä myös!
@@ -161,16 +160,8 @@ public class Controller {
 		return audioDAO.getAllMixArray();
 	}
 
-	public JSONObject getAllMixJSON() {
-		return audioDAO.getAllMixJSON();
-	}
-
 	public MixerSetting[] getCertainMixesArray(int select, String specify) {
 		return audioDAO.getCertainMixesArray(select, specify);
-	}
-
-	public JSONObject getCertainMixesJSON(int select, String specify) {
-		return audioDAO.getCertainMixesJSON(select, specify);
 	}
 
 	public boolean deleteMix(String specify) {

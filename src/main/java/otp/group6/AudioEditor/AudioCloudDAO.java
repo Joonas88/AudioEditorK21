@@ -6,8 +6,6 @@ import java.util.regex.Pattern;
 
 import javax.swing.JOptionPane;
 
-import org.json.simple.*;
-
 import java.sql.*;
 import java.time.LocalDate;
 
@@ -199,7 +197,6 @@ public class AudioCloudDAO {
 			if (!rset.next()) {
 				return false;
 			} else {
-				System.out.println("KÄYTTÄJÄNIMI JO KÄYTÖSSÄ!");//Poistetteava
 				return true;
 			}
 		} catch (Exception e) {
@@ -228,9 +225,6 @@ public class AudioCloudDAO {
 					query.setString(3, securePW);
 					query.setString(4, salt);
 					query.executeUpdate();
-					// TODO käyttäjälle palaute, ehkäpä käyttöliittymään, ei tänne :)
-					//JOptionPane.showMessageDialog(null, "Uusi käyttäjä luotu!"); //Nämä ponnahtaa myös testeissä!
-					System.out.println("Uusi käyttäjä luotu!"); //Poistetteava
 					return true;
 				} catch (SQLException e) {
 					do {
@@ -239,13 +233,10 @@ public class AudioCloudDAO {
 						System.err.println("SQL-tilakoodi: " + e.getSQLState());
 					} while (e.getNextException() != null);
 				}
-				// TODO käyttäjälle palaute, ehkäpä käyttöliittymään, ei tänne :)
-				// JOptionPane.showMessageDialog(null, "Jokin meni pahasti vikaan!", "ERROR", JOptionPane.WARNING_MESSAGE);//Nämä ponnahtaa myös testeissä!
-				System.out.println("Jokin meni pahasti vikaan!!");//Poistettava
 				return false;
 
 	}
-	
+			
 	/** 
 	 * Method to login and check for correct credentials
 	 * @param u user name
@@ -433,49 +424,6 @@ public class AudioCloudDAO {
 		return (MixerSetting[]) list.toArray(returnArray);
 
 	}
-	
-	/**
-	 * Get all mixer settings in JSON
-	 * @return JSON of mixer settings
-	 */
-	@SuppressWarnings("unchecked")
-	public JSONObject getAllMixJSON() {		
-		JSONObject jsonObject = new JSONObject();
-		JSONArray jsonArray = new JSONArray();		
-		Statement statement =null;
-		ResultSet rs =null;
-		try {
-			statement = databaseConnection.createStatement();
-			rs = statement.executeQuery("SELECT * FROM mixerSETTINGSTEST");
-			
-			while (rs.next()) {
-				JSONObject mixer = new JSONObject();
-				mixer.put("ID", rs.getInt("id"));		
-				mixer.put("Mix_name", rs.getObject("mixName"));
-				mixer.put("Description", rs.getString("mixDescribtion"));
-				mixer.put("Date", rs.getString("dateAdded"));
-				mixer.put("Creator", rs.getString("mixCreator"));
-				mixer.put("Mix_1", rs.getDouble("mix1"));
-				mixer.put("Mix_2", rs.getDouble("mix2"));
-				mixer.put("Mix_3", rs.getDouble("mix3"));
-				mixer.put("Mix_4", rs.getDouble("mix4"));
-				mixer.put("Mix_5", rs.getDouble("mix5"));
-				mixer.put("Mix_6", rs.getDouble("mix6"));
-				jsonArray.add(mixer);
-			}
-			
-		} catch(SQLException e) {
-			do {
-				System.err.println("Viesti: " + e.getMessage());
-				System.err.println("Virhekoodi: " + e.getErrorCode());
-				System.err.println("SQL-tilakoodi: " + e.getSQLState());
-			} while (e.getNextException() != null);
-		}
-		
-		jsonObject.put("Mixer_Settings", jsonArray); // Ei tarpeellinen lisää vain koko listan objektin sisälle
-
-		return jsonObject;
-	}
 		
 	/**
 	 * Method is used to get specific mixer setting from a user, including a certain name or something in it's description.
@@ -522,54 +470,6 @@ public class AudioCloudDAO {
 		return (MixerSetting[]) list.toArray(returnArray);
 	}
 	
-	/**
-	 * Method searches for specific user, name or description part,
-	 * @param select is a variable used to specify what are being searched.
-	 * @param specify is a variable that is searched for.
-	 * @return returns the search in JSON.
-	 */
-	@SuppressWarnings("unchecked")
-	public JSONObject getCertainMixesJSON(int select, String specify) {		
-		JSONObject jsonObject = new JSONObject();
-		JSONArray jsonArray = new JSONArray();
-		String statement = null;
-		if (select==1) {
-			statement = "SELECT * FROM mixerSETTINGSTEST where mixCreator LIKE '%"+specify+"%'";	
-		} else if (select==2) {
-			statement = "SELECT * FROM mixerSETTINGSTEST where mixName LIKE '%"+specify+"%'";
-		} else if (select==3) {
-			statement = "SELECT * FROM mixerSETTINGSTEST where mixDescribtion LIKE '%"+specify+"%'";
-		}
-		try (PreparedStatement query = databaseConnection.prepareStatement(statement)) {
-			ResultSet rs = query.executeQuery();
-			while (rs.next()) {
-				JSONObject mixer = new JSONObject();
-				mixer.put("ID", rs.getInt("id"));		
-				mixer.put("Mix_name", rs.getObject("mixName"));
-				mixer.put("Description", rs.getString("mixDescribtion"));
-				mixer.put("Date", rs.getString("dateAdded"));
-				mixer.put("Creator", rs.getString("mixCreator"));
-				mixer.put("Mix_1", rs.getDouble("mix1"));
-				mixer.put("Mix_2", rs.getDouble("mix2"));
-				mixer.put("Mix_3", rs.getDouble("mix3"));
-				mixer.put("Mix_4", rs.getDouble("mix4"));
-				mixer.put("Mix_5", rs.getDouble("mix5"));
-				mixer.put("Mix_6", rs.getDouble("mix6"));
-				jsonArray.add(mixer);
-			}
-		} catch (SQLException e) {
-			do {
-				System.err.println("Viesti: " + e.getMessage());
-				System.err.println("Virhekoodi: " + e.getErrorCode());
-				System.err.println("SQL-tilakoodi: " + e.getSQLState());
-			} while (e.getNextException() != null);
-		}
-
-		jsonObject.put("Mixer_Settings", jsonArray); // Ei tarpeellinen lisää vain koko listan objektin sisälle
-
-		return jsonObject;
-		
-	}
 	
 	/**
 	 * TODO määritä millä tavalla poistetaan! ID?
