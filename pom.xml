@@ -31,7 +31,16 @@
       <artifactId>jna</artifactId>
       <version>[5.0.0,6.0)</version>
     </dependency>
+    
+      <!-- https://mvnrepository.com/artifact/com.github.st-h/TarsosDSP -->
+    <dependency>
+      <groupId>com.github.st-h</groupId>
+      <artifactId>TarsosDSP</artifactId>
+      <version>2.4.1</version>
+    </dependency>
   </dependencies>
+
+
 
   <build>
     <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
