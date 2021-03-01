@@ -3,6 +3,7 @@ package otp.group6.AudioEditor;
 import static org.junit.jupiter.api.Assertions.*;
 import java.sql.SQLException;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.TestMethodOrder;
  * @author Joonas Soininen
  *
  */
+@Disabled
 class AudioCloudDAOTest {
 
 	private AudioCloudDAO dao = new AudioCloudDAO();
