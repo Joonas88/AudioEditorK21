@@ -23,7 +23,13 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
+<<<<<<< HEAD
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
 	<classpathentry kind="lib" path="TarsosDSP-latest.jar"/>
+=======
+	<classpathentry kind="lib" path="C:/Program Files (x86)/MySQL/Connector J 5.1/mysql-connector-java-5.1.49-bin.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Roosa/KOULUHOMMAT/2. vuosi/3. periodi/Projekti/TarsosDSP-latest.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JavaFX"/>
+>>>>>>> roosa
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
