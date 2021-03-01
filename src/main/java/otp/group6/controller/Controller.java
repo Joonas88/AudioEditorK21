@@ -7,6 +7,7 @@ import otp.group6.AudioEditor.AudioOutput;
 import otp.group6.AudioEditor.AudioRecorder;
 import otp.group6.AudioEditor.Soundboard;
 import otp.group6.AudioEditor.Soundboard.Sample;
+import otp.group6.view.MainController;
 /**
  * 
  * @author Kevin Akkoyun, Joonas Soininen
@@ -17,9 +18,8 @@ public class Controller {
 	private Soundboard soundboard;
 	private AudioOutput mainPlayer;
 	private AudioRecorder recorder;
-	//-
 	private AudioMuunnin soundManipulator;	
-	//-
+
 	
 	public Controller() {
 		initialConfig();
@@ -31,7 +31,6 @@ public class Controller {
 		recorder = new AudioRecorder();
 		soundManipulator = new AudioMuunnin();
 	}
-	
 	
 	
 	// SoundManipulator methods start
@@ -65,8 +64,8 @@ public class Controller {
 	public void soundManipulatorSetLFO(double lfo) {
 		soundManipulator.setLFO(lfo);
 	}
-	public void soundManipulatorSetLowPass(double lowPass) {
-		//TODO
+	public void soundManipulatorSetLowPass(float lowPass) {
+		soundManipulator.setLowPass(lowPass);
 	}
 	
 	//Mixer general methods
@@ -82,13 +81,14 @@ public class Controller {
 		soundManipulator.stopAudio();
 	}
 	
+	public void soundManipulatorPauseAudio() {
+		soundManipulator.pauseAudio();
+	}
+	
 	public void soundManipulatorSaveFile() {
 		soundManipulator.saveFile();
 	}
 	
-	public void soundManipulatorResetAllSliders() {
-		
-	}
 	public void testFilter() {
 		soundManipulator.testFilter();
 		
