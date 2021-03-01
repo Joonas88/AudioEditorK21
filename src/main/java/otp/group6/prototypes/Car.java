@@ -1,4 +1,4 @@
-package otp.group6.AudioEditor;
+package otp.group6.prototypes;
 
 public class Car {
 	
