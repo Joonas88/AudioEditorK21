@@ -3,6 +3,8 @@ package otp.group6.view;
 import java.io.IOException;
 
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -11,6 +13,7 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import otp.group6.*;
 
 /**
@@ -30,6 +33,15 @@ public class MainApplication extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+		//Sulkee ohjelman, kun käyttäjä sulkee ikkunan
+		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+		    @Override
+		    public void handle(WindowEvent t) {
+		        Platform.exit();
+		        System.exit(0);
+		    }
+		});
+		
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle("AudioEditor");
 		
@@ -65,7 +77,8 @@ public class MainApplication extends Application {
 			primaryStage.show();
 			
 			MainController mainController = loader.getController();
-			mainController.alustaMikseri();
+
+			mainController.initializeMixer();
 			
 		} catch (IOException e) {
 			e.printStackTrace();
