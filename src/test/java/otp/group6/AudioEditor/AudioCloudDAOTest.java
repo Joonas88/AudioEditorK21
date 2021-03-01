@@ -3,14 +3,11 @@ package otp.group6.AudioEditor;
 import static org.junit.jupiter.api.Assertions.*;
 import java.sql.SQLException;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import otp.group6.AudioEditor.AudioCloudDAO.MixerSetting;
-import otp.group6.AudioEditor.AudioCloudDAO.User;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 /**
  * 
@@ -21,12 +18,9 @@ class AudioCloudDAOTest {
 
 	private AudioCloudDAO dao = new AudioCloudDAO();
 	private final String user1 = "test1";
-	private final String user2 = "Joonas";
+	private final String user2 = "Joonas123";
 	private final String pw1 = "test";
 	private final String pw2 = "Password1!";
-	private final String salt = PasswordUtils.getSalt(30);
-	String mySecurePassword = PasswordUtils.generateSecurePassword(pw2, salt);
-	
 
 	@Test
 	@DisplayName("Cheking the database for availability in the username")
@@ -42,14 +36,14 @@ class AudioCloudDAOTest {
 	void testCreateUser() throws SQLException {			
 		assertFalse(AudioCloudDAO.isValid(pw1), "isValid(String): false, when the password does not match the requirements");		
 		assertTrue(AudioCloudDAO.isValid(pw2), "isValid(String): true, when the password is in a correct format");				
-		assertTrue(dao.createUser(user2, salt), "createUser(user): true when there is a problem creatin the user");
+		assertTrue(dao.createUser(user2, pw2), "createUser(user): true when there is a problem creatin the user");
 	}
 
 	@Test
 	@DisplayName("User login")
 	@Order(3)
 	void testLoginUser() {
-		assertEquals("Tervetuloa Joonas", dao.loginUser(user2, pw2), "loginUser(String, String): ");
+		assertEquals("Welcome Joonas123", dao.loginUser(user2, pw2), "loginUser(String, String): ");
 	}
 	
 	@Test
@@ -71,7 +65,7 @@ class AudioCloudDAOTest {
 	@Test
 	@DisplayName("Getting all registered users")
 	void testGetUsers() {
-		int expected = 8;
+		int expected = 13;
 		int actual = dao.getUsers().length;
 		assertEquals(expected, actual, "Length is set for the testing, must be cheked if tested later on");
 	}
@@ -79,7 +73,7 @@ class AudioCloudDAOTest {
 	@Test
 	@DisplayName("Getting all mixer settings")
 	void testGetAllMixArray() {
-		int expected = 4;
+		int expected = 13;
 		int actual = dao.getAllMixArray().length;
 		assertEquals(expected, actual, "Length is set for the testing, must be cheked if tested later on");
 	}
