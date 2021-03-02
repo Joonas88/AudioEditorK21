@@ -23,9 +23,10 @@ import otp.group6.controller.Controller;
  */
 public class RegisterLoginController {
 	Controller controller;
+	MainController mc;
 	
 	public RegisterLoginController() {
-		controller =  new Controller();
+		
 	}
 
 	@FXML
@@ -54,6 +55,15 @@ public class RegisterLoginController {
 	public void handleCloseButtonAction(ActionEvent event) {
 	    Stage stage = (Stage) closeButton.getScene().getWindow();
 	    stage.close();
+	}
+	/**
+	 * Method to get mainController
+	 * @param mainController
+	 */
+	public void setMainController (MainController mainController) {
+		this.mc=mainController;
+		this.controller=mc.getController();
+		controller.intializeDatabase();
 	}
 	
 	/**
@@ -174,18 +184,17 @@ public class RegisterLoginController {
 				controller.loginUser(username.getText(), password.getText());
 			    Stage stage = (Stage) closeButton.getScene().getWindow();
 			    stage.close();
+			    mc.openMixerSave();
 			}
 
 		}
 
 	}
 	
-	//TODO Päätä missä salasana määritellään oikeaan muotoon!! Tarvitsee metodin isValid 
 	private static final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$";
 	private static final Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
 	
 	/**
-	 * TODO Pitää päättää missä tarkitsetaan salasanan oikeellisuus!
 	 * Used to check for password security
 	 * @param password is the inputed password
 	 * @return true if it matches requirements

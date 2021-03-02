@@ -29,8 +29,7 @@ public class MixerSettingsController implements Initializable{
 	MainController mc;
 	
 	public MixerSettingsController() {
-		controller = new Controller();
-		mc = new MainController();
+		
 	}
 	
 	@FXML
@@ -56,7 +55,8 @@ public class MixerSettingsController implements Initializable{
 	 */
 	@FXML
 	public void getMixes() {
-
+		this.controller=mc.getController();
+		controller.intializeDatabase();
 		MixerSetting[] setlist = controller.getAllMixArray();
 		mixerSettings = FXCollections.observableArrayList();
 		ObservableList<Object> mixerID = FXCollections.observableArrayList();
@@ -84,24 +84,28 @@ public class MixerSettingsController implements Initializable{
 	@FXML 
 	private void selectMIX() {
 		System.out.println(getMixerIndetification());
+		controller.intializeDatabase();
 		if (getMixerIndetification()==0) {
 			JOptionPane.showMessageDialog(null, "Please select one setting from the list.","Alert",JOptionPane.WARNING_MESSAGE); //Onko tämä kaikille ok?
 		} else {
 			MixerSetting[] setlist = controller.getAllMixArray();
-			double set1 = 0, set2=0, set3=0, set4=0, set5=0, set6=0;
+			double pitch = 0, echo=0, decay=0, gain=0, flangerLenght=0, wetness=0, lfoFrequency=0;
+			float lowPass=0;
 			for (MixerSetting mix : setlist) {
 				
 				if (mix.getMixID()==getMixerIndetification()) {
-					set1=mix.getMix1();
-					set2=mix.getMix2();
-					set3=mix.getMix3();
-					set4=mix.getMix4();
-					set5=mix.getMix5();
-					set6=mix.getMix6();
+					pitch=mix.getPitch();
+					echo=mix.getEcho();
+					decay=mix.getDecay();
+					gain=mix.getGain();
+					flangerLenght=mix.getFlangerLenght();
+					wetness=mix.getWetness();
+					lfoFrequency=mix.getLfoFrequency();
+					lowPass=mix.getLowPass();
 				}
 			}
-			System.out.println(set1+" "+set2+" "+set3+" "+set4+" "+set5+" "+set6);
-			mc.setSliderValues(set1, set2, set3, set4, set5, set6);
+			System.out.println(pitch+" "+echo+" "+decay+" "+gain+" "+flangerLenght+" "+wetness+" "+lfoFrequency+" "+lowPass); //POistettava
+			mc.setSliderValues(pitch, echo, decay, gain, flangerLenght, wetness, lfoFrequency, lowPass);
 		    Stage stage = (Stage) closeButton.getScene().getWindow();
 		    stage.close();
 		}
@@ -113,7 +117,7 @@ public class MixerSettingsController implements Initializable{
 	 */
 	@FXML
 	public void searchMix() {
-		
+		controller.intializeDatabase();
 		if (radioCreator.isSelected()) {
 			MixerSetting[] setlist = controller.getCertainMixesArray(1, searchField.getText());
 			mixerSettings = FXCollections.observableArrayList();
@@ -180,9 +184,9 @@ public class MixerSettingsController implements Initializable{
 	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		getMixes();
+		
 	}
-
+	
 	/**
 	 * getter for the mixer id
 	 * @return
@@ -198,5 +202,16 @@ public class MixerSettingsController implements Initializable{
 	public void setMixerIndetification(int mixerIndetification) {
 		this.mixerIndetification = mixerIndetification;
 	}
+	
+	/**
+	 * Method to initialize mixer settings window
+	 * @param mainController
+	 */
+	public void setMainController (MainController mainController) {
+		this.mc = mainController;
+		getMixes();
+	}
+
+
 	
 }

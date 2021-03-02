@@ -8,7 +8,6 @@ import javax.sound.sampled.AudioSystem;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -27,7 +26,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -418,7 +416,7 @@ public class MainController {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				controller.soundManipulatorSetLowPass(newValue.floatValue());
-				textFieldLfo.setText(decimalFormat.format(newValue.doubleValue()));
+				textFieldLowPass.setText(decimalFormat.format(newValue.doubleValue()));
 			}
 		});
 	}
@@ -619,21 +617,11 @@ public class MainController {
 	
 	/**
 	 * Joonaksen tekemiä lisäyksiä
+	 * Tietokannan tarpeita
+	 * Uusien ikkunoiden avaamista ja sulkemista
+	 * Liukukytkimien arvojen asettamista
 	 */
-	
-	@FXML
-	private Slider slider1;
-	@FXML
-	private Slider slider2;
-	@FXML
-	private Slider slider3;
-	@FXML
-	private Slider slider4;
-	@FXML
-	private Slider slider5;
-	@FXML
-	private Slider slider6;
-	
+
 	/**
 	 * Method opens a new scene Login and Register form
 	 */
@@ -642,6 +630,8 @@ public class MainController {
 		    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\RegisterLoginView.fxml"));
 		    Parent root1 = (Parent) fxmlLoader.load();
 		    Stage stage = new Stage();
+		    RegisterLoginController rlc = fxmlLoader.getController();
+		    rlc.setMainController(this);
 		    stage.initModality(Modality.APPLICATION_MODAL);
 		    stage.initStyle(StageStyle.UNDECORATED);
 		    stage.setTitle("Login or Register");
@@ -661,6 +651,8 @@ public class MainController {
 		    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\MixerSettingsView.fxml"));
 		    Parent root1 = (Parent) fxmlLoader.load();
 		    Stage stage = new Stage();
+		    MixerSettingsController msc = fxmlLoader.getController();
+		    msc.setMainController(this);
 		    stage.initModality(Modality.APPLICATION_MODAL);
 		    stage.initStyle(StageStyle.UNDECORATED);
 		    stage.setTitle("Mixer Settings Loader");
@@ -672,17 +664,21 @@ public class MainController {
 		}
 	}
 	
+	public Controller getController () {
+		return this.controller;
+	}
+	
 	/**
-	 * Open a new scene where the mixer settings can be saved to the database
+	 * Opens a new scene where the mixer settings can be saved to the database
 	 */
 	public void openMixerSave() {
 		try {
 		    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\SaveMixerSettings.fxml"));
-		    Parent root1 = (Parent) fxmlLoader.load();
-		    
+		    Parent root1 = (Parent) fxmlLoader.load();		    
 		    SaveMixerSettingsController smsc = fxmlLoader.getController();
-		    smsc.getSettings(slider1.getValue(),slider2.getValue(),slider3.getValue(),slider4.getValue(),slider5.getValue(),slider6.getValue());
-		    
+		    smsc.setMainController(this);
+		    smsc.getSettings(sliderPitch.getValue(),sliderEchoLength.getValue(),sliderDecay.getValue(),sliderGain.getValue(),
+		    		sliderFlangerLength.getValue(),sliderWetness.getValue(),sliderLfoFrequency.getValue(),(float)sliderLowPass.getValue());
 		    Stage stage = new Stage();
 		    stage.initModality(Modality.APPLICATION_MODAL);
 		    stage.initStyle(StageStyle.UNDECORATED);
@@ -720,15 +716,24 @@ public class MainController {
 	
 	//TODO tarvitaan arvojen asettamiselle tapa!
 	/**
-	 * Method to set the slider values from the database stored settings
-	 * @param set1
-	 * @param set2
-	 * @param set3
-	 * @param set4
-	 * @param set5
-	 * @param set6
+	 * Method to set the slider values with data from the database
+	 * @param pitch
+	 * @param echo
+	 * @param decay
+	 * @param gain
+	 * @param flangerLenght
+	 * @param wetness
+	 * @param lfoFrequency
+	 * @param lowPass
 	 */
-	public void setSliderValues(double set1, double set2, double set3, double set4, double set5, double set6) {
-	
+	public void setSliderValues(double pitch, double echo, double decay, double gain, double flangerLenght, double wetness, double lfoFrequency, float lowPass) {
+		sliderPitch.setValue(pitch);
+		sliderEchoLength.setValue(echo);
+		sliderDecay.setValue(decay);
+		sliderGain.setValue(gain);
+		sliderFlangerLength.setValue(flangerLenght);
+		sliderWetness.setValue(wetness);
+		sliderLfoFrequency.setValue(lfoFrequency);
+		sliderLowPass.setValue(lowPass);
 	}
 }

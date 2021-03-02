@@ -2,15 +2,11 @@ package otp.group6.controller;
 
 import java.io.File;
 import java.sql.SQLException;
-import otp.group6.AudioEditor.AudioMuunnin;
 import otp.group6.AudioEditor.AudioCloudDAO;
 import otp.group6.AudioEditor.AudioCloudDAO.MixerSetting;
-import otp.group6.AudioEditor.AudioFileHandler;
-import otp.group6.AudioEditor.AudioOutput;
+import otp.group6.AudioEditor.AudioMuunnin;
 import otp.group6.AudioEditor.AudioRecorder;
 import otp.group6.AudioEditor.Soundboard;
-import otp.group6.AudioEditor.Soundboard.Sample;
-import otp.group6.view.MainController;
 /**
  * 
  * @author Kevin Akkoyun, Joonas Soininen
@@ -167,6 +163,10 @@ public class Controller {
 	// AudioRecorder methods stop
 	
 	//AudioCloudDAO methods start
+	public void intializeDatabase() {
+		audioDAO = new AudioCloudDAO();
+	}
+	
 	public boolean chekcforUser(String user) {
 		return audioDAO.chekcforUser(user);
 	}
@@ -183,9 +183,9 @@ public class Controller {
 		return audioDAO.logoutUser();
 	}
 
-	public boolean createMix(String mixName, String description, double mix1, double mix2, double mix3, double mix4,
-			double mix5, double mix6) throws SQLException {
-		return audioDAO.createMix(mixName, description, mix1, mix2, mix3, mix4, mix5, mix6);
+	public boolean createMix(String mixName, String description, double pitch, double echo, double decay, double gain, double flangerLenght,
+			double wetness, double lfoFrequency, float lowPass) throws SQLException {
+		return audioDAO.createMix(mixName, description, pitch, echo, decay, gain, flangerLenght, wetness, lfoFrequency, lowPass);
 	}
 
 	public MixerSetting[] getAllMixArray() {
