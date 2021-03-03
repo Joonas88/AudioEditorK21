@@ -33,27 +33,27 @@ public class SaveMixerSettingsController {
 	public void setMainController (MainController mainController) {
 		this.mc=mainController;
 		this.controller=mc.getController();
-		controller.intializeDatabase();
+		controller.intializeDatabaseConnection();
 	}
 	
 	@FXML
 	private Button closeButton;
 	@FXML
-	private Label value1;
+	private Label pitchValue;
 	@FXML
-	private Label value2;
+	private Label echoValue;
 	@FXML
-	private Label value3;
+	private Label decayValue;
 	@FXML
-	private Label value4;
+	private Label gainValue;
 	@FXML
-	private Label value5;
+	private Label flangerLenghtValue;
 	@FXML
-	private Label value6;
+	private Label wetnessValue;
 	@FXML
-	private Label value7;
+	private Label lfoFrequencyValue;
 	@FXML
-	private Label value8;
+	private Label lowPassValue;
 	@FXML
 	private Label name;
 	@FXML
@@ -61,8 +61,8 @@ public class SaveMixerSettingsController {
 	@FXML
 	private TextArea description;
 	
-	private double set1, set2, set3, set4, set5, set6, set7;
-	private float set8;
+	private double pitch, echo, decay, gain, flangerLenght, wetness, lfoFrequency;
+	private float lowPass;
 	
 	final Tooltip mixNameField = new Tooltip("Please give the setting a name");
 	
@@ -75,26 +75,33 @@ public class SaveMixerSettingsController {
 	 * @param mix5
 	 * @param mix6
 	 */
-	public void getSettings(double sliderPitch, double sliderEchoLength, double sliderDecay, double sliderGain,
-    		double sliderFlangerLength, double sliderWetness, double sliderLfoFrequency, float sliderLowPass) {
-		value1.setText(String.valueOf(sliderPitch));
-		value2.setText(String.valueOf(sliderEchoLength));
-		value3.setText(String.valueOf(sliderDecay));
-		value4.setText(String.valueOf(sliderGain));
-		value5.setText(String.valueOf(sliderFlangerLength));
-		value6.setText(String.valueOf(sliderWetness));
-		value7.setText(String.valueOf(sliderLfoFrequency));
-		value8.setText(String.valueOf(sliderLowPass));
+	public void getSettings(
+			double sliderPitch, 
+			double sliderEchoLength, 
+			double sliderDecay, 
+			double sliderGain,
+    		double sliderFlangerLength, 
+    		double sliderWetness, 
+    		double sliderLfoFrequency, 
+    		float sliderLowPass) {
+		pitchValue.setText(String.valueOf(sliderPitch));
+		echoValue.setText(String.valueOf(sliderEchoLength));
+		decayValue.setText(String.valueOf(sliderDecay));
+		gainValue.setText(String.valueOf(sliderGain));
+		flangerLenghtValue.setText(String.valueOf(sliderFlangerLength));
+		wetnessValue.setText(String.valueOf(sliderWetness));
+		lfoFrequencyValue.setText(String.valueOf(sliderLfoFrequency));
+		lowPassValue.setText(String.valueOf(sliderLowPass));
 		name.setText(controller.loggedIn());
 		
-		this.set1=sliderPitch;
-		this.set2=sliderEchoLength;
-		this.set3=sliderDecay;
-		this.set4=sliderGain;
-		this.set5=sliderFlangerLength;
-		this.set6=sliderWetness;
-		this.set7=sliderLfoFrequency;
-		this.set8=sliderLowPass;
+		this.pitch=sliderPitch;
+		this.echo=sliderEchoLength;
+		this.decay=sliderDecay;
+		this.gain=sliderGain;
+		this.flangerLenght=sliderFlangerLength;
+		this.wetness=sliderWetness;
+		this.lfoFrequency=sliderLfoFrequency;
+		this.lowPass=sliderLowPass;
 		
 		mixNameField.setWrapText(true);
 		mixNameField.setTextOverrun(OverrunStyle.ELLIPSIS);
@@ -138,7 +145,7 @@ public class SaveMixerSettingsController {
 			});
 
 		} else {
-			if (controller.createMix(mixName.getText(), description.getText(), set1,set2,set3,set4,set5,set6, set7, set8)) {
+			if (controller.createMix(mixName.getText(), description.getText(), pitch,echo,decay,gain,flangerLenght,wetness, lfoFrequency, lowPass)) {
 				JOptionPane.showMessageDialog(null, "Mixer settings saved!","All Good!", JOptionPane.INFORMATION_MESSAGE); //Onko tämä kaikille ok?
 			    Stage stage = (Stage) closeButton.getScene().getWindow();
 			    stage.close();	

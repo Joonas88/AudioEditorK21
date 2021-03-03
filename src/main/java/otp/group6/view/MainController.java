@@ -694,6 +694,7 @@ public class MainController {
 	 * Does a query to the database class to check for a logged in user
 	 */
 	public void checkForloggedin() {
+		controller.intializeDatabaseConnection();
 		if (!(controller.loggedIn()==" ")) {
 			openMixerSave();
 		} else {
@@ -726,7 +727,15 @@ public class MainController {
 	 * @param lfoFrequency
 	 * @param lowPass
 	 */
-	public void setSliderValues(double pitch, double echo, double decay, double gain, double flangerLenght, double wetness, double lfoFrequency, float lowPass) {
+	public void setSliderValues(
+			double pitch, 
+			double echo, 
+			double decay, 
+			double gain, 
+			double flangerLenght, 
+			double wetness, 
+			double lfoFrequency, 
+			float lowPass) {
 		sliderPitch.setValue(pitch);
 		sliderEchoLength.setValue(echo);
 		sliderDecay.setValue(decay);

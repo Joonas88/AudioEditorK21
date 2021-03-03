@@ -56,7 +56,7 @@ public class MixerSettingsController implements Initializable{
 	@FXML
 	public void getMixes() {
 		this.controller=mc.getController();
-		controller.intializeDatabase();
+		controller.intializeDatabaseConnection();
 		MixerSetting[] setlist = controller.getAllMixArray();
 		mixerSettings = FXCollections.observableArrayList();
 		ObservableList<Object> mixerID = FXCollections.observableArrayList();
@@ -84,7 +84,7 @@ public class MixerSettingsController implements Initializable{
 	@FXML 
 	private void selectMIX() {
 		System.out.println(getMixerIndetification());
-		controller.intializeDatabase();
+		controller.intializeDatabaseConnection();
 		if (getMixerIndetification()==0) {
 			JOptionPane.showMessageDialog(null, "Please select one setting from the list.","Alert",JOptionPane.WARNING_MESSAGE); //Onko tämä kaikille ok?
 		} else {
@@ -117,7 +117,7 @@ public class MixerSettingsController implements Initializable{
 	 */
 	@FXML
 	public void searchMix() {
-		controller.intializeDatabase();
+		controller.intializeDatabaseConnection();
 		if (radioCreator.isSelected()) {
 			MixerSetting[] setlist = controller.getCertainMixesArray(1, searchField.getText());
 			mixerSettings = FXCollections.observableArrayList();

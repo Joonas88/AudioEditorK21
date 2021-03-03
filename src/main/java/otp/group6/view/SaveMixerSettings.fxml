@@ -13,7 +13,6 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-
 <AnchorPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="otp.group6.view.SaveMixerSettingsController">
    <children>
       <SplitPane dividerPositions="0.7995991983967936" prefHeight="571.0" prefWidth="1000.0">
@@ -54,7 +53,7 @@
                                           <Font size="18.0" />
                                        </font>
                                     </Label>
-                                    <Label fx:id="value3" alignment="CENTER" prefHeight="17.0" prefWidth="203.0" text="VALUE" GridPane.rowIndex="1">
+                                    <Label fx:id="decayValue" alignment="CENTER" prefHeight="17.0" prefWidth="203.0" text="VALUE" GridPane.rowIndex="1">
                                        <font>
                                           <Font size="18.0" />
                                        </font>
@@ -75,7 +74,7 @@
                                           <Font size="18.0" />
                                        </font>
                                     </Label>
-                                    <Label fx:id="value4" alignment="CENTER" prefHeight="17.0" prefWidth="203.0" text="VALUE" GridPane.rowIndex="1">
+                                    <Label fx:id="gainValue" alignment="CENTER" prefHeight="17.0" prefWidth="203.0" text="VALUE" GridPane.rowIndex="1">
                                        <font>
                                           <Font size="18.0" />
                                        </font>
@@ -96,7 +95,7 @@
                                           <Font size="18.0" />
                                        </font>
                                     </Label>
-                                    <Label fx:id="value7" alignment="CENTER" prefHeight="17.0" prefWidth="203.0" text="VALUE" GridPane.rowIndex="1">
+                                    <Label fx:id="lfoFrequencyValue" alignment="CENTER" prefHeight="17.0" prefWidth="203.0" text="VALUE" GridPane.rowIndex="1">
                                        <font>
                                           <Font size="18.0" />
                                        </font>
@@ -117,7 +116,7 @@
                                           <Font size="18.0" />
                                        </font>
                                     </Label>
-                                    <Label fx:id="value8" alignment="CENTER" prefHeight="17.0" prefWidth="203.0" text="VALUE" GridPane.rowIndex="1">
+                                    <Label fx:id="lowPassValue" alignment="CENTER" prefHeight="17.0" prefWidth="203.0" text="VALUE" GridPane.rowIndex="1">
                                        <font>
                                           <Font size="18.0" />
                                        </font>
@@ -239,7 +238,7 @@
                                           <Font size="18.0" />
                                        </font>
                                     </Label>
-                                    <Label fx:id="value1" alignment="CENTER" prefHeight="17.0" prefWidth="203.0" text="VALUE" GridPane.rowIndex="1">
+                                    <Label fx:id="pitchValue" alignment="CENTER" prefHeight="17.0" prefWidth="203.0" text="VALUE" GridPane.rowIndex="1">
                                        <font>
                                           <Font size="18.0" />
                                        </font>
@@ -260,7 +259,7 @@
                                           <Font size="18.0" />
                                        </font>
                                     </Label>
-                                    <Label fx:id="value2" alignment="CENTER" prefHeight="17.0" prefWidth="203.0" text="VALUE" GridPane.rowIndex="1">
+                                    <Label fx:id="echoValue" alignment="CENTER" prefHeight="17.0" prefWidth="203.0" text="VALUE" GridPane.rowIndex="1">
                                        <font>
                                           <Font size="18.0" />
                                        </font>
@@ -281,7 +280,7 @@
                                           <Font size="18.0" />
                                        </font>
                                     </Label>
-                                    <Label fx:id="value6" alignment="CENTER" prefHeight="17.0" prefWidth="203.0" text="VALUE" GridPane.rowIndex="1">
+                                    <Label fx:id="wetnessValue" alignment="CENTER" prefHeight="17.0" prefWidth="203.0" text="VALUE" GridPane.rowIndex="1">
                                        <font>
                                           <Font size="18.0" />
                                        </font>
@@ -302,7 +301,7 @@
                                           <Font size="18.0" />
                                        </font>
                                     </Label>
-                                    <Label fx:id="value5" alignment="CENTER" prefHeight="17.0" prefWidth="203.0" text="VALUE" GridPane.rowIndex="1">
+                                    <Label fx:id="flangerLenghtValue" alignment="CENTER" prefHeight="17.0" prefWidth="203.0" text="VALUE" GridPane.rowIndex="1">
                                        <font>
                                           <Font size="18.0" />
                                        </font>

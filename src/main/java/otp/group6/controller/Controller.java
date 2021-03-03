@@ -163,7 +163,7 @@ public class Controller {
 	// AudioRecorder methods stop
 	
 	//AudioCloudDAO methods start
-	public void intializeDatabase() {
+	public void intializeDatabaseConnection() {
 		audioDAO = new AudioCloudDAO();
 	}
 	
@@ -183,8 +183,17 @@ public class Controller {
 		return audioDAO.logoutUser();
 	}
 
-	public boolean createMix(String mixName, String description, double pitch, double echo, double decay, double gain, double flangerLenght,
-			double wetness, double lfoFrequency, float lowPass) throws SQLException {
+	public boolean createMix(
+			String mixName, 
+			String description, 
+			double pitch, 
+			double echo, 
+			double decay, 
+			double gain, 
+			double flangerLenght,
+			double wetness, 
+			double lfoFrequency, 
+			float lowPass) throws SQLException {
 		return audioDAO.createMix(mixName, description, pitch, echo, decay, gain, flangerLenght, wetness, lfoFrequency, lowPass);
 	}
 

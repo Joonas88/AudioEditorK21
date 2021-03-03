@@ -45,7 +45,6 @@ public class AudioCloudDAO {
 	 */
 	public static class MixerSetting {
 		
-		
 		private String mixName, description, dateDAO, creatorName;
 		private double pitch, echo, decay, gain, flangerLenght, wetness, lfoFrequency;
 		private float lowPass;
@@ -335,7 +334,18 @@ public class AudioCloudDAO {
 	 * @return true or false according to the process
 	 * @throws SQLException
 	 */
-	public boolean createMix(String mixName, String description, double pitch, double echo, double decay, double gain, double flangerLenght, double wetness, double lfoFrequency, float lowPass) throws SQLException {
+	public boolean createMix(
+			String mixName, 
+			String description, 
+			double pitch, 
+			double echo, 
+			double decay, 
+			double gain, 
+			double flangerLenght, 
+			double wetness, 
+			double lfoFrequency, 
+			float lowPass
+			) throws SQLException {
 
 		LocalDate date =  LocalDate.now(); //TODO Päivämäärä asetetaan jossain muualla?
 		

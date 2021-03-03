@@ -63,7 +63,7 @@ public class RegisterLoginController {
 	public void setMainController (MainController mainController) {
 		this.mc=mainController;
 		this.controller=mc.getController();
-		controller.intializeDatabase();
+		controller.intializeDatabaseConnection();
 	}
 	
 	/**
