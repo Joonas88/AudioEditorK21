@@ -1,10 +1,8 @@
 package otp.group6.AudioEditor;
 
-import java.lang.reflect.Parameter;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 
 import be.tarsos.dsp.AudioDispatcher;
@@ -16,73 +14,90 @@ import be.tarsos.dsp.io.jvm.JVMAudioInputStream;
 /**
  * 
  * @author Kevin Akkoyun, Joonas Soininen
- * @version 0.1
+ * @version 0.2
  *
  */
 
 public class AudioOutput extends Thread {
+
 	@SuppressWarnings("unused")
 	private AudioDispatcher audioDispatcher;
-	
+
+	// Used to check if audioFile has been given before playing
+	private boolean isReady;
+
 	public AudioOutput() {
-	
+		isReady = false;
 	}
+
 	@Override
 	public void run() {
-		audioDispatcher.run();
+		if (isReady) {
+			try {
+				audioDispatcher.run();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
-	
+
 	/**
+	 * Opens Audio file with audio input stream
 	 * 
 	 * @param audio A new AudioInputStream
 	 */
 	public void openAudio(AudioInputStream audio) {
 		JVMAudioInputStream ais = getMonoAudioInputStream(audio);
-		
+
 		WaveformSimilarityBasedOverlapAdd wsola = new WaveformSimilarityBasedOverlapAdd(
 				Parameters.musicDefaults(1.0F, ais.getFormat().getSampleRate()));
-		
+
 		audioDispatcher = new AudioDispatcher(ais, wsola.getInputBufferSize(), wsola.getOverlap());
-		
+
 		wsola.setDispatcher(audioDispatcher);
-		
+
 		audioDispatcher.addAudioProcessor(wsola);
-				try {
+
+		try {
 			audioDispatcher.addAudioProcessor(new AudioPlayer(getAudioFormat()));
+
+			isReady = true;
 		} catch (LineUnavailableException e) {
-				e.printStackTrace();
+			e.printStackTrace();
 		}
 	}
-	
-	
-	public void pause() {
-		
-	}
-	
-	
-	public void forward() {
-		
-	}
-	
-	public void rewind() {
-		
-	}
-	
+
+	/**
+	 * Stops audioDispatcher and finishes AudioOutput thread
+	 */
 	public void closeAudio() {
 		audioDispatcher.stop();
 	}
-	public AudioFormat getAudioFormat(){
-        float sampleRate = 44100;
-        int sampleSizeBits = 16;
-        int channels = 1;
-        boolean signed = true;
-        boolean bigEndian = false;
-        AudioFormat format = new AudioFormat(sampleRate,sampleSizeBits,channels,signed, bigEndian);
-        return format;
-    }
+
+	/**
+	 * Converts audioInputStream to mono JVMAudioInputStream
+	 * 
+	 * @param ais
+	 * @return
+	 */
 	public JVMAudioInputStream getMonoAudioInputStream(AudioInputStream ais) {
-		
+
 		return new JVMAudioInputStream(AudioSystem.getAudioInputStream(getAudioFormat(), ais));
-		
+
+	}
+
+	/**
+	 * returns default audio format
+	 * 
+	 * @return Default Audio format
+	 */
+	public AudioFormat getAudioFormat() {
+		float sampleRate = 44100;
+		int sampleSizeBits = 16;
+		int channels = 1;
+		boolean signed = true;
+		boolean bigEndian = false;
+		AudioFormat format = new AudioFormat(sampleRate, sampleSizeBits, channels, signed, bigEndian);
+		return format;
 	}
 }

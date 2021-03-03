@@ -1,3 +1,2 @@
-## This is an experimental branch
+## AudioEditor
 
-# Contents of this branch should not be merged into other branches without approval of everyone

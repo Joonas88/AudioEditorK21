@@ -1,30 +1,26 @@
 package otp.group6.view;
 
 import java.io.IOException;
-
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import otp.group6.*;
+
 /**
  * 
  * @author Kevin Akkoyun
  * @version 0.1
  */
 public class MainApplication extends Application {
+
 	
 	private Stage primaryStage;
 	private AnchorPane rootLayout;
-	
+
 	public static void main(String[] args) {
 		launch(args);
 	}
@@ -75,14 +71,12 @@ public class MainApplication extends Application {
 			primaryStage.show();
 			
 			MainController mainController = loader.getController();
+
 			mainController.initializeMixer();
 			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-	}
-	public void initializeMainLayout() {
 		
 	}
 }

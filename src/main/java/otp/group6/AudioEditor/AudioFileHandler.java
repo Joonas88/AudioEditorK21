@@ -1,4 +1,5 @@
 package otp.group6.AudioEditor;
+
 import javax.sound.sampled.*;
 import javax.sound.sampled.AudioFileFormat.Type;
 import javax.swing.JFileChooser;
@@ -18,12 +19,11 @@ import java.net.URI;
  *
  */
 
-public class AudioFileHandler{
-	
-	
-	//Constructor
+public class AudioFileHandler {
+
+	// Constructor
 	public void AudioFileHandler() {
-		
+
 	}
 	
 
@@ -33,12 +33,12 @@ public class AudioFileHandler{
 			a = AudioSystem.getAudioInputStream(new File(name).getAbsoluteFile());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();			
-		} 
+			e.printStackTrace();
+		}
 		return a;
-		
+
 	}
-	
+
 	public static void CloseFile(AudioInputStream file) {
 		try {
 			file.close();
@@ -46,33 +46,34 @@ public class AudioFileHandler{
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void SaveFile(AudioInputStream audio, File targetFile, Type fileFormat) {
 		try {
 			AudioSystem.write(audio, fileFormat, targetFile);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 	}
-	
-	//TODO Tiedostonimi tai Inputstreami! 
+
+	// TODO Tiedostonimi tai Inputstreami!
 	// Muista varmitaa lopullinen versio!
 	// Muista varmistaa käyttäjältä ennen tiedoston poistoa!
 	public static void DeleteFile(String name) {
 		try {
-			File tiedosto =  new File(name).getAbsoluteFile();
+			File tiedosto = new File(name).getAbsoluteFile();
 			tiedosto.delete();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 	}
+
 	public static File openFileExplorer(Window window) {
 		FileChooser fc = new FileChooser();
 		File file = fc.showOpenDialog(window);
 		return file;
-		
+
 	}
-	
+
 }
