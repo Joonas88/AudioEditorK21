@@ -5,8 +5,13 @@ import java.text.DecimalFormat;
 import java.util.regex.Pattern;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.UnsupportedAudioFileException;
+
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javafx.event.ActionEvent;
@@ -97,6 +102,10 @@ public class MainController {
 	@FXML
 	private Text textAudioFileDuration;
 	@FXML
+	private Text textRecordFileDuration;
+	@FXML
+	private Text textRecordingDuration;
+	@FXML
 	private GridPane paneMixerSliders;
 	@FXML
 	private AnchorPane paneMixerAudioPlayer;
@@ -106,6 +115,12 @@ public class MainController {
 	private Button buttonPause;
 	@FXML
 	private Button buttonStop;
+	@FXML
+	private Button recorderButtonPlay;
+	@FXML
+	private Button recorderButtonPause;
+	@FXML
+	private Button recorderButtonStop;
 	@FXML
 	private Button buttonInfoPitch;
 	@FXML
@@ -129,7 +144,8 @@ public class MainController {
 	private String audioFileProcessedTimeString;
 	private DecimalFormat decimalFormat = new DecimalFormat("#0.00"); // kaikki luvut kahden desimaalin tarkkuuteen
 
-	
+	private Boolean isRecording = false;
+	Timer timer;
 	
 	public void initializeMixer() {
 		initializeSlidersAndTextFields();
@@ -426,15 +442,78 @@ public class MainController {
 	
 	
 	@FXML
-	
-	public void recordAudio() {
-		controller.recordAudioToggle();
+	public void recordAudioToggle() {
+		
+		if(!isRecording) {
+			controller.recordAudio();
+			timer = new Timer();
+			TimerTask task = new TimerTask() {
+				int i = 1;
+				@Override
+				public void run() {
+					textRecordingDuration.setText("" + i);
+					i++;
+				}
+			};
+			
+			timer.schedule(task, 1000, 1000);
+			isRecording = true;
+		}else {
+			timer.cancel();
+			textRecordingDuration.setText("0");
+			controller.stopRecord();
+			isRecording = false;
+			File file = null;
+			
+			file = new File("src/audio/default.wav").getAbsoluteFile();
+			file.deleteOnExit();
+			
+			
+			
+			if(file != null) {
+				try {
+					AudioFormat format = AudioSystem.getAudioFileFormat(file.getAbsoluteFile()).getFormat();
+					double audioFileLengthInSec = file.length() / (format.getFrameSize() * format.getFrameRate());
+					
+					audioFileDurationString = secondsToMinutesAndSeconds(audioFileLengthInSec);
+					textAudioFileDuration.setText(": / " + audioFileDurationString);
+					
+					textRecordFileDuration.setText("0:00 / " + audioFileDurationString);
+				} catch (Exception e) {
+					
+					e.printStackTrace();
+				}
+				
+			}
+		}
 		
 	}
+	
+	
 	@FXML
-	public void stopRecord() {
-		controller.stopRecord();
+	public void recorderPlayAudio() {
+		controller.audioRecorderPlayAudio();
+		recorderButtonPlay.setDisable(true);
+		recorderButtonPause.setDisable(false);
+		recorderButtonStop.setDisable(false);
 	}
+
+	@FXML
+	public void recorderStopAudio() {
+		controller.audioRecorderStopAudio();
+		recorderButtonPlay.setDisable(false);
+		recorderButtonPause.setDisable(true);
+		recorderButtonStop.setDisable(true);
+	}
+
+	@FXML
+	public void recorderPauseAudio() {
+		controller.audioRecorderPauseAudio();
+		recorderButtonPlay.setDisable(false);
+		recorderButtonPause.setDisable(true);
+		recorderButtonStop.setDisable(false);
+	}
+	
 	
 	public void openFile(int index) {
 		Pattern pattern = Pattern.compile("(\\.wav)$", Pattern.CASE_INSENSITIVE);

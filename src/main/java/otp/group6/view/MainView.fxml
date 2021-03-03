@@ -224,12 +224,20 @@
                            <children>
                               <Button layoutX="29.0" layoutY="14.0" mnemonicParsing="false" text="Save" AnchorPane.bottomAnchor="13.0" AnchorPane.leftAnchor="29.0" AnchorPane.rightAnchor="28.0" AnchorPane.topAnchor="14.0" />
                            </children></AnchorPane>
-                        <AnchorPane layoutX="138.0" layoutY="159.0" prefHeight="220.0" prefWidth="620.0">
+                        <AnchorPane layoutX="138.0" layoutY="159.0" prefHeight="277.0" prefWidth="620.0">
                            <children>
-                              <Button layoutX="96.0" layoutY="96.0" mnemonicParsing="false" prefHeight="29.0" prefWidth="118.0" text="play/pause" AnchorPane.bottomAnchor="95.0" AnchorPane.leftAnchor="96.0" AnchorPane.rightAnchor="406.0" AnchorPane.topAnchor="96.0" />
-                              <Slider layoutX="83.0" layoutY="179.0" prefHeight="16.0" prefWidth="427.0" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="83.0" AnchorPane.rightAnchor="110.0" AnchorPane.topAnchor="179.0" />
-                              <Text fx:id="textFieldRecordDuration" layoutX="472.0" layoutY="176.0" strokeType="OUTSIDE" strokeWidth="0.0" text=":" />
-                              <ToggleButton layoutX="421.0" layoutY="98.0" mnemonicParsing="false" onAction="#recordAudio" text="Record" />
+                              <ButtonBar layoutX="163.0" layoutY="223.0" prefHeight="40.0" prefWidth="200.0">
+                                <buttons>
+                                  <Button fx:id="recorderButtonPause" mnemonicParsing="false" onAction="#recorderPauseAudio" text="Pause" />
+                                    <Button fx:id="recorderButtonPlay" mnemonicParsing="false" onAction="#recorderPlayAudio" text="Play" />
+                                    <Button fx:id="recorderButtonStop" mnemonicParsing="false" onAction="#recorderStopAudio" text="Stop" />
+                                </buttons>
+                              </ButtonBar>
+                              <Slider layoutX="82.0" layoutY="158.0" prefHeight="16.0" prefWidth="427.0" AnchorPane.bottomAnchor="46.0" AnchorPane.leftAnchor="82.0" AnchorPane.rightAnchor="111.0" AnchorPane.topAnchor="158.0" />
+                              <Text fx:id="textRecordFileDuration" layoutX="446.0" layoutY="183.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0:00 / 0:00" />
+                              <ToggleButton layoutX="136.0" layoutY="79.0" mnemonicParsing="false" text="Play/Pause" />
+                              <ToggleButton layoutX="430.0" layoutY="79.0" mnemonicParsing="false" onAction="#recordAudioToggle" text="Record" />
+                              <Text fx:id="textRecordingDuration" layoutX="498.0" layoutY="96.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" wrappingWidth="22.13671875" />
                            </children>
                         </AnchorPane>
                      </children>

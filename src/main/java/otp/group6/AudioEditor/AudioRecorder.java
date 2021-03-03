@@ -2,6 +2,7 @@ package otp.group6.AudioEditor;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.*;
 
 import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioFormat;
@@ -10,13 +11,22 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.TargetDataLine;
+
 import be.tarsos.dsp.AudioDispatcher;
+import be.tarsos.dsp.AudioEvent;
+import be.tarsos.dsp.AudioProcessor;
+import be.tarsos.dsp.GainProcessor;
 import be.tarsos.dsp.WaveformSimilarityBasedOverlapAdd;
 import be.tarsos.dsp.WaveformSimilarityBasedOverlapAdd.Parameters;
+import be.tarsos.dsp.effects.DelayEffect;
+import be.tarsos.dsp.effects.FlangerEffect;
+import be.tarsos.dsp.filters.LowPassSP;
 import be.tarsos.dsp.io.jvm.AudioDispatcherFactory;
 import be.tarsos.dsp.io.jvm.AudioPlayer;
 import be.tarsos.dsp.io.jvm.JVMAudioInputStream;
 import be.tarsos.dsp.io.jvm.WaveformWriter;
+import be.tarsos.dsp.resample.RateTransposer;
+import javafx.concurrent.Task;
 
 /**
  * Provides tools for basic audio recording
@@ -39,6 +49,9 @@ public class AudioRecorder extends Thread {
 	private WaveformSimilarityBasedOverlapAdd wsola;
 	private WaveformWriter writer;
 	private Thread t;
+	private Timer timer;
+	private float secondsProcessed = (float) 0.0;
+	private float secondsRecorded = (float) 1.0;
 
 	public AudioRecorder() {
 		this.setFormat(getDefaultAudioFormat());
@@ -96,7 +109,15 @@ public class AudioRecorder extends Thread {
 				t = new Thread(adp);
 			}
 			t.start();
-			
+			TimerTask task = new TimerTask() {
+				
+				@Override
+				public void run() {
+					secondsRecorded++;
+				}
+			};
+			timer = new Timer();
+			timer.schedule(task, 1000, 1000);
 			System.out.println("Recording started");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -106,9 +127,71 @@ public class AudioRecorder extends Thread {
 
 	public void stopRecord() {	
 		adp.stop();
+		timer.cancel();
 		System.out.println(adp.secondsProcessed());
 		System.out.println("Recording stopped");
 	}
+	
+	public void playAudio() {
+		if (adp != null) {
+			adp.stop();
+		}
+		
+		try {
+			wsola = new WaveformSimilarityBasedOverlapAdd(Parameters.musicDefaults(1, getDefaultAudioFormat().getSampleRate()));
+			adp = AudioDispatcherFactory.fromFile(targetFile, wsola.getInputBufferSize(), wsola.getOverlap());
+
+			wsola.setDispatcher(adp);
+			adp.addAudioProcessor(wsola);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+
+		try {
+			audioPlayer = new AudioPlayer(format);
+			adp.addAudioProcessor(audioPlayer);
+			adp.addAudioProcessor(new AudioProcessor() {
+			@Override
+				public void processingFinished() {
+				//TODO Tähän pitäis laittaa viesti main controllerille play-napin aktivoinnista!
+				}
+				@Override
+				public boolean process(AudioEvent audioEvent) {
+					return false;
+				}
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+			Thread t = new Thread(adp);
+			t.start();
+			if(secondsProcessed != (float)0.0) {
+				adp.skip(secondsProcessed);
+				secondsProcessed =(float)0.0;
+			}
+			
+
+	}
+	
+	public void stopAudio() {
+		if (adp != null) {
+			adp.stop();
+			secondsProcessed = (float)0.0;
+		}
+	}
+
+	public void pauseAudio() {
+		if (adp != null) {
+			secondsProcessed = adp.secondsProcessed();
+			adp.stop();
+		}
+	}
+	
+	public float getSecondsProcessed() {
+		return secondsProcessed;
+	}
+	
 	public AudioFormat getDefaultAudioFormat() {
 		float sampleRate = 44100;
 		int sampleSizeBits = 16;

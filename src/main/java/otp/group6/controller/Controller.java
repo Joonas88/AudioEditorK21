@@ -143,27 +143,33 @@ public class Controller {
 	}
 	// Soundboard methods stop
 
+	
+	
 	// AudioRecorder methods start
-	boolean isRecording = false;
-	public void recordAudioToggle() {
-		if(!isRecording) {
-			recorder.recordAudio();
-			isRecording = true;
-		}else {
-			recorder.stopRecord();
-			isRecording = false;
-		}
-		
+	
+	public void recordAudio() {
+		recorder.recordAudio();
+	}
+	public void stopRecord() {
+		recorder.stopRecord();
 	}
 	
-	// AudioRecorder methods stop
-	public void stopRecord() {
-		try {
-			recorder.stopRecord();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	public void audioRecorderPlayAudio() {
+		recorder.playAudio();
 	}
+	
+	public void audioRecorderStopAudio() {
+		recorder.stopAudio();
+	}
+	
+	public void audioRecorderPauseAudio() {
+		recorder.pauseAudio();
+	}
+	
+	public float getSecondsRecorded(float secondsRecorded) {
+		return recorder.getSecondsProcessed();
+	}
+	
 	// AudioRecorder methods stop
 	
 	//AudioCloudDAO methods start
