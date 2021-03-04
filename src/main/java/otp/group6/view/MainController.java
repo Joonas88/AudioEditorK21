@@ -436,6 +436,12 @@ public class MainController {
 		controller.stopRecord();
 	}
 	
+	/**
+	 * Used to edit existing sample in the sample array
+	 * Opens File explorer and edits sample with given index to contain selected wav file
+	 * Checks file validity with REGEX
+	 * @param index
+	 */
 	public void openFile(int index) {
 		Pattern pattern = Pattern.compile("(\\.wav)$", Pattern.CASE_INSENSITIVE);
 		try {
@@ -453,7 +459,12 @@ public class MainController {
 			e.printStackTrace();
 		}
 	}
-
+	
+	/**
+	 * Opens file explorer and adds selected wav file to sample array in soundboard
+	 * Then adds a button to the soundboard
+	 * Checks file validity with REGEX
+	 */
 	@FXML
 	public void openSample() {
 		//REGEX pattern for ".wav"
@@ -475,7 +486,10 @@ public class MainController {
 			e.printStackTrace();
 		}
 	}
-	
+	/**
+	 * Adds a button to soundboard
+	 * @param index - the index of current gridpane child
+	 */
 	public void addButton(int index) {
 		
 		FXMLLoader loader = new FXMLLoader();
@@ -503,6 +517,11 @@ public class MainController {
 			return;
 		}
 	}
+	/**
+	 * Configures the button with given index
+	 * @param ap AnchorPane -- root of the button element
+	 * @param index -- index of the gridPane child
+	 */
 	public void configureSoundButton (AnchorPane ap, int index) {
 		Button play = (Button) ap.getChildren().get(0);
 		Text description = (Text) ap.getChildren().get(1);
@@ -545,15 +564,16 @@ public class MainController {
 			}
 			
 		});
-		
-		//add edit and delete functionality
 	}
-	
+	/**
+	 * Method for renaming soundboard buttons
+	 * @param text -- text element of the button
+	 * @param ap -- parent of the button
+	 * @param index -- index of the GridPane child
+	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void renameButton(Text text, AnchorPane ap, int index) {
-		
 		TextField tf = new TextField();
-		tf.setText(text.getText());
 		tf.forward();
 		ChangeListener cl = new ChangeListener() {
 			@Override
@@ -563,6 +583,9 @@ public class MainController {
 					String temp = tf.getText();
 					if(temp.length() > 20) {
 						temp = temp.substring(0,20);
+					}
+					if(checkEmpty(temp)) {
+						temp = text.getText();
 					}
 					text.setText(temp);
 					controller.setSampleName(index, temp);
@@ -579,6 +602,9 @@ public class MainController {
 					if(temp.length() > 20) {
 						temp = temp.substring(0,20);
 					}
+					if(checkEmpty(temp)) {
+						temp = text.getText();
+					}
 					text.setText(temp);
 					controller.setSampleName(index, temp);
 					tf.focusedProperty().removeListener(cl);
@@ -592,6 +618,18 @@ public class MainController {
 		tf.layoutYProperty().set(text.getLayoutY() - 20);
 		tf.requestFocus();
 	}
+	/**
+	 * Checks if string contains only whitespaces
+	 * @param input -- String to be checked
+	 * @return returns true if string contains only whitespaces, otherwise returns false
+	 */
+	public boolean checkEmpty(String input) {
+		input = input.trim();
+		return input.isEmpty();
+	}
+	/**
+	 * Refreshes soundboard buttons and reassigns their names
+	 */
 	public void refreshButtons() {
 		int length = controller.getSampleArrayLength();
 		for(int i = 0; i < length; i++) {
@@ -601,6 +639,9 @@ public class MainController {
 			description.setText(controller.getSampleName(i));
 		}
 	}
+	/**
+	 * Removes last soundboard button
+	 */
 	public void removeLast() {
 		int length = controller.getSampleArrayLength();
 		AnchorPane gridRoot = (AnchorPane) buttonGrid.getChildren().get(length);
