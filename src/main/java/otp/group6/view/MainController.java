@@ -1,12 +1,20 @@
 package otp.group6.view;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.regex.Pattern;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 import java.util.regex.Matcher;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -14,6 +22,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
@@ -167,11 +177,6 @@ public class MainController {
 	@FXML
 	public void soundManipulatorSaveMixedFile() {
 		controller.soundManipulatorSaveFile();
-	}
-
-	@FXML
-	public void soundManipulatorSaveMixerSettings() {
-		//TODO Tämä tekemättä!!!
 	}
 	
 	@FXML
@@ -623,6 +628,12 @@ public class MainController {
 	 */
 
 	/**
+	 * @author Joonas Soininen
+	 */
+	@FXML
+	private Label loggedinuser;
+
+	/**
 	 * Method opens a new scene Login and Register form
 	 */
 	public void openLoginRegister() {
@@ -672,6 +683,12 @@ public class MainController {
 	 * Opens a new scene where the mixer settings can be saved to the database
 	 */
 	public void openMixerSave() {
+		Button logoutButton = new Button("Log out");
+		logoutButton.setStyle("-fx-font-size: 8pt; -fx-text-fill:black;");
+		loggedinuser.setText("Logged in as: "+controller.loggedIn());
+		loggedinuser.setGraphic(logoutButton);
+		loggedinuser.setContentDisplay(ContentDisplay.RIGHT);
+		logoutButton.setOnAction(event ->{ controller.logoutUser(); loggedinuser.setText(""); loggedinuser.setGraphic(null);});
 		try {
 		    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\SaveMixerSettings.fxml"));
 		    Parent root1 = (Parent) fxmlLoader.load();		    
@@ -690,15 +707,40 @@ public class MainController {
 		}
 	}
 	
-	/**
-	 * Does a query to the database class to check for a logged in user
-	 */
-	public void checkForloggedin() {
-		controller.intializeDatabaseConnection();
-		if (!(controller.loggedIn()==" ")) {
-			openMixerSave();
-		} else {
-			openLoginRegister();
+	public void openSaveSelection() {
+		try {
+		    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\SaveSelectionView.fxml"));
+		    Parent root1 = (Parent) fxmlLoader.load();
+		    Stage stage = new Stage();
+		    SaveSelectionController ssc = fxmlLoader.getController();
+		    ssc.setMainController(this);
+		    stage.initModality(Modality.APPLICATION_MODAL);
+		    stage.initStyle(StageStyle.UNDECORATED);
+		    stage.setTitle("Mixer Settings Loader");
+		    stage.setScene(new Scene(root1));  
+		    stage.show();	   
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public void openLoadSelection() {
+		try {
+		    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\LoadSelectionView.fxml"));
+		    Parent root1 = (Parent) fxmlLoader.load();
+		    Stage stage = new Stage();
+		    LoadSelectionController lsc = fxmlLoader.getController();
+		    lsc.setMainController(this);
+		    stage.initModality(Modality.APPLICATION_MODAL);
+		    stage.initStyle(StageStyle.UNDECORATED);
+		    stage.setTitle("Mixer Settings Loader");
+		    stage.setScene(new Scene(root1));  
+		    stage.show();	   
+
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	
@@ -714,8 +756,7 @@ public class MainController {
 	    Stage stage = (Stage) closeButton.getScene().getWindow();
 	    stage.close();
 	}
-	
-	//TODO tarvitaan arvojen asettamiselle tapa!
+
 	/**
 	 * Method to set the slider values with data from the database
 	 * @param pitch
@@ -745,4 +786,41 @@ public class MainController {
 		sliderLfoFrequency.setValue(lfoFrequency);
 		sliderLowPass.setValue(lowPass);
 	}
+	
+	/**
+	 * Method to store mixer settings locally
+	 */
+	public void soundManipulatorSaveMixerSettings() {
+		//TODO INFO KÄYTTÄJÄLLE
+		//TODO Tiedostosijainti!
+		JFrame parentFrame = new JFrame();
+		 
+		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.setDialogTitle("Specify a file to save");   
+		 
+		int userSelection = fileChooser.showSaveDialog(parentFrame);
+		 
+		if (userSelection == JFileChooser.APPROVE_OPTION) {
+		    File fileToSave = fileChooser.getSelectedFile();
+		    System.out.println("Save as file: " + fileToSave.getAbsolutePath());
+			try {
+				FileWriter writeFile = new FileWriter(fileToSave);
+				writeFile.write(Double.toString(sliderPitch.getValue())+"\n");
+				writeFile.write(Double.toString(sliderEchoLength.getValue())+"\n");
+				writeFile.write(Double.toString(sliderDecay.getValue())+"\n");
+				writeFile.write(Double.toString(sliderGain.getValue())+"\n");
+				writeFile.write(Double.toString(sliderFlangerLength.getValue())+"\n");
+				writeFile.write(Double.toString(sliderWetness.getValue())+"\n");
+				writeFile.write(Double.toString(sliderLfoFrequency.getValue())+"\n");
+				writeFile.write(Float.toString((float) sliderLowPass.getValue())+"\n");
+				writeFile.close();
+				System.out.println("EHKÄPÄ");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+	}
+
 }

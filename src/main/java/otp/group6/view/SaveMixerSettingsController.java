@@ -2,9 +2,7 @@ package otp.group6.view;
 
 import javafx.scene.control.TextArea;
 import java.sql.SQLException;
-
 import javax.swing.JOptionPane;
-
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -16,7 +14,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.stage.Stage;
 import otp.group6.controller.Controller;
-
+/**
+ * 
+ * @author Joonas Soininen
+ *
+ */
 public class SaveMixerSettingsController {
 	Controller controller;
 	MainController mc;
