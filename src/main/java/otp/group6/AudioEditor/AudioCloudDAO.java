@@ -1,6 +1,9 @@
 package otp.group6.AudioEditor;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.swing.JOptionPane;
 
 import java.sql.*;
@@ -263,7 +266,7 @@ public class AudioCloudDAO {
 			if (!rset.next()) {
 				// TODO käyttäjälle palaute, ehkäpä käyttöliittymään, ei tänne :)
 				//JOptionPane.showMessageDialog(null, "Validointi ei onnistu, koita uudelleen?"); //Ei voi kertoa ettei tunnusta ole //Nämä ponnahtaa myös testeissä!
-				System.out.println("Käyttäjätunnusta ei ole olemassa"); //Poistettava
+				//System.out.println("Käyttäjätunnusta ei ole olemassa"); //Poistettava
 				return "No user";
 			}
 			
@@ -275,13 +278,13 @@ public class AudioCloudDAO {
 			if (pwMatch) {
 				// TODO käyttäjälle palaute, ehkäpä käyttöliittymään, ei tänne :)
 				//JOptionPane.showMessageDialog(null, "Tervetuloa! "+rset.getString("username")); //Nämä ponnahtaa myös testeissä!
-				System.out.println("Tervetuloa "+rset.getString("username"));
+				//System.out.println("Tervetuloa "+rset.getString("username")); //Poistettava
 				userclass.setUser((rset.getString("username")));
 				return "Welcome "+rset.getString("username");
 			} else {
 				// TODO käyttäjälle palaute, ehkäpä käyttöliittymään, ei tänne :)
 				//JOptionPane.showMessageDialog(null, "Käyttäjätunnus tai salasana väärä!", "HUOMIO!", JOptionPane.WARNING_MESSAGE); //Nämä ponnahtaa myös testeissä!
-				System.out.println("Käyttäjätunnus tai salasana väärä!");//Poistettava
+				//System.out.println("Käyttäjätunnus tai salasana väärä!");//Poistettava
 				return "Incorrect user or pw";
 			}
 
@@ -365,7 +368,7 @@ public class AudioCloudDAO {
 				query.setDouble(12, lfoFrequency);
 				query.setFloat(13, lowPass);
 				query.executeUpdate();
-				System.out.println("Mix tallennettu!"); //Poistetteava
+				//System.out.println("Mix tallennettu!"); //Poistetteava
 				return true;
 			} catch (SQLException e) {
 				do {
@@ -376,7 +379,7 @@ public class AudioCloudDAO {
 			}
 			return false;
 		} else {
-			JOptionPane.showMessageDialog(null, "Not logged in! Please log in to use this function.","Alert",JOptionPane.WARNING_MESSAGE); //Nämä ponnahtaa myös testeissä!
+			//JOptionPane.showMessageDialog(null, "Not logged in! Please log in to use this function.","Alert",JOptionPane.WARNING_MESSAGE); //Nämä ponnahtaa myös testeissä!
 			return false;
 		}
 
@@ -517,7 +520,7 @@ public class AudioCloudDAO {
 				statement.executeUpdate();
 				// TODO käyttäjälle palaute, ehkäpä käyttöliittymään, ei tänne :)
 				//JOptionPane.showMessageDialog(null, "Poistaminen onnistui! :)"); //Nämä ponnahtaa myös testeissä!
-				System.out.println("Mix poistettu!"); //Tämä poistoon
+				//System.out.println("Mix poistettu!"); //Tämä poistoon
 				return true;
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -543,7 +546,7 @@ public class AudioCloudDAO {
 			statement.executeUpdate();
 			// TODO käyttäjälle palaute, ehkäpä käyttöliittymään, ei tänne :)
 			//JOptionPane.showMessageDialog(null, "Käyttäjätunnus poistettu! :)"); //Nämä ponnahtaa myös testeissä!
-			System.out.println("Käyttäjä poistettu!"); //Tämä poistoon
+			//System.out.println("Käyttäjä poistettu!"); //Tämä poistoon
 			userclass.setUser(" ");
 			return true;
 		} catch (Exception e) {
@@ -553,5 +556,17 @@ public class AudioCloudDAO {
 			return false;
 		}
 	}
-	
+		
+	/**
+	 * Used here only for JUnit testing
+	 * @param password is the inputed password
+	 * @return true if it matches requirements
+	 */
+	private static final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$";
+	private static final Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
+	public static boolean isValid(final String password) {
+		Matcher matcher = pattern.matcher(password);
+		return matcher.matches();
+	}
+		
 }

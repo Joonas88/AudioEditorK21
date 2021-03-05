@@ -716,7 +716,7 @@ public class MainController {
 		    ssc.setMainController(this);
 		    stage.initModality(Modality.APPLICATION_MODAL);
 		    stage.initStyle(StageStyle.UNDECORATED);
-		    stage.setTitle("Mixer Settings Loader");
+		    stage.setTitle("Mixer Settings Saving");
 		    stage.setScene(new Scene(root1));  
 		    stage.show();	   
 

@@ -24,7 +24,6 @@ public class SaveSelectionController {
 	public void setMainController (MainController mainController) {
 		this.mc=mainController;
 		this.controller=mc.getController();
-		controller.intializeDatabaseConnection();
 	}
 	
 	/**

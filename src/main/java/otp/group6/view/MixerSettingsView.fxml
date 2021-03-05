@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="otp.group6.view.MixerSettingsController">
+<AnchorPane fx:id="mainContainer" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="otp.group6.view.MixerSettingsController">
    <children>
       <TabPane fx:id="mixerTabs" prefHeight="600.0" prefWidth="1000.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
@@ -30,7 +30,7 @@
                                  <children>
                                     <ScrollPane layoutY="31.0" prefHeight="569.0" prefWidth="795.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <content>
-                                          <ListView fx:id="mixListView" prefHeight="565.0" prefWidth="793.0" />
+                                          <ListView fx:id="listView" prefHeight="565.0" prefWidth="793.0" />
                                        </content>
                                     </ScrollPane>
                                  </children>
@@ -47,7 +47,7 @@
                                           <RowConstraints maxHeight="184.0" minHeight="10.0" prefHeight="73.0" vgrow="SOMETIMES" />
                                       </rowConstraints>
                                        <children>
-                                          <Button mnemonicParsing="false" onAction="#selectMIX" prefHeight="25.0" prefWidth="198.0" text="Load Setting" GridPane.rowIndex="1">
+                                          <Button mnemonicParsing="false" onAction="#selectMIX" prefHeight="25.0" prefWidth="198.0" text="Use Setting" GridPane.rowIndex="1">
                                              <font>
                                                 <Font size="24.0" />
                                              </font>
@@ -132,7 +132,66 @@
           </Tab>
           <Tab closable="false" text="Favorites">
             <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <SplitPane dividerPositions="0.7995991983967936" prefHeight="571.0" prefWidth="1000.0">
+                           <items>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                 <children>
+                                    <ScrollPane layoutY="31.0" prefHeight="569.0" prefWidth="795.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <content>
+                                          <ListView fx:id="mixListView" prefHeight="565.0" prefWidth="793.0" />
+                                       </content>
+                                    </ScrollPane>
+                                 </children>
+                              </AnchorPane>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                 <children>
+                                    <GridPane prefHeight="569.0" prefWidth="197.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <columnConstraints>
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints maxHeight="428.0" minHeight="53.0" prefHeight="66.0" vgrow="SOMETIMES" />
+                                          <RowConstraints maxHeight="353.0" minHeight="10.0" prefHeight="74.0" vgrow="SOMETIMES" />
+                                          <RowConstraints maxHeight="324.0" minHeight="10.0" prefHeight="296.0" vgrow="SOMETIMES" />
+                                          <RowConstraints maxHeight="316.0" minHeight="0.0" prefHeight="69.0" vgrow="SOMETIMES" />
+                                          <RowConstraints maxHeight="184.0" minHeight="10.0" prefHeight="73.0" vgrow="SOMETIMES" />
+                                       </rowConstraints>
+                                       <children>
+                                          <Button mnemonicParsing="false" onAction="#selectMIX" prefHeight="25.0" prefWidth="198.0" text="Use Setting" GridPane.rowIndex="3">
+                                             <font>
+                                                <Font size="24.0" />
+                                             </font>
+                                             <GridPane.margin>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                             </GridPane.margin>
+                                          </Button>
+                                          <Button fx:id="closeButton1" mnemonicParsing="false" onAction="#handleCloseButtonAction" prefHeight="25.0" prefWidth="209.0" text="Cancel" GridPane.rowIndex="4">
+                                             <font>
+                                                <Font size="24.0" />
+                                             </font>
+                                             <GridPane.margin>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                             </GridPane.margin>
+                                          </Button>
+                                          <Button mnemonicParsing="false" onAction="#save" prefHeight="25.0" prefWidth="198.0" text="Save Favorites">
+                                             <font>
+                                                <Font size="24.0" />
+                                             </font>
+                                          </Button>
+                                          <Button mnemonicParsing="false" onAction="#read" prefHeight="25.0" prefWidth="198.0" text="Load Favorites" GridPane.rowIndex="1">
+                                             <font>
+                                                <Font size="24.0" />
+                                             </font>
+                                          </Button>
+                                       </children>
+                                    </GridPane>
+                                 </children>
+                              </AnchorPane>
+                           </items>
+                        </SplitPane>
+                     </children></AnchorPane>
             </content>
           </Tab>
         </tabs>

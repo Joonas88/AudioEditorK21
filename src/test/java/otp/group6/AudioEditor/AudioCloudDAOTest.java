@@ -15,7 +15,7 @@ import org.junit.jupiter.api.TestMethodOrder;
  * @author Joonas Soininen
  *
  */
-@Disabled
+//@Disabled
 class AudioCloudDAOTest {
 
 	private AudioCloudDAO dao = new AudioCloudDAO();
@@ -52,9 +52,9 @@ class AudioCloudDAOTest {
 	@DisplayName("Creating a new mixer setting")
 	@Order(6)
 	void testCreateMix() throws SQLException {
-		assertFalse(dao.createMix("testi", "Filtteriä kuvaava teksti", 1.1, 2.2, 3.3, 4.4, 5.5, 6.6), "createMix(Mixersetting): false, User needs to be logged in");
+		assertFalse(dao.createMix("testi", "Filtteriä kuvaava teksti", 1.1, 2.2, 3.3, 4.4, 5.5, 6.6, 7.7, (float) 8.8), "createMix(Mixersetting): false, User needs to be logged in");
 		dao.loginUser("test6", "Example1!");
-		assertTrue(dao.createMix("testi", "Filtteriä kuvaava teksti", 1.1, 2.2, 3.3, 4.4, 5.5, 6.6), "createMix(Mixersetting): true, when setting was created");
+		assertTrue(dao.createMix("testi", "Filtteriä kuvaava teksti", 1.1, 2.2, 3.3, 4.4, 5.5, 6.6, 7.7, (float) 8.8), "createMix(Mixersetting): true, when setting was created");
 	}
 
 	@Test
@@ -67,7 +67,7 @@ class AudioCloudDAOTest {
 	@Test
 	@DisplayName("Getting all registered users")
 	void testGetUsers() {
-		int expected = 13;
+		int expected = 15;
 		int actual = dao.getUsers().length;
 		assertEquals(expected, actual, "Length is set for the testing, must be cheked if tested later on");
 	}
@@ -75,7 +75,7 @@ class AudioCloudDAOTest {
 	@Test
 	@DisplayName("Getting all mixer settings")
 	void testGetAllMixArray() {
-		int expected = 13;
+		int expected = 18;
 		int actual = dao.getAllMixArray().length;
 		assertEquals(expected, actual, "Length is set for the testing, must be cheked if tested later on");
 	}
@@ -83,9 +83,9 @@ class AudioCloudDAOTest {
 	@Test
 	@DisplayName("Getting specific mixer setting")
 	void testGetCertainMixesArray() {
-		assertEquals(dao.getCertainMixesArray(1, "69").length, 4, "Checks for the amount of entries including specified symbols");
-		assertEquals(dao.getCertainMixesArray(2, "7").length, 2,"Checks for the amount of entries including specified symbols");
-		assertEquals(dao.getCertainMixesArray(3, "uvaava").length, 4, "Checks for the amount of entries including specified symbols");
+		assertEquals(dao.getCertainMixesArray(1, "Joonas").length, 13, "Checks for the amount of entries including specified symbols");
+		assertEquals(dao.getCertainMixesArray(2, "7").length, 0,"Checks for the amount of entries including specified symbols");
+		assertEquals(dao.getCertainMixesArray(3, "usko").length, 1, "Checks for the amount of entries including specified symbols");
 	}
 
 	@Test
