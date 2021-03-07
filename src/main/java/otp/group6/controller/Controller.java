@@ -220,5 +220,9 @@ public class Controller {
 	public String loggedIn() {
 		return audioDAO.loggedIn();
 	}
+	
+	public boolean changePW(String u, String p, String np) {
+		return audioDAO.changePassword(u, p, np);
+	}
 	//AudioCloudDAO methods stop
 }

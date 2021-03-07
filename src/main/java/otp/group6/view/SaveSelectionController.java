@@ -8,6 +8,8 @@ import otp.group6.controller.Controller;
 
 /**
  * 
+ * Class handles selection for saving mixer settings locally or into database
+ * 
  * @author Joonas Soininen
  *
  */

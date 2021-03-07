@@ -295,6 +295,59 @@ public class AudioCloudDAO {
 		return "Ei voi kirjautua sisälle!"; //Kunnollinen viesti!
 	}
 	
+	/**
+	 * Method for users to change password.
+	 * @param u
+	 * @param p
+	 * @param np
+	 * @return
+	 */
+	public boolean changePassword(String u, String p, String np) {
+		//TODO lopullisesta tietokannasta tippuu TEST pois
+		try (PreparedStatement myStatement = databaseConnection.prepareStatement("SELECT username, password, salt FROM accountsTEST WHERE username = ?");) {
+			myStatement.setString(1, u);
+			ResultSet rset = myStatement.executeQuery();
+			
+			if (!rset.next()) {
+				return false;
+			}
+			
+			String pw = rset.getString("password");
+			String salt = rset.getString("salt");
+			
+			boolean pwMatch = PasswordUtils.verifyUserPassword(p, pw, salt);
+			
+			if (pwMatch) {
+				String newsalt = PasswordUtils.getSalt(30); 
+				String securePW = PasswordUtils.generateSecurePassword(np, newsalt);
+				//TODO lopullisesta tietokannasta tippuu TEST pois
+				try (PreparedStatement myStatement1 = databaseConnection.prepareStatement("UPDATE accountsTEST set password=?, salt=? where username=?");) {
+					myStatement1.setString(1, securePW);
+					myStatement1.setString(2, newsalt);
+					myStatement1.setString(3, loggedIn());
+					myStatement1.executeUpdate();
+					userclass.setUser((rset.getString("username")));
+					return true;
+				} catch (Exception e) {
+					e.printStackTrace();
+					return false;
+				}	
+									
+			} else {
+				return false;
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		// TODO käyttäjälle palaute, ehkäpä käyttöliittymään, ei tänne :)
+		return false;
+	}
+	
+	/**
+	 * Method checks the user-class for logged in user.
+	 * @return
+	 */
 	public String loggedIn() {
 		if ((userclass.getUser()==null)){
 			return " ";

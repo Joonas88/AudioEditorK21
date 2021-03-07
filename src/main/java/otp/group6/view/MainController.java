@@ -632,7 +632,14 @@ public class MainController {
 	 */
 	@FXML
 	private Label loggedinuser;
-
+	@FXML
+	private MenuItem userSettings;
+	private Button logoutButton = new Button("Log out");
+	@FXML
+	private MenuItem loginoption;	
+	@FXML
+	private Button closeButton;
+		
 	/**
 	 * Method opens a new scene Login and Register form
 	 */
@@ -678,17 +685,14 @@ public class MainController {
 	public Controller getController () {
 		return this.controller;
 	}
-	
+
 	/**
 	 * Opens a new scene where the mixer settings can be saved to the database
 	 */
 	public void openMixerSave() {
-		Button logoutButton = new Button("Log out");
-		logoutButton.setStyle("-fx-font-size: 8pt; -fx-text-fill:black;");
-		loggedinuser.setText("Logged in as: "+controller.loggedIn());
-		loggedinuser.setGraphic(logoutButton);
-		loggedinuser.setContentDisplay(ContentDisplay.RIGHT);
-		logoutButton.setOnAction(event ->{ controller.logoutUser(); loggedinuser.setText(""); loggedinuser.setGraphic(null);});
+		setlogUserIn();
+
+		
 		try {
 		    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\SaveMixerSettings.fxml"));
 		    Parent root1 = (Parent) fxmlLoader.load();		    
@@ -707,6 +711,9 @@ public class MainController {
 		}
 	}
 	
+	/**
+	 * Opens the save selection scene where user can decide to save settings locally or to the database.
+	 */
 	public void openSaveSelection() {
 		try {
 		    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\SaveSelectionView.fxml"));
@@ -725,7 +732,9 @@ public class MainController {
 		}
 	}
 	
-	
+	/**
+	 * Opens a new scene where user can select where to load mixer settings, locally or from the database.
+	 */
 	public void openLoadSelection() {
 		try {
 		    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\LoadSelectionView.fxml"));
@@ -744,9 +753,27 @@ public class MainController {
 		}
 	}
 	
-	@FXML
-	private Button closeButton;
-	
+	/**
+	 * Opens user settings view where password can be changed or the user deleted.
+	 */
+	public void openUserSettings() {
+		try {
+		    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\UserSettingsView.fxml"));
+		    Parent root1 = (Parent) fxmlLoader.load();
+		    Stage stage = new Stage();
+		    UserSettingsController usc = fxmlLoader.getController();
+		    usc.setMainController(this);
+		    stage.initModality(Modality.APPLICATION_MODAL);
+		    stage.initStyle(StageStyle.UNDECORATED);
+		    stage.setTitle("Mixer Settings Loader");
+		    stage.setScene(new Scene(root1));  
+		    stage.show();	   
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}	
+
 	/**
 	 * Method to close open scenes
 	 * @param event
@@ -822,5 +849,28 @@ public class MainController {
 		}
 
 	}
+	
+	/**
+	 * Method to set visible user into main view and also set up different functions for logging out
+	 */
+	public void setlogUserIn() {
+		logoutButton.setStyle("-fx-font-size: 8pt; -fx-text-fill:black;");
+		loggedinuser.setText("Logged in as: "+controller.loggedIn());
+		loggedinuser.setGraphic(logoutButton);
+		loggedinuser.setContentDisplay(ContentDisplay.RIGHT);
+		userSettings.setVisible(true);
+		logoutButton.setOnAction(event ->setlogUserOut());
+		loginoption.setVisible(false);
+	}
 
+	/**
+	 * Method to change visibility of certain labels and menu items.
+	 */
+	public void setlogUserOut() {
+		controller.logoutUser();
+		loggedinuser.setText("");
+		loggedinuser.setGraphic(null);
+		userSettings.setVisible(false);
+		loginoption.setVisible(true);
+	}
 }

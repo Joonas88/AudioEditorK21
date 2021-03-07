@@ -16,6 +16,8 @@ import javafx.stage.Stage;
 import otp.group6.controller.Controller;
 /**
  * 
+ * Class handles saving mixer settings locally and to the database
+ * 
  * @author Joonas Soininen
  *
  */

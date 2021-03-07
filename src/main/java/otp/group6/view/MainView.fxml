@@ -263,6 +263,8 @@
           <Menu mnemonicParsing="false" text="Settings">
             <items>
               <MenuItem mnemonicParsing="false" text="Preferences" />
+                  <MenuItem fx:id="userSettings" mnemonicParsing="false" onAction="#openUserSettings" text="User Settings" visible="false" />
+                  <MenuItem fx:id="loginoption" mnemonicParsing="false" onAction="#openLoginRegister" text="Log in" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Help">

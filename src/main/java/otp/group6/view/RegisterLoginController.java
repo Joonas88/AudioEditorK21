@@ -17,6 +17,7 @@ import javafx.stage.Stage;
 import otp.group6.controller.Controller;
 
 /**
+ * Class handles user registering and logging in
  * 
  * @author Joonas Soininen
  *
@@ -67,7 +68,7 @@ public class RegisterLoginController {
 	}
 	
 	/**
-	 * Method called to remind of correct password format
+	 * Method called to remind of correct password format. Only called form username textfield.
 	 */
 	@FXML
 	public void pwReminder() {
@@ -184,7 +185,8 @@ public class RegisterLoginController {
 				controller.loginUser(username.getText(), password.getText());
 			    Stage stage = (Stage) closeButton.getScene().getWindow();
 			    stage.close();
-			    mc.openMixerSave();
+			    //mc.openMixerSave();
+			    mc.setlogUserIn();
 			}
 
 		}

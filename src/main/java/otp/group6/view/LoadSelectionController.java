@@ -14,6 +14,7 @@ import otp.group6.AudioEditor.AudioFileHandler;
 import otp.group6.controller.Controller;
 
 /**
+ * Class is used for storage selection, local or database
  * 
  * @author Joonas Soininen
  *

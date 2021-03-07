@@ -33,6 +33,7 @@ import otp.group6.AudioEditor.AudioCloudDAO.MixerSetting;
 import otp.group6.controller.Controller;
 
 /**
+ * Class handles database stored mixer settings, displaying them and storing them locally
  * 
  * @author Joonas Soininen
  *

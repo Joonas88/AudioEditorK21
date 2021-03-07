@@ -15,7 +15,7 @@ import org.junit.jupiter.api.TestMethodOrder;
  * @author Joonas Soininen
  *
  */
-//@Disabled
+@Disabled
 class AudioCloudDAOTest {
 
 	private AudioCloudDAO dao = new AudioCloudDAO();
@@ -50,7 +50,7 @@ class AudioCloudDAOTest {
 	
 	@Test
 	@DisplayName("Creating a new mixer setting")
-	@Order(6)
+	@Order(7)
 	void testCreateMix() throws SQLException {
 		assertFalse(dao.createMix("testi", "Filtteriä kuvaava teksti", 1.1, 2.2, 3.3, 4.4, 5.5, 6.6, 7.7, (float) 8.8), "createMix(Mixersetting): false, User needs to be logged in");
 		dao.loginUser("test6", "Example1!");
@@ -75,7 +75,7 @@ class AudioCloudDAOTest {
 	@Test
 	@DisplayName("Getting all mixer settings")
 	void testGetAllMixArray() {
-		int expected = 18;
+		int expected = 21;
 		int actual = dao.getAllMixArray().length;
 		assertEquals(expected, actual, "Length is set for the testing, must be cheked if tested later on");
 	}
@@ -90,16 +90,16 @@ class AudioCloudDAOTest {
 
 	@Test
 	@DisplayName("Deleting mixer setting")
-	@Order(7)
+	@Order(8)
 	void testDeleteMix() {
 		assertTrue(dao.deleteMix("testi"), "deleteMix(String): true, if the specified mix was deleted");
 	}
 	
 	@Test
 	@DisplayName("Deleting the just created user")
-	@Order(5)
+	@Order(6)
 	void testDeleteUser() {
-		dao.loginUser(user2, pw2);
+		//dao.loginUser(user2, pw2);
 		assertTrue(dao.deleteUser(), "deleteUser(): true, when user deletion is ok");
 	}
 
@@ -107,6 +107,16 @@ class AudioCloudDAOTest {
 	@DisplayName("Password is valid")
 	void testIsValid() {
 		assertTrue(AudioCloudDAO.isValid(pw2), "YES YES");
+	}
+	
+	@Test
+	@DisplayName("Change password")
+	@Order(5)
+	void testChangePassword() {
+		dao.loginUser(user2, pw2);
+		assertFalse(AudioCloudDAO.isValid(pw1), "isValid(String): false, when the password does not match the requirements");		
+		assertTrue(AudioCloudDAO.isValid(pw2), "isValid(String): true, when the password is in a correct format");	
+		assertTrue(dao.changePassword(user2, pw2, pw2), "changePassword(String,String,String): true if the change was succesfull ");
 	}
 	
 
