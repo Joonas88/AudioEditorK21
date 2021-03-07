@@ -1,12 +1,19 @@
 package otp.group6.view;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.regex.Pattern;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.swing.JFileChooser;
+import javax.swing.LookAndFeel;
+import javax.swing.UIManager;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 
@@ -24,6 +31,7 @@ import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -34,10 +42,13 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import otp.group6.AudioEditor.AudioFileHandler;
+import otp.group6.AudioEditor.AudioRecorder;
 import otp.group6.controller.*;
 
 /**
@@ -50,7 +61,7 @@ public class MainController {
 	Controller controller;
 
 	public MainController() {
-		controller = new Controller();
+		controller = new Controller(this);
 	}
 
 	/**
@@ -63,8 +74,7 @@ public class MainController {
 	@FXML
 	GridPane buttonGrid;
 
-
-////// MIXER //////
+////// MIXER //////////////////////////////////////////////////////////////////////////////////////////////////////////
 	@FXML
 	private Slider sliderPitch;
 	@FXML
@@ -81,6 +91,10 @@ public class MainController {
 	private Slider sliderLfoFrequency;
 	@FXML
 	private Slider sliderLowPass;
+	@FXML
+	private Slider sliderAudioFileDuration;
+	@FXML
+	private Slider sliderRecordedFileDuration;
 	@FXML
 	private TextField textFieldPitch;
 	@FXML
@@ -122,6 +136,10 @@ public class MainController {
 	@FXML
 	private Button recorderButtonStop;
 	@FXML
+	private Button recorderButtonSave;
+	@FXML
+	private ToggleButton recorderButtonPauseRecord;
+	@FXML
 	private Button buttonInfoPitch;
 	@FXML
 	private Button buttonInfoGain;
@@ -138,21 +156,22 @@ public class MainController {
 	@FXML
 	private Button buttonInfoLowPass;
 
-	
-	//Muuttujat tiedoston kokonaiskestolle ja toistetulle ajalle
-	private String audioFileDurationString;
-	private String audioFileProcessedTimeString;
+	// Muuttujat tiedoston kokonaiskestolle ja toistetulle ajalle
+	private String audioFileDurationString = "0:00";
+	private String audioFileProcessedTimeString = "0:00";
 	private DecimalFormat decimalFormat = new DecimalFormat("#0.00"); // kaikki luvut kahden desimaalin tarkkuuteen
 
 	private Boolean isRecording = false;
-	Timer timer;
-	
+	private Timer timer;
+	private float recordedFileProcessed;
+
 	public void initializeMixer() {
 		initializeSlidersAndTextFields();
 		setTooltips();
+		initializeRecorderListener();
 	}
 
-	//Methods for buttons
+	// Methods for buttons
 	@FXML
 	public void soundManipulatorPlayAudio() {
 		controller.soundManipulatorPlayAudio();
@@ -184,36 +203,57 @@ public class MainController {
 
 	@FXML
 	public void soundManipulatorSaveMixedFile() {
-		controller.soundManipulatorSaveFile();
+		FileChooser fileChooser = new FileChooser();
+		ExtensionFilter filter = new ExtensionFilter("WAV files (*.wav)", ".wav");
+		fileChooser.getExtensionFilters().add(filter);
+		File file = fileChooser.showSaveDialog(mainContainer.getScene().getWindow());
+		String fullPath;
+		try {
+			fullPath = file.getAbsolutePath();
+			if (!fullPath.endsWith(".wav")) {
+				fullPath = fullPath + ".wav";
+				System.out.println("asd");
+			}
+			System.out.println(fullPath);
+			controller.soundManipulatorSaveFile(fullPath);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@FXML
 	public void soundManipulatorSaveMixerSettings() {
-		//TODO Tämä tekemättä!!!
+		// TODO Tämä tekemättä!!!
 	}
-	
+
 	@FXML
 	public void soundManipulatorOpenFile() {
 		try {
-			// Avataan file AudioFileHandlerilla ja välitetään kontrollerille
+			// Avataan file AudioFileHandlerilla ja välitetään file kontrollerille
 			File file = AudioFileHandler.openFileExplorer(mainContainer.getScene().getWindow());
 			controller.soundManipulatorOpenFile(file);
+			AudioFormat format = AudioSystem.getAudioFileFormat(file.getAbsoluteFile()).getFormat();
+
 			// Shows the name of the file in textSelectedFile element
 			textSelectedFile.setText("Selected file: " + file.getName());
+
 			// Length of the audio file in seconds (file.length / (format.frameSize *
 			// format.frameRate))
-			AudioFormat format = AudioSystem.getAudioFileFormat(file.getAbsoluteFile()).getFormat();
 			double audioFileLengthInSec = file.length() / (format.getFrameSize() * format.getFrameRate());
-			
+			System.out.println(file.length() + " " + format.getFrameSize() + " " + format.getFrameRate());
+			System.out.println(audioFileLengthInSec);
 			audioFileDurationString = secondsToMinutesAndSeconds(audioFileLengthInSec);
-			textAudioFileDuration.setText(": / " + audioFileDurationString);
+
+			setMaxValueToAudioDurationSlider(audioFileLengthInSec);
+			textAudioFileDuration.setText(audioFileProcessedTimeString + " / " + audioFileDurationString);
+
 			// Enables all sliders and audio player
 			enableMixerSlidersAndAudioPlayer();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	// Methods for getting TextField input values
 	@FXML
 	public void getTextFieldPitch() {
@@ -224,9 +264,10 @@ public class MainController {
 				controller.soundManipulatorSetPitchFactor(number);
 				sliderPitch.setValue(number);
 			} else {
+				System.out.println("Arvo yli viiterajojen");
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.out.println("Virheellinen syöte");
 		}
 	}
 
@@ -342,7 +383,6 @@ public class MainController {
 		}
 	}
 
-
 	@FXML
 	public void soundManipulatorResetAllSliders() {
 		sliderPitch.setValue(1);
@@ -355,10 +395,22 @@ public class MainController {
 		sliderLowPass.setValue(44100);
 	}
 
+	// Audio file sliderin metodit (controller kutsuu)
+	public void setMaxValueToAudioDurationSlider(double audioFileLengthInSec) {
+		sliderAudioFileDuration.setMax(audioFileLengthInSec);
+	}
+
+	public void setCurrentValueToAudioDuratinSlider(double currentSeconds) {
+		sliderAudioFileDuration.setValue(currentSeconds);
+	}
+
 	// Apumetodeja
 	private String secondsToMinutesAndSeconds(double seconds) {
 		int numberOfminutes = (int) (seconds / 60);
 		int numberOfSeconds = (int) (seconds % 60);
+		if (numberOfSeconds < 10) {
+			return numberOfminutes + ":0" + numberOfSeconds;
+		}
 		return numberOfminutes + ":" + numberOfSeconds;
 	}
 
@@ -367,12 +419,39 @@ public class MainController {
 		paneMixerSliders.setDisable(false);
 	}
 
-	//TODO: Lisää tooltipit kaikille
 	private void setTooltips() {
-		final Tooltip tooltip = new Tooltip();
-		tooltip.setText("Lorem ipsum bla bla bla");
-		
-		buttonInfoPitch.setTooltip(tooltip);
+		final Tooltip tooltipPitch = new Tooltip();
+		tooltipPitch.setText("Pitch");
+
+		final Tooltip tooltipGain = new Tooltip();
+		tooltipGain.setText("Gain");
+
+		final Tooltip tooltipEchoLength = new Tooltip();
+		tooltipEchoLength.setText("echo");
+
+		final Tooltip tooltipDecay = new Tooltip();
+		tooltipDecay.setText("decay");
+
+		final Tooltip tooltipFlangerLength = new Tooltip();
+		tooltipFlangerLength.setText("flanger l");
+
+		final Tooltip tooltipWetness = new Tooltip();
+		tooltipWetness.setText("wet sanoi mummo kaivossa");
+
+		final Tooltip tooltipLfo = new Tooltip();
+		tooltipLfo.setText("lfo");
+
+		final Tooltip tooltipLowPass = new Tooltip();
+		tooltipLowPass.setText("Low passss");
+
+		buttonInfoPitch.setTooltip(tooltipPitch);
+		buttonInfoGain.setTooltip(tooltipGain);
+		buttonInfoEchoLength.setTooltip(tooltipEchoLength);
+		buttonInfoDecay.setTooltip(tooltipDecay);
+		buttonInfoFlangerLength.setTooltip(tooltipFlangerLength);
+		buttonInfoWetness.setTooltip(tooltipWetness);
+		buttonInfoLfo.setTooltip(tooltipLfo);
+		buttonInfoLowPass.setTooltip(tooltipLowPass);
 	}
 
 	private void initializeSlidersAndTextFields() {
@@ -434,62 +513,107 @@ public class MainController {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				controller.soundManipulatorSetLowPass(newValue.floatValue());
-				textFieldLfo.setText(decimalFormat.format(newValue.doubleValue()));
+				textFieldLowPass.setText(decimalFormat.format(newValue.doubleValue()));
+			}
+		});
+		sliderAudioFileDuration.valueProperty().addListener(new InvalidationListener() {
+			public void invalidated(Observable arg0) {
+
+				if (sliderAudioFileDuration.isPressed()) {
+					controller.timerCancel();
+
+					System.out.println("slideria klikattu " + sliderAudioFileDuration.getValue());
+					controller.soundManipulatorPlayFromDesiredSec(sliderAudioFileDuration.getValue());
+
+					// Nyk kesto tekstinä
+					audioFileProcessedTimeString = secondsToMinutesAndSeconds(sliderAudioFileDuration.getValue());
+					textAudioFileDuration.setText(audioFileProcessedTimeString + " / " + audioFileDurationString);
+				}
+
 			}
 		});
 	}
-	
-	
-	
+
+	@FXML
+	public void handleAudioFileDurationSliderClick() {
+		// controller.timerWait();
+//		controller.timerCancel();
+
+//		System.out.println("slideria klikattu "+sliderAudioFileDuration.getValue());
+//		controller.soundManipulatorPlayFromDesiredSec(sliderAudioFileDuration.getValue());
+
+		// Nyk kesto tekstinä
+//		audioFileProcessedTimeString = secondsToMinutesAndSeconds(sliderAudioFileDuration.getValue());
+//		textAudioFileDuration.setText(audioFileProcessedTimeString + " / " + audioFileDurationString);
+
+		// controller.timerNotify();
+	}
+
+	public void setCurrentPositionToAudioDurationText(double currentSeconds) {
+		audioFileProcessedTimeString = secondsToMinutesAndSeconds(currentSeconds);
+		textAudioFileDuration.setText(audioFileProcessedTimeString + " / " + audioFileDurationString);
+	}
+
+	//// MIXER METHODS END HERE
+	//// /////////////////////////////////////////////////////////////////////////////////////
+	// RECORDER METHODS START HERE/////////////////////////////////////
+
 	@FXML
 	public void recordAudioToggle() {
-		
-		if(!isRecording) {
+
+		if (!isRecording) {
 			controller.recordAudio();
 			timer = new Timer();
 			TimerTask task = new TimerTask() {
-				int i = 1;
+				int i = 0;
+
 				@Override
 				public void run() {
 					textRecordingDuration.setText("" + i);
 					i++;
 				}
 			};
-			
-			timer.schedule(task, 1000, 1000);
+
+			timer.schedule(task, 0, 1000);
 			isRecording = true;
-		}else {
+
+		} else {
 			timer.cancel();
 			textRecordingDuration.setText("0");
 			controller.stopRecord();
 			isRecording = false;
+			enableRecorderPlayer();
 			File file = null;
-			
 			file = new File("src/audio/default.wav").getAbsoluteFile();
 			file.deleteOnExit();
-			
-			
-			
-			if(file != null) {
+
+			if (file != null) {
 				try {
 					AudioFormat format = AudioSystem.getAudioFileFormat(file.getAbsoluteFile()).getFormat();
 					double audioFileLengthInSec = file.length() / (format.getFrameSize() * format.getFrameRate());
-					
+					setMaxValueToRecordDurationSlider(audioFileLengthInSec);
 					audioFileDurationString = secondsToMinutesAndSeconds(audioFileLengthInSec);
 					textAudioFileDuration.setText(": / " + audioFileDurationString);
-					
+
 					textRecordFileDuration.setText("0:00 / " + audioFileDurationString);
 				} catch (Exception e) {
-					
+
 					e.printStackTrace();
 				}
-				
+
 			}
 		}
-		
+
 	}
-	
-	
+
+	public void recorderPauseRecord() {
+		if (recorderButtonPauseRecord.isPressed() == false) {
+			controller.pauseRecord();
+		} else {
+			controller.resumeRecord();
+		}
+	}
+
 	@FXML
 	public void recorderPlayAudio() {
 		controller.audioRecorderPlayAudio();
@@ -500,27 +624,91 @@ public class MainController {
 
 	@FXML
 	public void recorderStopAudio() {
-		controller.audioRecorderStopAudio();
+		controller.recorderTimerCancel();
 		recorderButtonPlay.setDisable(false);
 		recorderButtonPause.setDisable(true);
 		recorderButtonStop.setDisable(true);
+		controller.audioRecorderStopAudio();
 	}
 
 	@FXML
 	public void recorderPauseAudio() {
-		controller.audioRecorderPauseAudio();
+		controller.recorderTimerCancel();
 		recorderButtonPlay.setDisable(false);
 		recorderButtonPause.setDisable(true);
 		recorderButtonStop.setDisable(false);
+		controller.audioRecorderPauseAudio();
 	}
-	
-	
+
+	private void enableRecorderPlayer() {
+		sliderRecordedFileDuration.setDisable(false);
+		textRecordFileDuration.setDisable(false);
+		recorderButtonPlay.setDisable(false);
+		recorderButtonSave.setDisable(false);
+	}
+
+	private void updateRecorderSlider() {
+		sliderRecordedFileDuration.setValue(controller.getRecorderSecondsProcessed());
+	}
+
+	public void recorderSliderPressed() {
+		controller.recorderSliderPressed();
+	}
+
+	public void initializeRecorderListener() {
+		sliderRecordedFileDuration.valueProperty().addListener(new InvalidationListener() {
+			public void invalidated(Observable arg0) {
+
+				if (sliderRecordedFileDuration.isPressed()) {
+					recorderSliderPressed();
+					controller.recorderTimerCancel();
+					double currentPoint = sliderRecordedFileDuration.getValue();
+					sliderRecordedFileDuration.setValue(currentPoint);
+					controller.recorderPlayFromDesiredSec(currentPoint);
+					audioFileProcessedTimeString = secondsToMinutesAndSeconds(sliderRecordedFileDuration.getValue());
+					textRecordFileDuration.setText(audioFileProcessedTimeString + " / " + audioFileDurationString);
+				}
+
+			}
+		});
+	}
+
+	public void saveRecordedFile() {
+		FileChooser fileChooser = new FileChooser();
+		ExtensionFilter filter = new ExtensionFilter("WAV files (*.wav)", ".wav");
+		fileChooser.getExtensionFilters().add(filter);
+		File file = fileChooser.showSaveDialog(mainContainer.getScene().getWindow());
+		String fullPath;
+		try {
+			fullPath = file.getAbsolutePath();
+			if (!fullPath.endsWith(".wav")) {
+				fullPath = fullPath + ".wav";
+			}
+			controller.saveAudioFile(fullPath);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public void setMaxValueToRecordDurationSlider(double audioFileLengthInSec) {
+		sliderRecordedFileDuration.setMax(audioFileLengthInSec);
+	}
+
+	public void setCurrentValueToRecordDuratinSlider(double currentSeconds) {
+		sliderRecordedFileDuration.setValue(currentSeconds);
+		audioFileProcessedTimeString = secondsToMinutesAndSeconds(sliderRecordedFileDuration.getValue());
+		textRecordFileDuration.setText(audioFileProcessedTimeString + " / " + audioFileDurationString);
+	}
+
+	//// RECORDER METHODS END
+	//// HERE////////////////////////////////////////////////////////////////
+
 	public void openFile(int index) {
 		Pattern pattern = Pattern.compile("(\\.wav)$", Pattern.CASE_INSENSITIVE);
 		try {
 			File file = AudioFileHandler.openFileExplorer(mainContainer.getScene().getWindow());
 
-			
 			// File must be not null to add button
 			if (file != null) {
 				Matcher matcher = pattern.matcher(file.getName());
@@ -535,12 +723,11 @@ public class MainController {
 
 	@FXML
 	public void openSample() {
-		//REGEX pattern for ".wav"
+		// REGEX pattern for ".wav"
 		Pattern pattern = Pattern.compile("(\\.wav)$", Pattern.CASE_INSENSITIVE);
 		try {
 			File file = AudioFileHandler.openFileExplorer(mainContainer.getScene().getWindow());
 
-			
 			// File must be not null to add button
 			if (file != null) {
 				Matcher matcher = pattern.matcher(file.getName());
@@ -554,39 +741,40 @@ public class MainController {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void addButton(int index) {
-		
+
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(MainApplication.class.getResource("SoundBoardButton.fxml"));
-		
+
 		AnchorPane gridRoot = (AnchorPane) buttonGrid.getChildren().get(index);
 		Node soundButtonRoot;
-		
+
 		try {
 			soundButtonRoot = (Node) loader.load();
-			
+
 			Button temp = (Button) gridRoot.getChildren().remove(0);
-			
+
 			if (index < buttonGrid.getChildren().size() - 1) {
 				AnchorPane ap = (AnchorPane) buttonGrid.getChildren().get(index + 1);
 				ap.getChildren().add(temp);
 			}
-					
+
 			gridRoot.getChildren().add(soundButtonRoot);
-			configureSoundButton( (AnchorPane) soundButtonRoot,index);
-			
+			configureSoundButton((AnchorPane) soundButtonRoot, index);
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return;
 		}
 	}
-	public void configureSoundButton (AnchorPane ap, int index) {
+
+	public void configureSoundButton(AnchorPane ap, int index) {
 		Button play = (Button) ap.getChildren().get(0);
 		Text description = (Text) ap.getChildren().get(1);
 		MenuButton mp = (MenuButton) ap.getChildren().get(2);
-		
+
 		play.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -598,11 +786,11 @@ public class MainController {
 
 			@Override
 			public void handle(MouseEvent event) {
-				renameButton(description,ap,index);
+				renameButton(description, ap, index);
 			}
-			
+
 		});
-		
+
 		MenuItem editButton = (MenuItem) mp.getItems().get(0);
 		editButton.setOnAction(new EventHandler<ActionEvent>() {
 
@@ -610,9 +798,9 @@ public class MainController {
 			public void handle(ActionEvent event) {
 				openFile(index);
 			}
-			
+
 		});
-		
+
 		MenuItem deleteButton = mp.getItems().get(1);
 		deleteButton.setOnAction(new EventHandler<ActionEvent>() {
 
@@ -622,26 +810,26 @@ public class MainController {
 				refreshButtons();
 				removeLast();
 			}
-			
+
 		});
-		
-		//add edit and delete functionality
+
+		// add edit and delete functionality
 	}
-	
+
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void renameButton(Text text, AnchorPane ap, int index) {
-		
+
 		TextField tf = new TextField();
 		tf.setText(text.getText());
 		tf.forward();
 		ChangeListener cl = new ChangeListener() {
 			@Override
 			public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-				
-				if(!tf.isFocused()) {
+
+				if (!tf.isFocused()) {
 					String temp = tf.getText();
-					if(temp.length() > 20) {
-						temp = temp.substring(0,20);
+					if (temp.length() > 20) {
+						temp = temp.substring(0, 20);
 					}
 					text.setText(temp);
 					controller.setSampleName(index, temp);
@@ -653,10 +841,10 @@ public class MainController {
 		tf.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent event) {
-				if(event.getCode() == KeyCode.ENTER) {
+				if (event.getCode() == KeyCode.ENTER) {
 					String temp = tf.getText();
-					if(temp.length() > 20) {
-						temp = temp.substring(0,20);
+					if (temp.length() > 20) {
+						temp = temp.substring(0, 20);
 					}
 					text.setText(temp);
 					controller.setSampleName(index, temp);
@@ -664,42 +852,43 @@ public class MainController {
 					ap.getChildren().remove(ap.getChildren().indexOf(tf));
 				}
 			}
-			
+
 		});
 		ap.getChildren().add(tf);
 		tf.layoutXProperty().set(text.getLayoutX());
 		tf.layoutYProperty().set(text.getLayoutY() - 20);
 		tf.requestFocus();
 	}
+
 	public void refreshButtons() {
 		int length = controller.getSampleArrayLength();
-		for(int i = 0; i < length; i++) {
+		for (int i = 0; i < length; i++) {
 			AnchorPane gridRoot = (AnchorPane) buttonGrid.getChildren().get(i);
 			AnchorPane root = (AnchorPane) gridRoot.getChildren().get(0);
 			Text description = (Text) root.getChildren().get(1);
 			description.setText(controller.getSampleName(i));
 		}
 	}
+
 	public void removeLast() {
 		int length = controller.getSampleArrayLength();
 		AnchorPane gridRoot = (AnchorPane) buttonGrid.getChildren().get(length);
-		if(length + 1 < buttonGrid.getChildren().size()) {
-			AnchorPane newSoundRoot = (AnchorPane) buttonGrid.getChildren().get(length +1);
+		if (length + 1 < buttonGrid.getChildren().size()) {
+			AnchorPane newSoundRoot = (AnchorPane) buttonGrid.getChildren().get(length + 1);
 			Button temp = (Button) newSoundRoot.getChildren().remove(0);
-			
+
 			gridRoot.getChildren().remove(0);
 			gridRoot.getChildren().add(temp);
-		}
-		else {
+		} else {
 			gridRoot.getChildren().remove(0);
 			gridRoot.getChildren().add(newSoundButton);
 		}
 	}
-	
+
 	/**
 	 * Joonaksen tekemiä lisäyksiä
 	 */
-	
+
 	@FXML
 	private Slider slider1;
 	@FXML
@@ -712,21 +901,21 @@ public class MainController {
 	private Slider slider5;
 	@FXML
 	private Slider slider6;
-	
+
 	/**
 	 * Method opens a new scene Login and Register form
 	 */
 	public void openLoginRegister() {
 		try {
-		    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\RegisterLoginView.fxml"));
-		    Parent root1 = (Parent) fxmlLoader.load();
-		    Stage stage = new Stage();
-		    stage.initModality(Modality.APPLICATION_MODAL);
-		    stage.initStyle(StageStyle.UNDECORATED);
-		    stage.setTitle("Login or Register");
-		    stage.setScene(new Scene(root1));  
-		    stage.show();
-		    
+			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\RegisterLoginView.fxml"));
+			Parent root1 = (Parent) fxmlLoader.load();
+			Stage stage = new Stage();
+			stage.initModality(Modality.APPLICATION_MODAL);
+			stage.initStyle(StageStyle.UNDECORATED);
+			stage.setTitle("Login or Register");
+			stage.setScene(new Scene(root1));
+			stage.show();
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -736,70 +925,74 @@ public class MainController {
 	 * Method opens a new scene, the mixer settings from the database
 	 */
 	public void openMixerSettings() {
+
 		try {
-		    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\MixerSettingsView.fxml"));
-		    Parent root1 = (Parent) fxmlLoader.load();
-		    Stage stage = new Stage();
-		    stage.initModality(Modality.APPLICATION_MODAL);
-		    stage.initStyle(StageStyle.UNDECORATED);
-		    stage.setTitle("Mixer Settings Loader");
-		    stage.setScene(new Scene(root1));  
-		    stage.show();	   
+			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\MixerSettingsView.fxml"));
+			Parent root1 = (Parent) fxmlLoader.load();
+			Stage stage = new Stage();
+			stage.initModality(Modality.APPLICATION_MODAL);
+			stage.initStyle(StageStyle.UNDECORATED);
+			stage.setTitle("Mixer Settings Loader");
+			stage.setScene(new Scene(root1));
+			stage.show();
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * Open a new scene where the mixer settings can be saved to the database
 	 */
 	public void openMixerSave() {
 		try {
-		    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\SaveMixerSettings.fxml"));
-		    Parent root1 = (Parent) fxmlLoader.load();
-		    
-		    SaveMixerSettingsController smsc = fxmlLoader.getController();
-		    smsc.getSettings(slider1.getValue(),slider2.getValue(),slider3.getValue(),slider4.getValue(),slider5.getValue(),slider6.getValue());
-		    
-		    Stage stage = new Stage();
-		    stage.initModality(Modality.APPLICATION_MODAL);
-		    stage.initStyle(StageStyle.UNDECORATED);
-		    stage.setTitle("Save Mixer Settings");
-		    stage.setScene(new Scene(root1));  
-		    stage.show();
+			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\SaveMixerSettings.fxml"));
+			Parent root1 = (Parent) fxmlLoader.load();
+
+			SaveMixerSettingsController smsc = fxmlLoader.getController();
+			smsc.getSettings(slider1.getValue(), slider2.getValue(), slider3.getValue(), slider4.getValue(),
+					slider5.getValue(), slider6.getValue());
+
+			Stage stage = new Stage();
+			stage.initModality(Modality.APPLICATION_MODAL);
+			stage.initStyle(StageStyle.UNDECORATED);
+			stage.setTitle("Save Mixer Settings");
+			stage.setScene(new Scene(root1));
+			stage.show();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * Does a query to the database class to check for a logged in user
 	 */
 	public void checkForloggedin() {
-		if (!(controller.loggedIn()==" ")) {
+		if (!(controller.loggedIn() == " ")) {
 			openMixerSave();
 		} else {
 			openLoginRegister();
 		}
 	}
-	
+
 	@FXML
 	private Button closeButton;
-	
+
 	/**
 	 * Method to close open scenes
+	 * 
 	 * @param event
 	 */
 	@FXML
 	public void handleCloseButtonAction(ActionEvent event) {
-	    Stage stage = (Stage) closeButton.getScene().getWindow();
-	    stage.close();
+		Stage stage = (Stage) closeButton.getScene().getWindow();
+		stage.close();
 	}
-	
-	//TODO tarvitaan arvojen asettamiselle tapa!
+
+	// TODO tarvitaan arvojen asettamiselle tapa!
 	/**
 	 * Method to set the slider values from the database stored settings
+	 * 
 	 * @param set1
 	 * @param set2
 	 * @param set3
@@ -808,6 +1001,6 @@ public class MainController {
 	 * @param set6
 	 */
 	public void setSliderValues(double set1, double set2, double set3, double set4, double set5, double set6) {
-	
+
 	}
 }

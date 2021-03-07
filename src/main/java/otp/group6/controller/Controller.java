@@ -11,6 +11,7 @@ import otp.group6.AudioEditor.AudioRecorder;
 import otp.group6.AudioEditor.Soundboard;
 import otp.group6.AudioEditor.Soundboard.Sample;
 import otp.group6.view.MainController;
+
 /**
  * 
  * @author Kevin Akkoyun, Joonas Soininen
@@ -20,84 +21,122 @@ public class Controller {
 
 	private Soundboard soundboard;
 	private AudioRecorder recorder;
-	private AudioMuunnin soundManipulator;	
+	private AudioMuunnin soundManipulator;
 	private AudioCloudDAO audioDAO;
+	private MainController mainController;
 
-	public Controller() {
+	public Controller(MainController mainController) {
+		this.mainController = mainController;
 		initialConfig();
 	}
 
 	public void initialConfig() {
 		soundboard = new Soundboard();
-		recorder = new AudioRecorder();
-		soundManipulator = new AudioMuunnin();
+		recorder = new AudioRecorder(this);
+		soundManipulator = new AudioMuunnin(this);
 	}
 
-	
-	
 	// SoundManipulator methods start
 
-	//SoundManipulator parameter setters
-	//Pitch
+	// FROM VIEW TO SOUNDMANIPULATOR
+
+	// SoundManipulator parameter setters
+	// Pitch
 	public void soundManipulatorSetPitchFactor(double pitch) {
-		soundManipulator.setPitchFactor(pitch);	
-	}	
-	//Gain
+		soundManipulator.setPitchFactor(pitch);
+	}
+
+	// Gain
 	public void soundManipulatorSetGain(double gain) {
 		soundManipulator.setGain(gain);
 	}
-	//Echo length
+
+	// Echo length
 	public void soundManipulatorSetEchoLength(double echoLength) {
 		soundManipulator.setEchoLength(echoLength);
 	}
-	//Decay
+
+	// Decay
 	public void soundManipulatorSetDecay(double decay) {
 		soundManipulator.setDecay(decay);
 	}
-	//Flanger length	
+
+	// Flanger length
 	public void soundManipulatorSetFlangerLength(double flangerLength) {
 		soundManipulator.setFlangerLength(flangerLength);
 	}
-	//Flanger wetness
+
+	// Flanger wetness
 	public void soundManipulatorSetWetness(double wetness) {
 		soundManipulator.setWetness(wetness);
 	}
-	//LFO
+
+	// LFO
 	public void soundManipulatorSetLFO(double lfo) {
 		soundManipulator.setLFO(lfo);
 	}
+
 	public void soundManipulatorSetLowPass(float lowPass) {
 		soundManipulator.setLowPass(lowPass);
 	}
-	
-	//Mixer general methods
+
+	// Mixer general methods
 	public void soundManipulatorOpenFile(File file) {
 		soundManipulator.setAudioSourceFile(file);
 	}
-	
+
 	public void soundManipulatorPlayAudio() {
 		soundManipulator.playAudio();
 	}
-	
+
 	public void soundManipulatorStopAudio() {
 		soundManipulator.stopAudio();
 	}
-	
+
 	public void soundManipulatorPauseAudio() {
 		soundManipulator.pauseAudio();
 	}
-	
-	public void soundManipulatorSaveFile() {
-		soundManipulator.saveFile();
+
+	public void soundManipulatorPlayFromDesiredSec(double seconds) {
+		soundManipulator.playFromDesiredSec(seconds);
 	}
-	
+
+	public void soundManipulatorSaveFile(String path) {
+		soundManipulator.saveFile(path);
+	}
+
 	public void testFilter() {
 		soundManipulator.testFilter();
-		
 	}
-	
+
+	public void timerWait() {
+		soundManipulator.timerWait();
+	}
+
+	public void timerNotify() {
+		soundManipulator.timerNotify();
+	}
+
+	public void timerCancel() {
+		soundManipulator.timerCancel();
+	}
+
+	// FROM SOUNDMANIPULATOR TO VIEW
+	// Audio file sliderin metodit
+	public void setMaxValueToAudioDurationSlider(double maxLenghthInSeconds) {
+		mainController.setCurrentValueToAudioDuratinSlider(maxLenghthInSeconds);
+	}
+
+	public void setCurrentValueToAudioDuratinSlider(double currentSeconds) {
+		mainController.setCurrentValueToAudioDuratinSlider(currentSeconds);
+	}
+
+	public void setCurrentPositionToAudioDurationText(double currentSeconds) {
+		mainController.setCurrentPositionToAudioDurationText(currentSeconds);
+	}
+
 	// SoundManipulator methods end
-	
+
 	// Soundboard methods start
 	// TODO MainController tarvitsee try/catch-lohkon tätä metodia käyttäessä myös!
 	public void playSound(int index) {
@@ -108,9 +147,10 @@ public class Controller {
 		}
 
 	}
-	
+
 	/**
 	 * Adds sample to Soundboard SampleArray
+	 * 
 	 * @param path filepath
 	 */
 	public void addSample(String path) {
@@ -120,6 +160,7 @@ public class Controller {
 			e.printStackTrace();
 		}
 	}
+
 	public void editSample(String path, int index) {
 		soundboard.editSample(path, index);
 	}
@@ -131,9 +172,11 @@ public class Controller {
 			System.out.println("index not found - sample array: " + index);
 		}
 	}
+
 	public String getSampleName(int index) {
 		return soundboard.getSampleName(index);
 	}
+
 	public void setSampleName(int index, String name) {
 		soundboard.setSampleName(index, name);
 	}
@@ -143,36 +186,67 @@ public class Controller {
 	}
 	// Soundboard methods stop
 
-	
-	
 	// AudioRecorder methods start
-	
+
 	public void recordAudio() {
 		recorder.recordAudio();
 	}
+
 	public void stopRecord() {
 		recorder.stopRecord();
 	}
-	
+
+	public void pauseRecord() {
+		recorder.pauseRecord();
+	}
+
+	public void resumeRecord() {
+		recorder.resumeRecord();
+	}
+
 	public void audioRecorderPlayAudio() {
 		recorder.playAudio();
 	}
-	
+
 	public void audioRecorderStopAudio() {
 		recorder.stopAudio();
 	}
-	
+
 	public void audioRecorderPauseAudio() {
 		recorder.pauseAudio();
 	}
-	
+
 	public float getSecondsRecorded(float secondsRecorded) {
 		return recorder.getSecondsProcessed();
 	}
-	
+
+	public void recorderPlayFromDesiredSec(double seconds) {
+		recorder.playFromDesiredSec(seconds);
+	}
+
+	public float getRecorderSecondsProcessed() {
+		return recorder.getSecondsProcessed();
+	}
+
+	public void recorderTimerCancel() {
+		recorder.timerCancel();
+	}
+
+	public void recorderSliderPressed() {
+		recorder.recorderSliderPressed();
+	}
+
+	public void saveAudioFile(String path) {
+		recorder.saveAudioFile(path);
+	}
+
+	public void setCurrentValueToRecordFileDurationSlider(Double currentSeconds) {
+		mainController.setCurrentValueToRecordDuratinSlider(currentSeconds);
+	}
+
 	// AudioRecorder methods stop
-	
-	//AudioCloudDAO methods start
+
+	// AudioCloudDAO methods start
 	public boolean chekcforUser(String user) {
 		return audioDAO.chekcforUser(user);
 	}
@@ -213,9 +287,9 @@ public class Controller {
 	public String toString() {
 		return audioDAO.toString();
 	}
-	
+
 	public String loggedIn() {
 		return audioDAO.loggedIn();
 	}
-	//AudioCloudDAO methods stop
+	// AudioCloudDAO methods stop
 }

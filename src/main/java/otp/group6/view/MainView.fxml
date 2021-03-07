@@ -92,11 +92,12 @@
                                           <Text layoutX="79.0" layoutY="36.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Select file" textAlignment="CENTER" wrappingWidth="101.03515625" AnchorPane.leftAnchor="79.0" AnchorPane.rightAnchor="80.0" />
                                           <Button layoutX="99.0" layoutY="74.0" mnemonicParsing="false" onAction="#soundManipulatorOpenFile" text="File..." AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="99.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="74.0" />
                                           <Text fx:id="textSelectedFile" layoutX="6.0" layoutY="137.0" strokeType="OUTSIDE" strokeWidth="0.0" text="File not selected" textAlignment="CENTER" wrappingWidth="253.91015625" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="6.0" />
+                                          <Text layoutX="122.0" layoutY="193.0" strokeType="OUTSIDE" strokeWidth="0.0" text="OR" />
                                        </children>
                                     </AnchorPane>
                                     <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
                                        <children>
-                                          <Text layoutX="77.0" layoutY="52.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Use microphone" AnchorPane.bottomAnchor="145.0" AnchorPane.leftAnchor="77.0" AnchorPane.rightAnchor="77.17822265625" AnchorPane.topAnchor="39.0" />
+                                          <Text layoutX="89.0" layoutY="50.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Use microphone" AnchorPane.bottomAnchor="148.98828125" AnchorPane.leftAnchor="89.0" AnchorPane.rightAnchor="89.169921875" AnchorPane.topAnchor="37.05078125" />
                                           <Button layoutX="99.0" layoutY="87.0" mnemonicParsing="false" text="Start" AnchorPane.bottomAnchor="87.0" AnchorPane.leftAnchor="99.0" AnchorPane.rightAnchor="99.0" AnchorPane.topAnchor="87.0" />
                                        </children>
                                     </AnchorPane>
@@ -202,7 +203,7 @@
                            </children></AnchorPane>
                         <AnchorPane fx:id="paneMixerAudioPlayer" disable="true" layoutX="14.0" layoutY="420.0" prefHeight="100.0" prefWidth="865.0" AnchorPane.bottomAnchor="17.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="420.0">
                            <children>
-                              <Slider layoutX="100.0" layoutY="22.0" prefHeight="16.0" prefWidth="672.0" AnchorPane.bottomAnchor="61.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="22.0" />
+                              <Slider fx:id="sliderAudioFileDuration" layoutX="100.0" layoutY="22.0" prefHeight="16.0" prefWidth="672.0" AnchorPane.bottomAnchor="61.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="22.0" />
                               <Text fx:id="textAudioFileDuration" layoutX="747.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0:00 / 0:00" AnchorPane.bottomAnchor="78.0" AnchorPane.leftAnchor="747.0" AnchorPane.rightAnchor="113.6201171875" AnchorPane.topAnchor="6.0" />
                               <ButtonBar layoutX="286.0" layoutY="50.0" prefHeight="40.0" prefWidth="294.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="286.0" AnchorPane.rightAnchor="284.0" AnchorPane.topAnchor="50.0">
                                 <buttons>
@@ -222,20 +223,20 @@
                      <children>
                         <AnchorPane layoutX="767.0" layoutY="470.0" prefHeight="53.0" prefWidth="114.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="767.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="470.0">
                            <children>
-                              <Button layoutX="29.0" layoutY="14.0" mnemonicParsing="false" text="Save" AnchorPane.bottomAnchor="13.0" AnchorPane.leftAnchor="29.0" AnchorPane.rightAnchor="28.0" AnchorPane.topAnchor="14.0" />
+                              <Button fx:id="recorderButtonSave" disable="true" layoutX="29.0" layoutY="14.0" mnemonicParsing="false" onAction="#saveRecordedFile" text="Save" AnchorPane.bottomAnchor="13.0" AnchorPane.leftAnchor="29.0" AnchorPane.rightAnchor="28.0" AnchorPane.topAnchor="14.0" />
                            </children></AnchorPane>
                         <AnchorPane layoutX="138.0" layoutY="159.0" prefHeight="277.0" prefWidth="620.0">
                            <children>
                               <ButtonBar layoutX="163.0" layoutY="223.0" prefHeight="40.0" prefWidth="200.0">
                                 <buttons>
-                                  <Button fx:id="recorderButtonPause" mnemonicParsing="false" onAction="#recorderPauseAudio" text="Pause" />
-                                    <Button fx:id="recorderButtonPlay" mnemonicParsing="false" onAction="#recorderPlayAudio" text="Play" />
-                                    <Button fx:id="recorderButtonStop" mnemonicParsing="false" onAction="#recorderStopAudio" text="Stop" />
+                                  <Button fx:id="recorderButtonPause" disable="true" mnemonicParsing="false" onAction="#recorderPauseAudio" text="Pause" />
+                                    <Button fx:id="recorderButtonPlay" disable="true" mnemonicParsing="false" onAction="#recorderPlayAudio" text="Play" />
+                                    <Button fx:id="recorderButtonStop" disable="true" mnemonicParsing="false" onAction="#recorderStopAudio" text="Stop" />
                                 </buttons>
                               </ButtonBar>
-                              <Slider layoutX="82.0" layoutY="158.0" prefHeight="16.0" prefWidth="427.0" AnchorPane.bottomAnchor="46.0" AnchorPane.leftAnchor="82.0" AnchorPane.rightAnchor="111.0" AnchorPane.topAnchor="158.0" />
-                              <Text fx:id="textRecordFileDuration" layoutX="446.0" layoutY="183.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0:00 / 0:00" />
-                              <ToggleButton layoutX="136.0" layoutY="79.0" mnemonicParsing="false" text="Play/Pause" />
+                              <Slider fx:id="sliderRecordedFileDuration" blockIncrement="1.0" disable="true" layoutX="82.0" layoutY="158.0" prefHeight="16.0" prefWidth="427.0" AnchorPane.bottomAnchor="46.0" AnchorPane.leftAnchor="82.0" AnchorPane.rightAnchor="111.0" AnchorPane.topAnchor="158.0" />
+                              <Text fx:id="textRecordFileDuration" disable="true" layoutX="446.0" layoutY="183.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0:00 / 0:00" />
+                              <ToggleButton fx:id="recorderButtonPauseRecord" disable="true" layoutX="136.0" layoutY="79.0" mnemonicParsing="false" onAction="#recorderPauseRecord" text="Play/Pause" />
                               <ToggleButton layoutX="430.0" layoutY="79.0" mnemonicParsing="false" onAction="#recordAudioToggle" text="Record" />
                               <Text fx:id="textRecordingDuration" layoutX="498.0" layoutY="96.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" wrappingWidth="22.13671875" />
                            </children>
