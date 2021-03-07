@@ -25,7 +25,6 @@ public class RegisterLoginController {
 	Controller controller;
 	
 	public RegisterLoginController() {
-		controller =  new Controller();
 	}
 
 	@FXML
