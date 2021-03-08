@@ -1,47 +1,47 @@
 package otp.group6.view;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.regex.Pattern;
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.UnsupportedAudioFileException;
-import javax.swing.JFileChooser;
-import javax.swing.LookAndFeel;
-import javax.swing.UIManager;
-import javax.swing.filechooser.FileFilter;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -49,8 +49,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import otp.group6.AudioEditor.AudioFileHandler;
-import otp.group6.AudioEditor.AudioRecorder;
-import otp.group6.controller.*;
+import otp.group6.controller.Controller;
 
 /**
  * Main controller for the view
@@ -218,11 +217,6 @@ public class MainController {
 		} catch (Exception e) {
 
 		}
-	}
-
-	@FXML
-	public void soundManipulatorSaveMixerSettings() {
-		// TODO Tämä tekemättä!!!
 	}
 
 	@FXML
@@ -533,6 +527,7 @@ public class MainController {
 					audioFileProcessedTimeString = secondsToMinutesAndSeconds(sliderAudioFileDuration.getValue());
 					textAudioFileDuration.setText(audioFileProcessedTimeString + " / " + audioFileDurationString);
 				}
+
 			}
 		});
 	}
@@ -956,35 +951,40 @@ public class MainController {
 
 	/**
 	 * Joonaksen tekemiä lisäyksiä
+	 * Tietokannan tarpeita
+	 * Uusien ikkunoiden avaamista ja sulkemista
+	 * Liukukytkimien arvojen asettamista
+	 */
+
+	/**
+	 * @author Joonas Soininen
 	 */
 
 	@FXML
-	private Slider slider1;
+	private Label loggedinuser;
 	@FXML
-	private Slider slider2;
+	private MenuItem userSettings;
+	private Button logoutButton = new Button("Log out");
 	@FXML
-	private Slider slider3;
+	private MenuItem loginoption;	
 	@FXML
-	private Slider slider4;
-	@FXML
-	private Slider slider5;
-	@FXML
-	private Slider slider6;
-
+	private Button closeButton;
+		
 	/**
 	 * Method opens a new scene Login and Register form
 	 */
 	public void openLoginRegister() {
 		try {
-			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\RegisterLoginView.fxml"));
-			Parent root1 = (Parent) fxmlLoader.load();
-			Stage stage = new Stage();
-			stage.initModality(Modality.APPLICATION_MODAL);
-			stage.initStyle(StageStyle.UNDECORATED);
-			stage.setTitle("Login or Register");
-			stage.setScene(new Scene(root1));
-			stage.show();
-
+		    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\RegisterLoginView.fxml"));
+		    Parent root1 = (Parent) fxmlLoader.load();
+		    Stage stage = new Stage();
+		    RegisterLoginController rlc = fxmlLoader.getController();
+		    rlc.setMainController(this);
+		    stage.initModality(Modality.APPLICATION_MODAL);
+		    stage.initStyle(StageStyle.UNDECORATED);
+		    stage.setTitle("Login or Register");
+		    stage.setScene(new Scene(root1));  
+		    stage.show();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -996,56 +996,113 @@ public class MainController {
 	public void openMixerSettings() {
 
 		try {
-			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\MixerSettingsView.fxml"));
-			Parent root1 = (Parent) fxmlLoader.load();
-			Stage stage = new Stage();
-			stage.initModality(Modality.APPLICATION_MODAL);
-			stage.initStyle(StageStyle.UNDECORATED);
-			stage.setTitle("Mixer Settings Loader");
-			stage.setScene(new Scene(root1));
-			stage.show();
-
+		    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\MixerSettingsView.fxml"));
+		    Parent root1 = (Parent) fxmlLoader.load();
+		    Stage stage = new Stage();
+		    MixerSettingsController msc = fxmlLoader.getController();
+		    msc.setMainController(this);
+		    stage.initModality(Modality.APPLICATION_MODAL);
+		    stage.initStyle(StageStyle.UNDECORATED);
+		    stage.setTitle("Mixer Settings Loader");
+		    stage.setScene(new Scene(root1));  
+		    stage.show();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+	
+	public Controller getController () {
+		return this.controller;
+	}
+
 
 	/**
-	 * Open a new scene where the mixer settings can be saved to the database
+	 * Opens a new scene where the mixer settings can be saved to the database
 	 */
 	public void openMixerSave() {
+		setlogUserIn();
+
+		
 		try {
-			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\SaveMixerSettings.fxml"));
-			Parent root1 = (Parent) fxmlLoader.load();
-
-			SaveMixerSettingsController smsc = fxmlLoader.getController();
-			smsc.getSettings(slider1.getValue(), slider2.getValue(), slider3.getValue(), slider4.getValue(),
-					slider5.getValue(), slider6.getValue());
-
-			Stage stage = new Stage();
-			stage.initModality(Modality.APPLICATION_MODAL);
-			stage.initStyle(StageStyle.UNDECORATED);
-			stage.setTitle("Save Mixer Settings");
-			stage.setScene(new Scene(root1));
-			stage.show();
+		    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\SaveMixerSettings.fxml"));
+		    Parent root1 = (Parent) fxmlLoader.load();		    
+		    SaveMixerSettingsController smsc = fxmlLoader.getController();
+		    smsc.setMainController(this);
+		    smsc.getSettings(sliderPitch.getValue(),sliderEchoLength.getValue(),sliderDecay.getValue(),sliderGain.getValue(),
+		    		sliderFlangerLength.getValue(),sliderWetness.getValue(),sliderLfoFrequency.getValue(),(float)sliderLowPass.getValue());
+		    Stage stage = new Stage();
+		    stage.initModality(Modality.APPLICATION_MODAL);
+		    stage.initStyle(StageStyle.UNDECORATED);
+		    stage.setTitle("Save Mixer Settings");
+		    stage.setScene(new Scene(root1));  
+		    stage.show();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	/**
-	 * Does a query to the database class to check for a logged in user
+	 * Opens the save selection scene where user can decide to save settings locally or to the database.
 	 */
-	public void checkForloggedin() {
-		if (!(controller.loggedIn() == " ")) {
-			openMixerSave();
-		} else {
-			openLoginRegister();
+	public void openSaveSelection() {
+		try {
+		    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\SaveSelectionView.fxml"));
+		    Parent root1 = (Parent) fxmlLoader.load();
+		    Stage stage = new Stage();
+		    SaveSelectionController ssc = fxmlLoader.getController();
+		    ssc.setMainController(this);
+		    stage.initModality(Modality.APPLICATION_MODAL);
+		    stage.initStyle(StageStyle.UNDECORATED);
+		    stage.setTitle("Mixer Settings Saving");
+		    stage.setScene(new Scene(root1));  
+		    stage.show();	   
+
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
+	
+	/**
+	 * Opens a new scene where user can select where to load mixer settings, locally or from the database.
+	 */
+	public void openLoadSelection() {
+		try {
+		    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\LoadSelectionView.fxml"));
+		    Parent root1 = (Parent) fxmlLoader.load();
+		    Stage stage = new Stage();
+		    LoadSelectionController lsc = fxmlLoader.getController();
+		    lsc.setMainController(this);
+		    stage.initModality(Modality.APPLICATION_MODAL);
+		    stage.initStyle(StageStyle.UNDECORATED);
+		    stage.setTitle("Mixer Settings Loader");
+		    stage.setScene(new Scene(root1));  
+		    stage.show();	   
 
-	@FXML
-	private Button closeButton;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Opens user settings view where password can be changed or the user deleted.
+	 */
+	public void openUserSettings() {
+		try {
+		    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\UserSettingsView.fxml"));
+		    Parent root1 = (Parent) fxmlLoader.load();
+		    Stage stage = new Stage();
+		    UserSettingsController usc = fxmlLoader.getController();
+		    usc.setMainController(this);
+		    stage.initModality(Modality.APPLICATION_MODAL);
+		    stage.initStyle(StageStyle.UNDECORATED);
+		    stage.setTitle("Mixer Settings Loader");
+		    stage.setScene(new Scene(root1));  
+		    stage.show();	   
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}	
 
 	/**
 	 * Method to close open scenes
@@ -1058,18 +1115,93 @@ public class MainController {
 		stage.close();
 	}
 
-	// TODO tarvitaan arvojen asettamiselle tapa!
 	/**
-	 * Method to set the slider values from the database stored settings
-	 * 
-	 * @param set1
-	 * @param set2
-	 * @param set3
-	 * @param set4
-	 * @param set5
-	 * @param set6
+	 * Method to set the slider values with data from the database
+	 * @param pitch
+	 * @param echo
+	 * @param decay
+	 * @param gain
+	 * @param flangerLenght
+	 * @param wetness
+	 * @param lfoFrequency
+	 * @param lowPass
 	 */
-	public void setSliderValues(double set1, double set2, double set3, double set4, double set5, double set6) {
+	public void setSliderValues(
+			double pitch, 
+			double echo, 
+			double decay, 
+			double gain, 
+			double flangerLenght, 
+			double wetness, 
+			double lfoFrequency, 
+			float lowPass) {
+		sliderPitch.setValue(pitch);
+		sliderEchoLength.setValue(echo);
+		sliderDecay.setValue(decay);
+		sliderGain.setValue(gain);
+		sliderFlangerLength.setValue(flangerLenght);
+		sliderWetness.setValue(wetness);
+		sliderLfoFrequency.setValue(lfoFrequency);
+		sliderLowPass.setValue(lowPass);
+	}
+	
+	/**
+	 * Method to store mixer settings locally
+	 */
+	public void soundManipulatorSaveMixerSettings() {
+		//TODO INFO KÄYTTÄJÄLLE
+		//TODO Tiedostosijainti!
+		JFrame parentFrame = new JFrame();
+		 
+		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.setDialogTitle("Specify a file to save");   
+		 
+		int userSelection = fileChooser.showSaveDialog(parentFrame);
+		 
+		if (userSelection == JFileChooser.APPROVE_OPTION) {
+		    File fileToSave = fileChooser.getSelectedFile();
+		    System.out.println("Save as file: " + fileToSave.getAbsolutePath());
+			try {
+				FileWriter writeFile = new FileWriter(fileToSave);
+				writeFile.write(Double.toString(sliderPitch.getValue())+"\n");
+				writeFile.write(Double.toString(sliderEchoLength.getValue())+"\n");
+				writeFile.write(Double.toString(sliderDecay.getValue())+"\n");
+				writeFile.write(Double.toString(sliderGain.getValue())+"\n");
+				writeFile.write(Double.toString(sliderFlangerLength.getValue())+"\n");
+				writeFile.write(Double.toString(sliderWetness.getValue())+"\n");
+				writeFile.write(Double.toString(sliderLfoFrequency.getValue())+"\n");
+				writeFile.write(Float.toString((float) sliderLowPass.getValue())+"\n");
+				writeFile.close();
+				System.out.println("EHKÄPÄ");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 
+	}
+	
+	/**
+	 * Method to set visible user into main view and also set up different functions for logging out
+	 */
+	public void setlogUserIn() {
+		logoutButton.setStyle("-fx-font-size: 8pt; -fx-text-fill:black;");
+		loggedinuser.setText("Logged in as: "+controller.loggedIn());
+		loggedinuser.setGraphic(logoutButton);
+		loggedinuser.setContentDisplay(ContentDisplay.RIGHT);
+		userSettings.setVisible(true);
+		logoutButton.setOnAction(event ->setlogUserOut());
+		loginoption.setVisible(false);
+	}
+
+	/**
+	 * Method to change visibility of certain labels and menu items.
+	 */
+	public void setlogUserOut() {
+		controller.logoutUser();
+		loggedinuser.setText("");
+		loggedinuser.setGraphic(null);
+		userSettings.setVisible(false);
+		loginoption.setVisible(true);
 	}
 }

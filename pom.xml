@@ -19,11 +19,26 @@
   </properties>
 
   <dependencies>
+<<<<<<< HEAD
     <dependency>
      <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-params</artifactId>
       <version>5.7.0</version>
       <scope>test</scope>
+=======
+	 <dependency>           
+	     <groupId>org.junit.jupiter</groupId>
+	     <artifactId>junit-jupiter-params</artifactId>
+	     <version>5.7.0</version>
+	     <scope>test</scope>
+	</dependency>
+	
+	<dependency>
+      <groupId>org.apache.maven.surefire</groupId>
+      <artifactId>surefire</artifactId>
+      <version>3.0.0-M5</version>
+      <type>pom</type>
+>>>>>>> joonas
     </dependency>
     
     <dependency>
@@ -32,7 +47,11 @@
       <version>[5.0.0,6.0)</version>
     </dependency>
     
+<<<<<<< HEAD
       <!-- https://mvnrepository.com/artifact/com.github.st-h/TarsosDSP -->
+=======
+          <!-- https://mvnrepository.com/artifact/com.github.st-h/TarsosDSP -->
+>>>>>>> joonas
     <dependency>
       <groupId>com.github.st-h</groupId>
       <artifactId>TarsosDSP</artifactId>
@@ -45,6 +64,7 @@
       <artifactId>mysql-connector-java</artifactId>
       <version>5.1.49</version>
     </dependency>
+<<<<<<< HEAD
 
    
  <!-->
@@ -55,6 +75,9 @@
       <type>pom</type>
     </dependency>
 <-->
+=======
+    
+>>>>>>> joonas
   </dependencies>
 
   <build>

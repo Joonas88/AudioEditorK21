@@ -1,10 +1,18 @@
 package otp.group6.view;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
-
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -12,14 +20,20 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
+import otp.group6.AudioEditor.AudioFileHandler;
 import otp.group6.AudioEditor.AudioCloudDAO.MixerSetting;
 import otp.group6.controller.Controller;
 
 /**
+ * Class handles database stored mixer settings, displaying them and storing them locally
  * 
  * @author Joonas Soininen
  *
@@ -29,9 +43,11 @@ public class MixerSettingsController implements Initializable{
 	MainController mc;
 	
 	public MixerSettingsController() {
-		mc = new MainController();
+		
 	}
 	
+	@FXML
+	AnchorPane mainContainer;
 	@FXML
 	private Button closeButton;
 	@FXML
@@ -40,6 +56,15 @@ public class MixerSettingsController implements Initializable{
 	private ObservableList<String> mixerSettings;
 	
 	private int mixerIndetification;
+	
+	private List<String> hlist = new ArrayList<>();
+	
+	private List<String> localList = new ArrayList<>();
+	
+	@FXML
+	private ListView<HBoxCell> listView;
+	@FXML
+	private ObservableList<HBoxCell> myObservableList;
 	
 	@FXML
 	private TextField searchField;
@@ -51,12 +76,165 @@ public class MixerSettingsController implements Initializable{
 	private RadioButton radioDescription;
 	
 	/**
+	 * 
+	 * @author Joonas Soininen
+	 *
+	 */
+    public class HBoxCell extends HBox {
+        Label label = new Label();
+        Button button = new Button();
+
+        /**
+         * Method to create buttons into a listview
+         * @param labelText
+         * @param buttonText
+         * @param id
+         */
+        HBoxCell(String labelText, String buttonText, int id) {
+            super();
+
+            label.setText(labelText);
+            label.setMaxWidth(Double.MAX_VALUE);
+            HBox.setHgrow(label, Priority.ALWAYS);
+
+            button.setText(buttonText);
+            button.setId(String.valueOf(id));
+            /* 
+    		if (!(controller.loggedIn()==" ")) {
+    			button.setDisable(false);
+    		} else {
+    			button.setDisable(true);
+    		}
+          	*/
+    		if (localList.contains(String.valueOf(id))) {
+    			button.setDisable(true);
+    		}
+            button.setOnAction(e -> {
+             favoriteButton(button.getId(), labelText);
+             button.setDisable(true);
+            });
+            
+            this.getChildren().addAll(label, button);
+        }
+   }
+
+    //TODO Metodi suosikkien tallentamiseen tietokantaan puuttuu
+
+    //TODO Metodi suosikin poistamiseen puuttuu
+    
+    /**
+     * Method to set the favorite buttons function
+     * @param id
+     * @param title
+     */
+    public void favoriteButton(String id, String title) {
+		ObservableList<Object> mixerID = FXCollections.observableArrayList();
+    	hlist.add(title);
+    	localList.add(id);
+    	mixerID.add(Integer.valueOf(id));
+    	mixerSettings = FXCollections.observableArrayList(hlist);
+    	mixListView.setItems(mixerSettings);
+    	
+		mixListView.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends String> ov, String old_val, String new_val) ->{
+		    int index = mixListView.getSelectionModel().getSelectedIndex();
+		    int identification = (int) mixerID.get(index); 
+		    setMixerIndetification(identification);
+		});
+    	
+    }
+    //TODO ratkaise tiedostomuotongelma,nyt oltava tiedosto valmiina 
+    /**
+     * Method to save locally users favorited mixer settings
+     * @throws IOException
+     */
+    public void save() throws IOException {		
+    	JFrame parentFrame = new JFrame();
+	 
+    	JFileChooser fileChooser = new JFileChooser();
+    	fileChooser.setDialogTitle("Specify a file to save");   
+	 
+    	int userSelection = fileChooser.showSaveDialog(parentFrame);
+	 
+    	if (userSelection == JFileChooser.APPROVE_OPTION) {
+    		File fileToSave = fileChooser.getSelectedFile();
+    		System.out.println("Save as file: " + fileToSave.getAbsolutePath());
+    		try {
+    			FileOutputStream fout= new FileOutputStream (fileToSave);
+    			ObjectOutputStream oos = new ObjectOutputStream(fout);
+    			oos.writeObject(localList);
+    			fout.close();
+    		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+    		}
+    		}
+
+    	}
+    /**
+     * Method to load from local storage users favorite mixer settings
+     * @throws IOException
+     */
+    @SuppressWarnings({ "unchecked" })
+	public void read() throws IOException {
+		File file = AudioFileHandler.openFileExplorer(mainContainer.getScene().getWindow());
+    	FileInputStream fin= new FileInputStream (file);
+    	ObjectInputStream ois = new ObjectInputStream(fin);
+    	try {
+    		localList= (ArrayList<String>)ois.readObject();
+    		System.out.println(localList);
+    		ObservableList<Object> mixerID = FXCollections.observableArrayList();
+    		MixerSetting[] setlist = controller.getAllMixArray();
+    		for (MixerSetting mix : setlist) {
+    			for (int i=0;i<localList.size();i++) {
+        			if (mix.getMixID()==Integer.valueOf(localList.get(i))) {
+        				hlist.add("Creator: "+mix.getCreatorName()+"\nMix Name: "+mix.getMixName()+"\nMix Description: "+mix.getDescription());
+        				mixerID.add(mix.getMixID());
+        			}
+    			}
+		
+    		}
+	    	mixerSettings = FXCollections.observableArrayList(hlist);
+	    	mixListView.setItems(mixerSettings);
+	    	
+			mixListView.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends String> ov, String old_val, String new_val) ->{
+			    int index = mixListView.getSelectionModel().getSelectedIndex();
+			    int identification = (int) mixerID.get(index); 
+			    setMixerIndetification(identification);
+			});
+			getMixes();
+		} catch (ClassNotFoundException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	fin.close();
+    	}
+
+	/**
 	 * Method gets all the mix settings from the database and prints them to a list view
 	 */
 	@FXML
 	public void getMixes() {
-
+		
+		controller.intializeDatabaseConnection();		
 		MixerSetting[] setlist = controller.getAllMixArray();
+		ObservableList<Object> mixerID = FXCollections.observableArrayList();		
+		List<HBoxCell> list = new ArrayList<>();
+		for (MixerSetting mix : setlist) {
+            list.add(new HBoxCell("Creator: "+mix.getCreatorName()+"\nMix Name: "+mix.getMixName()+"\nMix Description: "+mix.getDescription(), "STAR", mix.getMixID()));
+            mixerID.add(mix.getMixID());
+      	}
+		myObservableList = FXCollections.observableArrayList(list);
+        listView.setItems(myObservableList);
+
+		listView.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends HBoxCell> ov, HBoxCell old_val, HBoxCell new_val) ->{
+		    //String selectedItem = mixListView.getSelectionModel().getSelectedItem();	
+		    int index = listView.getSelectionModel().getSelectedIndex();
+		    int identification = (int) mixerID.get(index); 
+		    //System.out.println("Item selected : " + selectedItem + ", Item index : " + index+", Mixer ID: "+identification);
+		    setMixerIndetification(identification);
+		});
+		/*//Edellinen tapa toimia ilman nappia per rivi
+		MixerSetting[] setlist = controller.getCertainMixesArray(2, searchField.getText());
 		mixerSettings = FXCollections.observableArrayList();
 		ObservableList<Object> mixerID = FXCollections.observableArrayList();
 		for (MixerSetting mix : setlist) {
@@ -67,14 +245,11 @@ public class MixerSettingsController implements Initializable{
 		}
 		
 		mixListView.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends String> ov, String old_val, String new_val) ->{
-		    //String selectedItem = mixListView.getSelectionModel().getSelectedItem();	
 		    int index = mixListView.getSelectionModel().getSelectedIndex();
 		    int identification = (int) mixerID.get(index); 
-		    //System.out.println("Item selected : " + selectedItem + ", Item index : " + index+", Mixer ID: "+identification);
 		    setMixerIndetification(identification);
 		});
-
-		
+		*/
 	}
 	
 	/**
@@ -83,82 +258,92 @@ public class MixerSettingsController implements Initializable{
 	@FXML 
 	private void selectMIX() {
 		System.out.println(getMixerIndetification());
+		controller.intializeDatabaseConnection();
 		if (getMixerIndetification()==0) {
 			JOptionPane.showMessageDialog(null, "Please select one setting from the list.","Alert",JOptionPane.WARNING_MESSAGE); //Onko tämä kaikille ok?
 		} else {
 			MixerSetting[] setlist = controller.getAllMixArray();
-			double set1 = 0, set2=0, set3=0, set4=0, set5=0, set6=0;
+			double pitch = 0, echo=0, decay=0, gain=0, flangerLenght=0, wetness=0, lfoFrequency=0;
+			float lowPass=0;
 			for (MixerSetting mix : setlist) {
 				
 				if (mix.getMixID()==getMixerIndetification()) {
-					set1=mix.getMix1();
-					set2=mix.getMix2();
-					set3=mix.getMix3();
-					set4=mix.getMix4();
-					set5=mix.getMix5();
-					set6=mix.getMix6();
+					pitch=mix.getPitch();
+					echo=mix.getEcho();
+					decay=mix.getDecay();
+					gain=mix.getGain();
+					flangerLenght=mix.getFlangerLenght();
+					wetness=mix.getWetness();
+					lfoFrequency=mix.getLfoFrequency();
+					lowPass=mix.getLowPass();
 				}
 			}
-			System.out.println(set1+" "+set2+" "+set3+" "+set4+" "+set5+" "+set6);
-			mc.setSliderValues(set1, set2, set3, set4, set5, set6);
+			System.out.println(pitch+" "+echo+" "+decay+" "+gain+" "+flangerLenght+" "+wetness+" "+lfoFrequency+" "+lowPass); //POistettava
+			mc.setSliderValues(pitch, echo, decay, gain, flangerLenght, wetness, lfoFrequency, lowPass);
 		    Stage stage = (Stage) closeButton.getScene().getWindow();
 		    stage.close();
 		}
 
 	}
-	
+	//TODO Korjaa nappien kanssa toimivaksi!!!!
 	/**
 	 * Method searches the database for any specific mix according to the creator, mix name or description
 	 */
 	@FXML
 	public void searchMix() {
-		
+		controller.intializeDatabaseConnection();
 		if (radioCreator.isSelected()) {
 			MixerSetting[] setlist = controller.getCertainMixesArray(1, searchField.getText());
-			mixerSettings = FXCollections.observableArrayList();
-			ObservableList<Object> mixerID = FXCollections.observableArrayList();
+			ObservableList<Object> mixerID = FXCollections.observableArrayList();		
+			List<HBoxCell> list = new ArrayList<>();
 			for (MixerSetting mix : setlist) {
-				mixerSettings.add("Creator: "+mix.getCreatorName()+"\nMix Name: "+mix.getMixName()+"\nMix Description: "+mix.getDescription());
-				mixerID.add(mix.getMixID());
-				mixListView.setItems(mixerSettings);
-				//mixListView.getSelectionModel().selectFirst();
-			}
-			
-			mixListView.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends String> ov, String old_val, String new_val) ->{
-			    int index = mixListView.getSelectionModel().getSelectedIndex();
+	            list.add(new HBoxCell("Creator: "+mix.getCreatorName()+"\nMix Name: "+mix.getMixName()+"\nMix Description: "+mix.getDescription(), "STAR", mix.getMixID()));
+	            mixerID.add(mix.getMixID());
+	      	}
+			myObservableList = FXCollections.observableArrayList(list);
+	        listView.setItems(myObservableList);
+
+			listView.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends HBoxCell> ov, HBoxCell old_val, HBoxCell new_val) ->{
+			    //String selectedItem = mixListView.getSelectionModel().getSelectedItem();	
+			    int index = listView.getSelectionModel().getSelectedIndex();
 			    int identification = (int) mixerID.get(index); 
+			    //System.out.println("Item selected : " + selectedItem + ", Item index : " + index+", Mixer ID: "+identification);
 			    setMixerIndetification(identification);
 			});
 		} else if (radioName.isSelected()) {
 			MixerSetting[] setlist = controller.getCertainMixesArray(2, searchField.getText());
-			mixerSettings = FXCollections.observableArrayList();
-			ObservableList<Object> mixerID = FXCollections.observableArrayList();
+			ObservableList<Object> mixerID = FXCollections.observableArrayList();		
+			List<HBoxCell> list = new ArrayList<>();
 			for (MixerSetting mix : setlist) {
-				mixerSettings.add("Creator: "+mix.getCreatorName()+"\nMix Name: "+mix.getMixName()+"\nMix Description: "+mix.getDescription());
-				mixerID.add(mix.getMixID());
-				mixListView.setItems(mixerSettings);
-				//mixListView.getSelectionModel().selectFirst();
-			}
-			
-			mixListView.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends String> ov, String old_val, String new_val) ->{
-			    int index = mixListView.getSelectionModel().getSelectedIndex();
+	            list.add(new HBoxCell("Creator: "+mix.getCreatorName()+"\nMix Name: "+mix.getMixName()+"\nMix Description: "+mix.getDescription(), "STAR", mix.getMixID()));
+	            mixerID.add(mix.getMixID());
+	      	}
+			myObservableList = FXCollections.observableArrayList(list);
+	        listView.setItems(myObservableList);
+
+			listView.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends HBoxCell> ov, HBoxCell old_val, HBoxCell new_val) ->{
+			    //String selectedItem = mixListView.getSelectionModel().getSelectedItem();	
+			    int index = listView.getSelectionModel().getSelectedIndex();
 			    int identification = (int) mixerID.get(index); 
+			    //System.out.println("Item selected : " + selectedItem + ", Item index : " + index+", Mixer ID: "+identification);
 			    setMixerIndetification(identification);
 			});
 		} else if (radioDescription.isSelected()) {
 			MixerSetting[] setlist = controller.getCertainMixesArray(3, searchField.getText());
-			mixerSettings = FXCollections.observableArrayList();
-			ObservableList<Object> mixerID = FXCollections.observableArrayList();
+			ObservableList<Object> mixerID = FXCollections.observableArrayList();		
+			List<HBoxCell> list = new ArrayList<>();
 			for (MixerSetting mix : setlist) {
-				mixerSettings.add("Creator: "+mix.getCreatorName()+"\nMix Name: "+mix.getMixName()+"\nMix Description: "+mix.getDescription());
-				mixerID.add(mix.getMixID());
-				mixListView.setItems(mixerSettings);
-				//mixListView.getSelectionModel().selectFirst();
-			}
-			
-			mixListView.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends String> ov, String old_val, String new_val) ->{
-			    int index = mixListView.getSelectionModel().getSelectedIndex();
+	            list.add(new HBoxCell("Creator: "+mix.getCreatorName()+"\nMix Name: "+mix.getMixName()+"\nMix Description: "+mix.getDescription(), "STAR", mix.getMixID()));
+	            mixerID.add(mix.getMixID());
+	      	}
+			myObservableList = FXCollections.observableArrayList(list);
+	        listView.setItems(myObservableList);
+
+			listView.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends HBoxCell> ov, HBoxCell old_val, HBoxCell new_val) ->{
+			    //String selectedItem = mixListView.getSelectionModel().getSelectedItem();	
+			    int index = listView.getSelectionModel().getSelectedIndex();
 			    int identification = (int) mixerID.get(index); 
+			    //System.out.println("Item selected : " + selectedItem + ", Item index : " + index+", Mixer ID: "+identification);
 			    setMixerIndetification(identification);
 			});
 		}
@@ -179,9 +364,9 @@ public class MixerSettingsController implements Initializable{
 	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		getMixes();
+		
 	}
-
+	
 	/**
 	 * getter for the mixer id
 	 * @return
@@ -197,5 +382,17 @@ public class MixerSettingsController implements Initializable{
 	public void setMixerIndetification(int mixerIndetification) {
 		this.mixerIndetification = mixerIndetification;
 	}
+	
+	/**
+	 * Method to initialize mixer settings window
+	 * @param mainController
+	 */
+	public void setMainController (MainController mainController) {
+		this.mc = mainController;
+		this.controller=mc.getController();
+		getMixes();
+	}
+
+
 	
 }

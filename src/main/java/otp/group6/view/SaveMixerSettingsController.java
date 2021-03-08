@@ -2,9 +2,7 @@ package otp.group6.view;
 
 import javafx.scene.control.TextArea;
 import java.sql.SQLException;
-
 import javax.swing.JOptionPane;
-
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -16,27 +14,50 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.stage.Stage;
 import otp.group6.controller.Controller;
-
+/**
+ * 
+ * Class handles saving mixer settings locally and to the database
+ * 
+ * @author Joonas Soininen
+ *
+ */
 public class SaveMixerSettingsController {
 	Controller controller;
+	MainController mc;
 
 	public SaveMixerSettingsController() {
+		
+	}
+	
+	/**
+	 * Method sets the maincontroller used in the main view
+	 * Opens the database connection
+	 * @param mainController
+	 */
+	public void setMainController (MainController mainController) {
+		this.mc=mainController;
+		this.controller=mc.getController();
+		controller.intializeDatabaseConnection();
 	}
 	
 	@FXML
 	private Button closeButton;
 	@FXML
-	private Label value1;
+	private Label pitchValue;
 	@FXML
-	private Label value2;
+	private Label echoValue;
 	@FXML
-	private Label value3;
+	private Label decayValue;
 	@FXML
-	private Label value4;
+	private Label gainValue;
 	@FXML
-	private Label value5;
+	private Label flangerLenghtValue;
 	@FXML
-	private Label value6;
+	private Label wetnessValue;
+	@FXML
+	private Label lfoFrequencyValue;
+	@FXML
+	private Label lowPassValue;
 	@FXML
 	private Label name;
 	@FXML
@@ -44,7 +65,8 @@ public class SaveMixerSettingsController {
 	@FXML
 	private TextArea description;
 	
-	private double set1, set2, set3, set4, set5, set6;
+	private double pitch, echo, decay, gain, flangerLenght, wetness, lfoFrequency;
+	private float lowPass;
 	
 	final Tooltip mixNameField = new Tooltip("Please give the setting a name");
 	
@@ -57,21 +79,33 @@ public class SaveMixerSettingsController {
 	 * @param mix5
 	 * @param mix6
 	 */
-	public void getSettings(double mix1,double mix2,double mix3,double mix4,double mix5,double mix6) {
-		value1.setText(String.valueOf(mix1));
-		value2.setText(String.valueOf(mix2));
-		value3.setText(String.valueOf(mix3));
-		value4.setText(String.valueOf(mix4));
-		value5.setText(String.valueOf(mix5));
-		value6.setText(String.valueOf(mix6));
+	public void getSettings(
+			double sliderPitch, 
+			double sliderEchoLength, 
+			double sliderDecay, 
+			double sliderGain,
+    		double sliderFlangerLength, 
+    		double sliderWetness, 
+    		double sliderLfoFrequency, 
+    		float sliderLowPass) {
+		pitchValue.setText(String.valueOf(sliderPitch));
+		echoValue.setText(String.valueOf(sliderEchoLength));
+		decayValue.setText(String.valueOf(sliderDecay));
+		gainValue.setText(String.valueOf(sliderGain));
+		flangerLenghtValue.setText(String.valueOf(sliderFlangerLength));
+		wetnessValue.setText(String.valueOf(sliderWetness));
+		lfoFrequencyValue.setText(String.valueOf(sliderLfoFrequency));
+		lowPassValue.setText(String.valueOf(sliderLowPass));
 		name.setText(controller.loggedIn());
 		
-		this.set1=mix1;
-		this.set2=mix2;
-		this.set3=mix3;
-		this.set4=mix4;
-		this.set5=mix5;
-		this.set6=mix6;
+		this.pitch=sliderPitch;
+		this.echo=sliderEchoLength;
+		this.decay=sliderDecay;
+		this.gain=sliderGain;
+		this.flangerLenght=sliderFlangerLength;
+		this.wetness=sliderWetness;
+		this.lfoFrequency=sliderLfoFrequency;
+		this.lowPass=sliderLowPass;
 		
 		mixNameField.setWrapText(true);
 		mixNameField.setTextOverrun(OverrunStyle.ELLIPSIS);
@@ -81,8 +115,8 @@ public class SaveMixerSettingsController {
 				if (newValue) {
 					mixNameField.show(mixName, //
                         // popup tooltip on the right, you can adjust these values for different positions
-							mixName.getScene().getWindow().getX() + mixName.getLayoutX() + mixName.getWidth() -250, //
-							mixName.getScene().getWindow().getY() + mixName.getLayoutY() + mixName.getHeight());
+							mixName.getScene().getWindow().getX() + mixName.getLayoutX() + mixName.getWidth() -220, //
+							mixName.getScene().getWindow().getY() + mixName.getLayoutY() + mixName.getHeight()+200);
             } else {
             	mixNameField.hide();
             }
@@ -106,16 +140,16 @@ public class SaveMixerSettingsController {
 					if (newValue) {
 						mixNameField.show(mixName, //
 	                        // popup tooltip on the right, you can adjust these values for different positions
-								mixName.getScene().getWindow().getX() + mixName.getLayoutX() + mixName.getWidth() -250, //
-								mixName.getScene().getWindow().getY() + mixName.getLayoutY() + mixName.getHeight());
-	            } else {
-	            	mixNameField.hide();
-	            }
+								mixName.getScene().getWindow().getX() + mixName.getLayoutX() + mixName.getWidth() -220, //
+								mixName.getScene().getWindow().getY() + mixName.getLayoutY() + mixName.getHeight()+200);
+		            } else {
+		            	mixNameField.hide();
+		            }
 				}
 			});
 
 		} else {
-			if (controller.createMix(mixName.getText(), description.getText(), set1,set2,set3,set4,set5,set6)) {
+			if (controller.createMix(mixName.getText(), description.getText(), pitch,echo,decay,gain,flangerLenght,wetness, lfoFrequency, lowPass)) {
 				JOptionPane.showMessageDialog(null, "Mixer settings saved!","All Good!", JOptionPane.INFORMATION_MESSAGE); //Onko tämä kaikille ok?
 			    Stage stage = (Stage) closeButton.getScene().getWindow();
 			    stage.close();	

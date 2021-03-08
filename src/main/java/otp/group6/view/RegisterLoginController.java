@@ -3,28 +3,29 @@ package otp.group6.view;
 import java.sql.SQLException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.OverrunStyle;
-import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.stage.Stage;
 import otp.group6.controller.Controller;
 
 /**
+ * Class handles user registering and logging in
  * 
  * @author Joonas Soininen
  *
  */
 public class RegisterLoginController {
 	Controller controller;
+	MainController mc;
 	
 	public RegisterLoginController() {
+
 	}
 
 	@FXML
@@ -54,9 +55,18 @@ public class RegisterLoginController {
 	    Stage stage = (Stage) closeButton.getScene().getWindow();
 	    stage.close();
 	}
+	/**
+	 * Method to get mainController
+	 * @param mainController
+	 */
+	public void setMainController (MainController mainController) {
+		this.mc=mainController;
+		this.controller=mc.getController();
+		controller.intializeDatabaseConnection();
+	}
 	
 	/**
-	 * Method called to remind of correct password format
+	 * Method called to remind of correct password format. Only called form username textfield.
 	 */
 	@FXML
 	public void pwReminder() {
@@ -173,18 +183,18 @@ public class RegisterLoginController {
 				controller.loginUser(username.getText(), password.getText());
 			    Stage stage = (Stage) closeButton.getScene().getWindow();
 			    stage.close();
+			    //mc.openMixerSave();
+			    mc.setlogUserIn();
 			}
 
 		}
 
 	}
 	
-	//TODO Päätä missä salasana määritellään oikeaan muotoon!! Tarvitsee metodin isValid 
 	private static final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$";
 	private static final Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
 	
 	/**
-	 * TODO Pitää päättää missä tarkitsetaan salasanan oikeellisuus!
 	 * Used to check for password security
 	 * @param password is the inputed password
 	 * @return true if it matches requirements
