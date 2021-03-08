@@ -25,7 +25,6 @@ public class AudioFileHandler {
 	public void AudioFileHandler() {
 
 	}
-	
 
 	public static AudioInputStream OpenFile(String name) {
 		AudioInputStream a = null;

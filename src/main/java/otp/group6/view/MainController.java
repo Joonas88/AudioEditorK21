@@ -450,7 +450,7 @@ public class MainController {
 				textFieldPitch.setText(decimalFormat.format(newValue.doubleValue()));
 			}
 		});
-		
+
 		// Gain slider
 		sliderGain.valueProperty().addListener(new ChangeListener<Number>() {
 			@Override
@@ -459,7 +459,7 @@ public class MainController {
 				textFieldGain.setText(decimalFormat.format(newValue.doubleValue()));
 			}
 		});
-		
+
 		// Echo length slider
 		sliderEchoLength.valueProperty().addListener(new ChangeListener<Number>() {
 			@Override
@@ -468,7 +468,7 @@ public class MainController {
 				textFieldEchoLength.setText(decimalFormat.format(newValue.doubleValue()));
 			}
 		});
-		
+
 		// Echo decay slider
 		sliderDecay.valueProperty().addListener(new ChangeListener<Number>() {
 			@Override
@@ -477,7 +477,7 @@ public class MainController {
 				textFieldDecay.setText(decimalFormat.format(newValue.doubleValue()));
 			}
 		});
-		
+
 		// Flanger length slider
 		sliderFlangerLength.valueProperty().addListener(new ChangeListener<Number>() {
 			@Override
@@ -486,7 +486,7 @@ public class MainController {
 				textFieldFlangerLength.setText(decimalFormat.format(newValue.doubleValue()));
 			}
 		});
-		
+
 		// Wetness slider
 		sliderWetness.valueProperty().addListener(new ChangeListener<Number>() {
 			@Override
@@ -495,8 +495,8 @@ public class MainController {
 				textFieldWetness.setText(decimalFormat.format(newValue.doubleValue()));
 			}
 		});
-		
-		//Lfo slider
+
+		// Lfo slider
 		sliderLfoFrequency.valueProperty().addListener(new ChangeListener<Number>() {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
@@ -504,8 +504,8 @@ public class MainController {
 				textFieldLfo.setText(decimalFormat.format(newValue.doubleValue()));
 			}
 		});
-		
-		//LowPass slider
+
+		// LowPass slider
 		sliderLowPass.valueProperty().addListener(new ChangeListener<Number>() {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
@@ -514,7 +514,7 @@ public class MainController {
 			}
 		});
 
-		//AudioFileDuration slider
+		// AudioFileDuration slider
 		sliderAudioFileDuration.valueProperty().addListener(new InvalidationListener() {
 			public void invalidated(Observable arg0) {
 				if (sliderAudioFileDuration.isPressed()) {
@@ -531,7 +531,6 @@ public class MainController {
 			}
 		});
 	}
-
 
 	/*
 	 * Sets a tooltip to every info button
@@ -571,10 +570,7 @@ public class MainController {
 		buttonInfoLowPass.setTooltip(tooltipLowPass);
 	}
 
-
-
 	//// MIXER METHODS END HERE
-	//// /////////////////////////////////////////////////////////////////////////////////////
 
 	// RECORDER METHODS START HERE/////////////////////////////////////
 
@@ -723,11 +719,12 @@ public class MainController {
 
 	//// RECORDER METHODS END
 	//// HERE////////////////////////////////////////////////////////////////
-	
+
 	/**
-	 * Used to edit existing sample in the sample array
-	 * Opens File explorer and edits sample with given index to contain selected wav file
-	 * Checks file validity with REGEX
+	 * Used to edit existing sample in the sample array Opens File explorer and
+	 * edits sample with given index to contain selected wav file Checks file
+	 * validity with REGEX
+	 * 
 	 * @param index
 	 */
 
@@ -747,11 +744,10 @@ public class MainController {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * Opens file explorer and adds selected wav file to sample array in soundboard
-	 * Then adds a button to the soundboard
-	 * Checks file validity with REGEX
+	 * Then adds a button to the soundboard Checks file validity with REGEX
 	 */
 	@FXML
 	public void openSample() {
@@ -776,6 +772,7 @@ public class MainController {
 
 	/**
 	 * Adds a button to soundboard
+	 * 
 	 * @param index - the index of current gridpane child
 	 */
 	public void addButton(int index) {
@@ -808,10 +805,11 @@ public class MainController {
 
 	/**
 	 * Configures the button with given index
-	 * @param ap AnchorPane -- root of the button element
+	 * 
+	 * @param ap    AnchorPane -- root of the button element
 	 * @param index -- index of the gridPane child
 	 */
-	public void configureSoundButton (AnchorPane ap, int index) {
+	public void configureSoundButton(AnchorPane ap, int index) {
 		Button play = (Button) ap.getChildren().get(0);
 		Text description = (Text) ap.getChildren().get(1);
 		MenuButton mp = (MenuButton) ap.getChildren().get(2);
@@ -854,10 +852,12 @@ public class MainController {
 
 		});
 	}
+
 	/**
 	 * Method for renaming soundboard buttons
-	 * @param text -- text element of the button
-	 * @param ap -- parent of the button
+	 * 
+	 * @param text  -- text element of the button
+	 * @param ap    -- parent of the button
 	 * @param index -- index of the GridPane child
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -873,7 +873,7 @@ public class MainController {
 					if (temp.length() > 20) {
 						temp = temp.substring(0, 20);
 					}
-					if(checkEmpty(temp)) {
+					if (checkEmpty(temp)) {
 						temp = text.getText();
 					}
 					text.setText(temp);
@@ -891,7 +891,7 @@ public class MainController {
 					if (temp.length() > 20) {
 						temp = temp.substring(0, 20);
 					}
-					if(checkEmpty(temp)) {
+					if (checkEmpty(temp)) {
 						temp = text.getText();
 					}
 					text.setText(temp);
@@ -907,17 +907,19 @@ public class MainController {
 		tf.layoutYProperty().set(text.getLayoutY() - 20);
 		tf.requestFocus();
 	}
-	
+
 	/**
 	 * Checks if string contains only whitespaces
+	 * 
 	 * @param input -- String to be checked
-	 * @return returns true if string contains only whitespaces, otherwise returns false
+	 * @return returns true if string contains only whitespaces, otherwise returns
+	 *         false
 	 */
 	public boolean checkEmpty(String input) {
 		input = input.trim();
 		return input.isEmpty();
 	}
-	
+
 	/**
 	 * Refreshes soundboard buttons and reassigns their names
 	 */
@@ -950,10 +952,8 @@ public class MainController {
 	}
 
 	/**
-	 * Joonaksen tekemiä lisäyksiä
-	 * Tietokannan tarpeita
-	 * Uusien ikkunoiden avaamista ja sulkemista
-	 * Liukukytkimien arvojen asettamista
+	 * Joonaksen tekemiä lisäyksiä Tietokannan tarpeita Uusien ikkunoiden avaamista
+	 * ja sulkemista Liukukytkimien arvojen asettamista
 	 */
 
 	/**
@@ -966,25 +966,25 @@ public class MainController {
 	private MenuItem userSettings;
 	private Button logoutButton = new Button("Log out");
 	@FXML
-	private MenuItem loginoption;	
+	private MenuItem loginoption;
 	@FXML
 	private Button closeButton;
-		
+
 	/**
 	 * Method opens a new scene Login and Register form
 	 */
 	public void openLoginRegister() {
 		try {
-		    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\RegisterLoginView.fxml"));
-		    Parent root1 = (Parent) fxmlLoader.load();
-		    Stage stage = new Stage();
-		    RegisterLoginController rlc = fxmlLoader.getController();
-		    rlc.setMainController(this);
-		    stage.initModality(Modality.APPLICATION_MODAL);
-		    stage.initStyle(StageStyle.UNDECORATED);
-		    stage.setTitle("Login or Register");
-		    stage.setScene(new Scene(root1));  
-		    stage.show();
+			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\RegisterLoginView.fxml"));
+			Parent root1 = (Parent) fxmlLoader.load();
+			Stage stage = new Stage();
+			RegisterLoginController rlc = fxmlLoader.getController();
+			rlc.setMainController(this);
+			stage.initModality(Modality.APPLICATION_MODAL);
+			stage.initStyle(StageStyle.UNDECORATED);
+			stage.setTitle("Login or Register");
+			stage.setScene(new Scene(root1));
+			stage.show();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -996,25 +996,24 @@ public class MainController {
 	public void openMixerSettings() {
 
 		try {
-		    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\MixerSettingsView.fxml"));
-		    Parent root1 = (Parent) fxmlLoader.load();
-		    Stage stage = new Stage();
-		    MixerSettingsController msc = fxmlLoader.getController();
-		    msc.setMainController(this);
-		    stage.initModality(Modality.APPLICATION_MODAL);
-		    stage.initStyle(StageStyle.UNDECORATED);
-		    stage.setTitle("Mixer Settings Loader");
-		    stage.setScene(new Scene(root1));  
-		    stage.show();
+			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\MixerSettingsView.fxml"));
+			Parent root1 = (Parent) fxmlLoader.load();
+			Stage stage = new Stage();
+			MixerSettingsController msc = fxmlLoader.getController();
+			msc.setMainController(this);
+			stage.initModality(Modality.APPLICATION_MODAL);
+			stage.initStyle(StageStyle.UNDECORATED);
+			stage.setTitle("Mixer Settings Loader");
+			stage.setScene(new Scene(root1));
+			stage.show();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
-	public Controller getController () {
+
+	public Controller getController() {
 		return this.controller;
 	}
-
 
 	/**
 	 * Opens a new scene where the mixer settings can be saved to the database
@@ -1022,87 +1021,89 @@ public class MainController {
 	public void openMixerSave() {
 		setlogUserIn();
 
-		
 		try {
-		    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\SaveMixerSettings.fxml"));
-		    Parent root1 = (Parent) fxmlLoader.load();		    
-		    SaveMixerSettingsController smsc = fxmlLoader.getController();
-		    smsc.setMainController(this);
-		    smsc.getSettings(sliderPitch.getValue(),sliderEchoLength.getValue(),sliderDecay.getValue(),sliderGain.getValue(),
-		    		sliderFlangerLength.getValue(),sliderWetness.getValue(),sliderLfoFrequency.getValue(),(float)sliderLowPass.getValue());
-		    Stage stage = new Stage();
-		    stage.initModality(Modality.APPLICATION_MODAL);
-		    stage.initStyle(StageStyle.UNDECORATED);
-		    stage.setTitle("Save Mixer Settings");
-		    stage.setScene(new Scene(root1));  
-		    stage.show();
+			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\SaveMixerSettings.fxml"));
+			Parent root1 = (Parent) fxmlLoader.load();
+			SaveMixerSettingsController smsc = fxmlLoader.getController();
+			smsc.setMainController(this);
+			smsc.getSettings(sliderPitch.getValue(), sliderEchoLength.getValue(), sliderDecay.getValue(),
+					sliderGain.getValue(), sliderFlangerLength.getValue(), sliderWetness.getValue(),
+					sliderLfoFrequency.getValue(), (float) sliderLowPass.getValue());
+			Stage stage = new Stage();
+			stage.initModality(Modality.APPLICATION_MODAL);
+			stage.initStyle(StageStyle.UNDECORATED);
+			stage.setTitle("Save Mixer Settings");
+			stage.setScene(new Scene(root1));
+			stage.show();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	/**
-	 * Opens the save selection scene where user can decide to save settings locally or to the database.
+	 * Opens the save selection scene where user can decide to save settings locally
+	 * or to the database.
 	 */
 	public void openSaveSelection() {
 		try {
-		    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\SaveSelectionView.fxml"));
-		    Parent root1 = (Parent) fxmlLoader.load();
-		    Stage stage = new Stage();
-		    SaveSelectionController ssc = fxmlLoader.getController();
-		    ssc.setMainController(this);
-		    stage.initModality(Modality.APPLICATION_MODAL);
-		    stage.initStyle(StageStyle.UNDECORATED);
-		    stage.setTitle("Mixer Settings Saving");
-		    stage.setScene(new Scene(root1));  
-		    stage.show();	   
+			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\SaveSelectionView.fxml"));
+			Parent root1 = (Parent) fxmlLoader.load();
+			Stage stage = new Stage();
+			SaveSelectionController ssc = fxmlLoader.getController();
+			ssc.setMainController(this);
+			stage.initModality(Modality.APPLICATION_MODAL);
+			stage.initStyle(StageStyle.UNDECORATED);
+			stage.setTitle("Mixer Settings Saving");
+			stage.setScene(new Scene(root1));
+			stage.show();
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
-	 * Opens a new scene where user can select where to load mixer settings, locally or from the database.
+	 * Opens a new scene where user can select where to load mixer settings, locally
+	 * or from the database.
 	 */
 	public void openLoadSelection() {
 		try {
-		    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\LoadSelectionView.fxml"));
-		    Parent root1 = (Parent) fxmlLoader.load();
-		    Stage stage = new Stage();
-		    LoadSelectionController lsc = fxmlLoader.getController();
-		    lsc.setMainController(this);
-		    stage.initModality(Modality.APPLICATION_MODAL);
-		    stage.initStyle(StageStyle.UNDECORATED);
-		    stage.setTitle("Mixer Settings Loader");
-		    stage.setScene(new Scene(root1));  
-		    stage.show();	   
+			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\LoadSelectionView.fxml"));
+			Parent root1 = (Parent) fxmlLoader.load();
+			Stage stage = new Stage();
+			LoadSelectionController lsc = fxmlLoader.getController();
+			lsc.setMainController(this);
+			stage.initModality(Modality.APPLICATION_MODAL);
+			stage.initStyle(StageStyle.UNDECORATED);
+			stage.setTitle("Mixer Settings Loader");
+			stage.setScene(new Scene(root1));
+			stage.show();
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * Opens user settings view where password can be changed or the user deleted.
 	 */
 	public void openUserSettings() {
 		try {
-		    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\UserSettingsView.fxml"));
-		    Parent root1 = (Parent) fxmlLoader.load();
-		    Stage stage = new Stage();
-		    UserSettingsController usc = fxmlLoader.getController();
-		    usc.setMainController(this);
-		    stage.initModality(Modality.APPLICATION_MODAL);
-		    stage.initStyle(StageStyle.UNDECORATED);
-		    stage.setTitle("Mixer Settings Loader");
-		    stage.setScene(new Scene(root1));  
-		    stage.show();	   
+			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\UserSettingsView.fxml"));
+			Parent root1 = (Parent) fxmlLoader.load();
+			Stage stage = new Stage();
+			UserSettingsController usc = fxmlLoader.getController();
+			usc.setMainController(this);
+			stage.initModality(Modality.APPLICATION_MODAL);
+			stage.initStyle(StageStyle.UNDECORATED);
+			stage.setTitle("Mixer Settings Loader");
+			stage.setScene(new Scene(root1));
+			stage.show();
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}	
+	}
 
 	/**
 	 * Method to close open scenes
@@ -1117,6 +1118,7 @@ public class MainController {
 
 	/**
 	 * Method to set the slider values with data from the database
+	 * 
 	 * @param pitch
 	 * @param echo
 	 * @param decay
@@ -1126,15 +1128,8 @@ public class MainController {
 	 * @param lfoFrequency
 	 * @param lowPass
 	 */
-	public void setSliderValues(
-			double pitch, 
-			double echo, 
-			double decay, 
-			double gain, 
-			double flangerLenght, 
-			double wetness, 
-			double lfoFrequency, 
-			float lowPass) {
+	public void setSliderValues(double pitch, double echo, double decay, double gain, double flangerLenght,
+			double wetness, double lfoFrequency, float lowPass) {
 		sliderPitch.setValue(pitch);
 		sliderEchoLength.setValue(echo);
 		sliderDecay.setValue(decay);
@@ -1144,33 +1139,33 @@ public class MainController {
 		sliderLfoFrequency.setValue(lfoFrequency);
 		sliderLowPass.setValue(lowPass);
 	}
-	
+
 	/**
 	 * Method to store mixer settings locally
 	 */
 	public void soundManipulatorSaveMixerSettings() {
-		//TODO INFO KÄYTTÄJÄLLE
-		//TODO Tiedostosijainti!
+		// TODO INFO KÄYTTÄJÄLLE
+		// TODO Tiedostosijainti!
 		JFrame parentFrame = new JFrame();
-		 
+
 		JFileChooser fileChooser = new JFileChooser();
-		fileChooser.setDialogTitle("Specify a file to save");   
-		 
+		fileChooser.setDialogTitle("Specify a file to save");
+
 		int userSelection = fileChooser.showSaveDialog(parentFrame);
-		 
+
 		if (userSelection == JFileChooser.APPROVE_OPTION) {
-		    File fileToSave = fileChooser.getSelectedFile();
-		    System.out.println("Save as file: " + fileToSave.getAbsolutePath());
+			File fileToSave = fileChooser.getSelectedFile();
+			System.out.println("Save as file: " + fileToSave.getAbsolutePath());
 			try {
 				FileWriter writeFile = new FileWriter(fileToSave);
-				writeFile.write(Double.toString(sliderPitch.getValue())+"\n");
-				writeFile.write(Double.toString(sliderEchoLength.getValue())+"\n");
-				writeFile.write(Double.toString(sliderDecay.getValue())+"\n");
-				writeFile.write(Double.toString(sliderGain.getValue())+"\n");
-				writeFile.write(Double.toString(sliderFlangerLength.getValue())+"\n");
-				writeFile.write(Double.toString(sliderWetness.getValue())+"\n");
-				writeFile.write(Double.toString(sliderLfoFrequency.getValue())+"\n");
-				writeFile.write(Float.toString((float) sliderLowPass.getValue())+"\n");
+				writeFile.write(Double.toString(sliderPitch.getValue()) + "\n");
+				writeFile.write(Double.toString(sliderEchoLength.getValue()) + "\n");
+				writeFile.write(Double.toString(sliderDecay.getValue()) + "\n");
+				writeFile.write(Double.toString(sliderGain.getValue()) + "\n");
+				writeFile.write(Double.toString(sliderFlangerLength.getValue()) + "\n");
+				writeFile.write(Double.toString(sliderWetness.getValue()) + "\n");
+				writeFile.write(Double.toString(sliderLfoFrequency.getValue()) + "\n");
+				writeFile.write(Float.toString((float) sliderLowPass.getValue()) + "\n");
 				writeFile.close();
 				System.out.println("EHKÄPÄ");
 			} catch (IOException e) {
@@ -1180,17 +1175,18 @@ public class MainController {
 		}
 
 	}
-	
+
 	/**
-	 * Method to set visible user into main view and also set up different functions for logging out
+	 * Method to set visible user into main view and also set up different functions
+	 * for logging out
 	 */
 	public void setlogUserIn() {
 		logoutButton.setStyle("-fx-font-size: 8pt; -fx-text-fill:black;");
-		loggedinuser.setText("Logged in as: "+controller.loggedIn());
+		loggedinuser.setText("Logged in as: " + controller.loggedIn());
 		loggedinuser.setGraphic(logoutButton);
 		loggedinuser.setContentDisplay(ContentDisplay.RIGHT);
 		userSettings.setVisible(true);
-		logoutButton.setOnAction(event ->setlogUserOut());
+		logoutButton.setOnAction(event -> setlogUserOut());
 		loginoption.setVisible(false);
 	}
 

@@ -78,7 +78,6 @@ public class AudioRecorder extends Thread {
 		}
 
 	}
-	
 
 	public AudioFormat getFormat() {
 		return format;

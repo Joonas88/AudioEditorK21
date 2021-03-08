@@ -27,7 +27,6 @@ import otp.group6.*;
  */
 public class MainApplication extends Application {
 
-	
 	private Stage primaryStage;
 	private AnchorPane rootLayout;
 
@@ -37,56 +36,51 @@ public class MainApplication extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		//Sulkee ohjelman, kun käyttäjä sulkee ikkunan
+		// Sulkee ohjelman, kun käyttäjä sulkee ikkunan
 		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-		    @Override
-		    public void handle(WindowEvent t) {
-		        Platform.exit();
-		        System.exit(0);
-		    }
+			@Override
+			public void handle(WindowEvent t) {
+				Platform.exit();
+				System.exit(0);
+			}
 		});
-		
+
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle("AudioEditor");
-		
+
 		initializeRootLayout();
-		
-		
+
 		/*
-		//ALKUP
-		Parent root = FXMLLoader.load(getClass().getResource("MainView.fxml"));
-		Scene scene = new Scene(root);
-		primaryStage.setScene(scene);
-		
-		primaryStage.show();
-		//
-		 * */
-		 
-		
-		
-		
+		 * //ALKUP Parent root =
+		 * FXMLLoader.load(getClass().getResource("MainView.fxml")); Scene scene = new
+		 * Scene(root); primaryStage.setScene(scene);
+		 * 
+		 * primaryStage.show(); //
+		 */
+
 	}
+
 	/**
-     * Initializes the root layout.
-     */
-	//TODO Täytä metodit, tyhjennä "start"
+	 * Initializes the root layout.
+	 */
+	// TODO Täytä metodit, tyhjennä "start"
 	public void initializeRootLayout() {
 		try {
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(MainApplication.class.getResource("MainView.fxml"));
 			rootLayout = (AnchorPane) loader.load();
-			
+
 			Scene scene = new Scene(rootLayout);
 			primaryStage.setScene(scene);
 			primaryStage.show();
-			
+
 			MainController mainController = loader.getController();
 
 			mainController.initializeMixer();
-			
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
 }

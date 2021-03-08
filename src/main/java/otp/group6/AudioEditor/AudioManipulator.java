@@ -72,7 +72,7 @@ public class AudioManipulator {
 
 	// KEEESKEEn
 	public void kirjoitaTiedostoon() {
-		writer = new WaveformWriter(format, "src/audio/miksattuAudio.wav"); //Tiedoston nimi miksattuAudio!!
+		writer = new WaveformWriter(format, "src/audio/miksattuAudio.wav"); // Tiedoston nimi miksattuAudio!!
 		adp.addAudioProcessor(writer);
 		adp.run();
 	}
@@ -101,13 +101,13 @@ public class AudioManipulator {
 		} else if (echoLength == 0) {
 			System.out.println("Kaiun pituus on 0.");
 		}
-		
+
 		else {
 			delayEffect.setEchoLength(echoLength);
 			delayEffect.setDecay(decay);
 		}
 	}
-	
+
 	public void playAudio() {
 		try {
 			audioPlayer = new AudioPlayer(format);
@@ -126,4 +126,3 @@ public class AudioManipulator {
 	}
 
 }
-

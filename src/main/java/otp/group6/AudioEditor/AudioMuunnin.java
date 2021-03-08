@@ -57,33 +57,31 @@ public class AudioMuunnin {
 	private double lfo = 0;
 	private float lowPass = 44100;
 
-	
 	private float playbackStartingPoint = (float) 0.0;// pause-nappia varten
 	private float kokonaiskesto;
 	private boolean isPlaying = false;
-
 
 	// Konstruktori
 	public AudioMuunnin(Controller controller) {
 		this.controller = controller;
 	}
 
-	
 	public void setAudioSourceFile(File file) {
 		try {// Haetaan tiedosto parametrin perusteella
 			this.file = file.getAbsoluteFile();
 
-			//Converts AudioInputStream to Tarsos compatible JVMAudioInputSteam
+			// Converts AudioInputStream to Tarsos compatible JVMAudioInputSteam
 			audioInputStream = AudioSystem.getAudioInputStream(file);
-			audioInputStreamForTarsos  = new JVMAudioInputStream(AudioSystem.getAudioInputStream(getAudioFormat(), audioInputStream));
-			
+			audioInputStreamForTarsos = new JVMAudioInputStream(
+					AudioSystem.getAudioInputStream(getAudioFormat(), audioInputStream));
+
 			// formaatti ja sampleRate instanssimuuttujiin
 			this.format = audioInputStreamForTarsos.getFormat();
 			this.sampleRate = format.getSampleRate();
 
 			wsola = new WaveformSimilarityBasedOverlapAdd(Parameters.musicDefaults(pitchFactor, sampleRate));
 			adp = new AudioDispatcher(audioInputStreamForTarsos, wsola.getInputBufferSize(), wsola.getOverlap());
-			
+
 			wsola.setDispatcher(adp);
 			adp.addAudioProcessor(wsola);
 
@@ -106,7 +104,7 @@ public class AudioMuunnin {
 			// LowPass
 			lowPassSP = new LowPassSP(lowPass, sampleRate);
 			adp.addAudioProcessor(lowPassSP);
-			
+
 			audioPlayer = new AudioPlayer(format);
 
 		} catch (LineUnavailableException e) {
@@ -185,7 +183,8 @@ public class AudioMuunnin {
 			line.start();
 			AudioInputStream ais = new AudioInputStream(line);
 			JVMAudioInputStream audioStream = new JVMAudioInputStream(ais);
-			AudioDispatcher liveDispatcher = new AudioDispatcher(audioStream, wsola.getInputBufferSize(), wsola.getOverlap());
+			AudioDispatcher liveDispatcher = new AudioDispatcher(audioStream, wsola.getInputBufferSize(),
+					wsola.getOverlap());
 			wsola.setDispatcher(liveDispatcher);
 			liveDispatcher.addAudioProcessor(wsola);
 			liveDispatcher.addAudioProcessor(rateTransposer);
@@ -205,9 +204,9 @@ public class AudioMuunnin {
 		}
 	}
 
-	//MEDIAPLAYER METHODS
+	// MEDIAPLAYER METHODS
 	public void playAudio() {
-		//Stops audio dispatcher if already playing
+		// Stops audio dispatcher if already playing
 		if (adp != null) {
 			adp.stop();
 		}
@@ -249,7 +248,8 @@ public class AudioMuunnin {
 				controller.setCurrentPositionToAudioDurationText(kokonaiskesto);
 			}
 		};
-		timer.schedule(task, 100, 500); // käynnistää timerin, joka suorittaa taskin 0,5 sekunnin välein alkaen kohdasta 0s
+		timer.schedule(task, 100, 500); // käynnistää timerin, joka suorittaa taskin 0,5 sekunnin välein alkaen kohdasta
+										// 0s
 
 	}
 
@@ -288,7 +288,7 @@ public class AudioMuunnin {
 			playbackStartingPoint = adp.secondsProcessed();
 			adp.stop();
 		}
-		
+
 	}
 
 	private void setCurrentPositionToAudioFileDurationSlider(double seconds) {
@@ -328,7 +328,6 @@ public class AudioMuunnin {
 		}
 	}
 
-
 	// PRIVATE METHODS
 	private void createAudioProcessors() {
 		try {
@@ -336,10 +335,12 @@ public class AudioMuunnin {
 			// pitch-arvosta riippumatta
 			wsola = new WaveformSimilarityBasedOverlapAdd(Parameters.musicDefaults(pitchFactor, sampleRate));
 			audioInputStream = AudioSystem.getAudioInputStream(file);
-			//audioInputStreamForTarsos  = getMonoAudioInputStream(audioInputStream);
-			audioInputStreamForTarsos  = new JVMAudioInputStream(AudioSystem.getAudioInputStream(getAudioFormat(), audioInputStream));
+			// audioInputStreamForTarsos = getMonoAudioInputStream(audioInputStream);
+			audioInputStreamForTarsos = new JVMAudioInputStream(
+					AudioSystem.getAudioInputStream(getAudioFormat(), audioInputStream));
 			adp = new AudioDispatcher(audioInputStreamForTarsos, wsola.getInputBufferSize(), wsola.getOverlap());
-			//adp = AudioDispatcherFactory.fromFile(wavFile, wsola.getInputBufferSize(), wsola.getOverlap());
+			// adp = AudioDispatcherFactory.fromFile(wavFile, wsola.getInputBufferSize(),
+			// wsola.getOverlap());
 
 			wsola.setDispatcher(adp);
 			adp.addAudioProcessor(wsola);

@@ -31,12 +31,15 @@ public class Soundboard {
 			this.filepath = filepath;
 			this.name = "New Sound(" + sampleArray.size() + ")";
 		}
+
 		public void setSamplePath(String filepath) {
 			this.filepath = filepath;
 		}
+
 		public void setName(String name) {
 			this.name = name;
 		}
+
 		public String getName() {
 			return this.name;
 		}
@@ -98,12 +101,15 @@ public class Soundboard {
 	public void addSample(String path) {
 		sampleArray.add(new Sample(path));
 	}
+
 	public void editSample(String path, int index) {
 		sampleArray.get(index).setSamplePath(path);
 	}
+
 	public String getSampleName(int index) {
 		return sampleArray.get(index).getName();
 	}
+
 	public void setSampleName(int index, String name) {
 		sampleArray.get(index).setName(name);
 	}
@@ -115,7 +121,7 @@ public class Soundboard {
 	 */
 	public void removeSample(int sampleIndex) {
 		sampleArray.remove(sampleIndex);
-		//update button positions
+		// update button positions
 	}
 
 	/**
