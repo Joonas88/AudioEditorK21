@@ -7,11 +7,17 @@ import java.util.regex.Pattern;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
-
+import javax.swing.JFileChooser;
+import javax.swing.LookAndFeel;
+import javax.swing.UIManager;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javafx.event.ActionEvent;
@@ -26,6 +32,7 @@ import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -42,6 +49,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import otp.group6.AudioEditor.AudioFileHandler;
+import otp.group6.AudioEditor.AudioRecorder;
 import otp.group6.controller.*;
 
 /**
@@ -87,6 +95,8 @@ public class MainController {
 	@FXML
 	private Slider sliderAudioFileDuration;
 	@FXML
+	private Slider sliderRecordedFileDuration;
+	@FXML
 	private TextField textFieldPitch;
 	@FXML
 	private TextField textFieldGain;
@@ -107,6 +117,10 @@ public class MainController {
 	@FXML
 	private Text textAudioFileDuration;
 	@FXML
+	private Text textRecordFileDuration;
+	@FXML
+	private Text textRecordingDuration;
+	@FXML
 	private GridPane paneMixerSliders;
 	@FXML
 	private AnchorPane paneMixerAudioPlayer;
@@ -116,6 +130,16 @@ public class MainController {
 	private Button buttonPause;
 	@FXML
 	private Button buttonStop;
+	@FXML
+	private Button recorderButtonPlay;
+	@FXML
+	private Button recorderButtonPause;
+	@FXML
+	private Button recorderButtonStop;
+	@FXML
+	private Button recorderButtonSave;
+	@FXML
+	private ToggleButton recorderButtonPauseRecord;
 	@FXML
 	private Button buttonInfoPitch;
 	@FXML
@@ -138,9 +162,14 @@ public class MainController {
 	private String audioFileProcessedTimeString = "0:00";
 	private DecimalFormat decimalFormat = new DecimalFormat("#0.00"); // kaikki luvut kahden desimaalin tarkkuuteen
 
+	private Boolean isRecording = false;
+	private Timer timer;
+	private float recordedFileProcessed;
+
 	public void initializeMixer() {
 		initializeSlidersAndTextFields();
 		setTooltips();
+		initializeRecorderListener();
 	}
 
 	// Methods for buttons
@@ -187,6 +216,7 @@ public class MainController {
 			}
 			controller.soundManipulatorSaveFile(fullPath);
 		} catch (Exception e) {
+
 		}
 	}
 
@@ -213,9 +243,10 @@ public class MainController {
 
 			// Shows the name of the file in textSelectedFile element
 			textSelectedFile.setText("Selected file: " + file.getName());
-			
+
 			// Enables all sliders and audio player
 			enableMixerSlidersAndAudioPlayer();
+
 		} catch (UnsupportedAudioFileException e) {
 			System.out.println("Väärä tiedostomuoto");
 			Alert alert = new Alert(AlertType.ERROR);
@@ -224,6 +255,7 @@ public class MainController {
 			alert.setContentText("Valitse vain WAV-tyyppisiä tiedostoja");
 			alert.showAndWait();
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -355,7 +387,7 @@ public class MainController {
 			System.out.println("Virheellinen syöte");
 		}
 	}
-	
+
 	@FXML
 	public void handleAudioFileDurationSliderClick() {
 		controller.timerCancel();
@@ -387,7 +419,7 @@ public class MainController {
 
 	public void setCurrentValueToAudioDurationSlider(double currentSeconds) {
 		sliderAudioFileDuration.setValue(currentSeconds);
-		if (currentSeconds == sliderAudioFileDuration.getMax()){
+		if (currentSeconds == sliderAudioFileDuration.getMax()) {
 			buttonPlay.setDisable(false);
 			buttonStop.setDisable(true);
 			buttonPause.setDisable(true);
@@ -424,6 +456,7 @@ public class MainController {
 				textFieldPitch.setText(decimalFormat.format(newValue.doubleValue()));
 			}
 		});
+		
 		// Gain slider
 		sliderGain.valueProperty().addListener(new ChangeListener<Number>() {
 			@Override
@@ -432,6 +465,7 @@ public class MainController {
 				textFieldGain.setText(decimalFormat.format(newValue.doubleValue()));
 			}
 		});
+		
 		// Echo length slider
 		sliderEchoLength.valueProperty().addListener(new ChangeListener<Number>() {
 			@Override
@@ -440,6 +474,7 @@ public class MainController {
 				textFieldEchoLength.setText(decimalFormat.format(newValue.doubleValue()));
 			}
 		});
+		
 		// Echo decay slider
 		sliderDecay.valueProperty().addListener(new ChangeListener<Number>() {
 			@Override
@@ -448,6 +483,7 @@ public class MainController {
 				textFieldDecay.setText(decimalFormat.format(newValue.doubleValue()));
 			}
 		});
+		
 		// Flanger length slider
 		sliderFlangerLength.valueProperty().addListener(new ChangeListener<Number>() {
 			@Override
@@ -456,6 +492,7 @@ public class MainController {
 				textFieldFlangerLength.setText(decimalFormat.format(newValue.doubleValue()));
 			}
 		});
+		
 		// Wetness slider
 		sliderWetness.valueProperty().addListener(new ChangeListener<Number>() {
 			@Override
@@ -464,6 +501,7 @@ public class MainController {
 				textFieldWetness.setText(decimalFormat.format(newValue.doubleValue()));
 			}
 		});
+		
 		//Lfo slider
 		sliderLfoFrequency.valueProperty().addListener(new ChangeListener<Number>() {
 			@Override
@@ -472,6 +510,7 @@ public class MainController {
 				textFieldLfo.setText(decimalFormat.format(newValue.doubleValue()));
 			}
 		});
+		
 		//LowPass slider
 		sliderLowPass.valueProperty().addListener(new ChangeListener<Number>() {
 			@Override
@@ -480,6 +519,7 @@ public class MainController {
 				textFieldLowPass.setText(decimalFormat.format(newValue.doubleValue()));
 			}
 		});
+
 		//AudioFileDuration slider
 		sliderAudioFileDuration.valueProperty().addListener(new InvalidationListener() {
 			public void invalidated(Observable arg0) {
@@ -496,6 +536,7 @@ public class MainController {
 			}
 		});
 	}
+
 
 	/*
 	 * Sets a tooltip to every info button
@@ -540,17 +581,153 @@ public class MainController {
 	//// MIXER METHODS END HERE
 	//// /////////////////////////////////////////////////////////////////////////////////////
 
-	@FXML
+	// RECORDER METHODS START HERE/////////////////////////////////////
 
-	public void recordAudio() {
-		controller.recordAudioToggle();
+	@FXML
+	public void recordAudioToggle() {
+
+		if (!isRecording) {
+			controller.recordAudio();
+			timer = new Timer();
+			TimerTask task = new TimerTask() {
+				int i = 0;
+
+				@Override
+				public void run() {
+					textRecordingDuration.setText("" + i);
+					i++;
+				}
+			};
+
+			timer.schedule(task, 0, 1000);
+			isRecording = true;
+
+		} else {
+			timer.cancel();
+			textRecordingDuration.setText("0");
+			controller.stopRecord();
+			isRecording = false;
+			enableRecorderPlayer();
+			File file = null;
+			file = new File("src/audio/default.wav").getAbsoluteFile();
+			file.deleteOnExit();
+
+			if (file != null) {
+				try {
+					AudioFormat format = AudioSystem.getAudioFileFormat(file.getAbsoluteFile()).getFormat();
+					double audioFileLengthInSec = file.length() / (format.getFrameSize() * format.getFrameRate());
+					setMaxValueToRecordDurationSlider(audioFileLengthInSec);
+					audioFileDurationString = secondsToMinutesAndSeconds(audioFileLengthInSec);
+					textAudioFileDuration.setText(": / " + audioFileDurationString);
+
+					textRecordFileDuration.setText("0:00 / " + audioFileDurationString);
+				} catch (Exception e) {
+
+					e.printStackTrace();
+				}
+
+			}
+		}
 
 	}
 
-	@FXML
-	public void stopRecord() {
-		controller.stopRecord();
+	public void recorderPauseRecord() {
+		if (recorderButtonPauseRecord.isPressed() == false) {
+			controller.pauseRecord();
+		} else {
+			controller.resumeRecord();
+		}
 	}
+
+	@FXML
+	public void recorderPlayAudio() {
+		controller.audioRecorderPlayAudio();
+		recorderButtonPlay.setDisable(true);
+		recorderButtonPause.setDisable(false);
+		recorderButtonStop.setDisable(false);
+	}
+
+	@FXML
+	public void recorderStopAudio() {
+		controller.recorderTimerCancel();
+		recorderButtonPlay.setDisable(false);
+		recorderButtonPause.setDisable(true);
+		recorderButtonStop.setDisable(true);
+		controller.audioRecorderStopAudio();
+	}
+
+	@FXML
+	public void recorderPauseAudio() {
+		controller.recorderTimerCancel();
+		recorderButtonPlay.setDisable(false);
+		recorderButtonPause.setDisable(true);
+		recorderButtonStop.setDisable(false);
+		controller.audioRecorderPauseAudio();
+	}
+
+	private void enableRecorderPlayer() {
+		sliderRecordedFileDuration.setDisable(false);
+		textRecordFileDuration.setDisable(false);
+		recorderButtonPlay.setDisable(false);
+		recorderButtonSave.setDisable(false);
+	}
+
+	private void updateRecorderSlider() {
+		sliderRecordedFileDuration.setValue(controller.getRecorderSecondsProcessed());
+	}
+
+	public void recorderSliderPressed() {
+		controller.recorderSliderPressed();
+	}
+
+	public void initializeRecorderListener() {
+		sliderRecordedFileDuration.valueProperty().addListener(new InvalidationListener() {
+			public void invalidated(Observable arg0) {
+
+				if (sliderRecordedFileDuration.isPressed()) {
+					recorderSliderPressed();
+					controller.recorderTimerCancel();
+					double currentPoint = sliderRecordedFileDuration.getValue();
+					sliderRecordedFileDuration.setValue(currentPoint);
+					controller.recorderPlayFromDesiredSec(currentPoint);
+					audioFileProcessedTimeString = secondsToMinutesAndSeconds(sliderRecordedFileDuration.getValue());
+					textRecordFileDuration.setText(audioFileProcessedTimeString + " / " + audioFileDurationString);
+				}
+
+			}
+		});
+	}
+
+	public void saveRecordedFile() {
+		FileChooser fileChooser = new FileChooser();
+		ExtensionFilter filter = new ExtensionFilter("WAV files (*.wav)", ".wav");
+		fileChooser.getExtensionFilters().add(filter);
+		File file = fileChooser.showSaveDialog(mainContainer.getScene().getWindow());
+		String fullPath;
+		try {
+			fullPath = file.getAbsolutePath();
+			if (!fullPath.endsWith(".wav")) {
+				fullPath = fullPath + ".wav";
+			}
+			controller.saveAudioFile(fullPath);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public void setMaxValueToRecordDurationSlider(double audioFileLengthInSec) {
+		sliderRecordedFileDuration.setMax(audioFileLengthInSec);
+	}
+
+	public void setCurrentValueToRecordDuratinSlider(double currentSeconds) {
+		sliderRecordedFileDuration.setValue(currentSeconds);
+		audioFileProcessedTimeString = secondsToMinutesAndSeconds(sliderRecordedFileDuration.getValue());
+		textRecordFileDuration.setText(audioFileProcessedTimeString + " / " + audioFileDurationString);
+	}
+
+	//// RECORDER METHODS END
+	//// HERE////////////////////////////////////////////////////////////////
 
 	public void openFile(int index) {
 		Pattern pattern = Pattern.compile("(\\.wav)$", Pattern.CASE_INSENSITIVE);
@@ -773,6 +950,7 @@ public class MainController {
 	 * Method opens a new scene, the mixer settings from the database
 	 */
 	public void openMixerSettings() {
+
 		try {
 			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\MixerSettingsView.fxml"));
 			Parent root1 = (Parent) fxmlLoader.load();

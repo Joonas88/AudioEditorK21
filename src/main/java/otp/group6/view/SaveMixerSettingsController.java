@@ -21,7 +21,6 @@ public class SaveMixerSettingsController {
 	Controller controller;
 
 	public SaveMixerSettingsController() {
-		controller = new Controller();
 	}
 	
 	@FXML

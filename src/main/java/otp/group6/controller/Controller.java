@@ -20,7 +20,7 @@ public class Controller {
 
 	private Soundboard soundboard;
 	private AudioRecorder recorder;
-	private AudioMuunnin soundManipulator;	
+	private AudioMuunnin soundManipulator;
 	private AudioCloudDAO audioDAO;
 	private MainController mainController;
 
@@ -31,12 +31,10 @@ public class Controller {
 
 	public void initialConfig() {
 		soundboard = new Soundboard();
-		recorder = new AudioRecorder();
+		recorder = new AudioRecorder(this);
 		soundManipulator = new AudioMuunnin(this);
 	}
 
-	
-	
 	// SoundManipulator methods start
 	
 	//FROM VIEW TO SOUNDMANIPULATOR 
@@ -46,30 +44,38 @@ public class Controller {
 	public void soundManipulatorSetPitchFactor(double pitch) {
 		soundManipulator.setPitchFactor(pitch);	
 	}	
+	
 	//Gain
 	public void soundManipulatorSetGain(double gain) {
 		soundManipulator.setGain(gain);
 	}
+	
 	//Echo length
 	public void soundManipulatorSetEchoLength(double echoLength) {
 		soundManipulator.setEchoLength(echoLength);
 	}
+	
 	//Decay
 	public void soundManipulatorSetDecay(double decay) {
 		soundManipulator.setDecay(decay);
 	}
+	
 	//Flanger length	
 	public void soundManipulatorSetFlangerLength(double flangerLength) {
 		soundManipulator.setFlangerLength(flangerLength);
 	}
+	
 	//Flanger wetness
 	public void soundManipulatorSetWetness(double wetness) {
 		soundManipulator.setWetness(wetness);
 	}
+	
 	//LFO
 	public void soundManipulatorSetLFO(double lfo) {
 		soundManipulator.setLFO(lfo);
 	}
+	
+	//LowPass
 	public void soundManipulatorSetLowPass(float lowPass) {
 		soundManipulator.setLowPass(lowPass);
 	}
@@ -107,7 +113,6 @@ public class Controller {
 		soundManipulator.timerCancel();
 	}
 	
-	
 	// FROM SOUNDMANIPULATOR TO VIEW
 	//Audio file sliderin metodit
 	public void setMaxValueToAudioDurationSlider(double maxLenghthInSeconds) {
@@ -137,6 +142,7 @@ public class Controller {
 	
 	/**
 	 * Adds sample to Soundboard SampleArray
+	 * 
 	 * @param path filepath
 	 */
 	public void addSample(String path) {
@@ -146,6 +152,7 @@ public class Controller {
 			e.printStackTrace();
 		}
 	}
+	
 	public void editSample(String path, int index) {
 		soundboard.editSample(path, index);
 	}
@@ -157,9 +164,11 @@ public class Controller {
 			System.out.println("index not found - sample array: " + index);
 		}
 	}
+	
 	public String getSampleName(int index) {
 		return soundboard.getSampleName(index);
 	}
+	
 	public void setSampleName(int index, String name) {
 		soundboard.setSampleName(index, name);
 	}
@@ -170,27 +179,64 @@ public class Controller {
 	// Soundboard methods stop
 
 	// AudioRecorder methods start
-	boolean isRecording = false;
-	public void recordAudioToggle() {
-		if(!isRecording) {
-			recorder.recordAudio();
-			isRecording = true;
-		}else {
-			recorder.stopRecord();
-			isRecording = false;
-		}
-		
+	public void recordAudio() {
+		recorder.recordAudio();
+	}
+
+	public void stopRecord() {
+		recorder.stopRecord();
+	}
+
+	public void pauseRecord() {
+		recorder.pauseRecord();
+	}
+
+	public void resumeRecord() {
+		recorder.resumeRecord();
+	}
+
+	public void audioRecorderPlayAudio() {
+		recorder.playAudio();
+	}
+
+	public void audioRecorderStopAudio() {
+		recorder.stopAudio();
+	}
+
+	public void audioRecorderPauseAudio() {
+		recorder.pauseAudio();
+	}
+
+	public float getSecondsRecorded(float secondsRecorded) {
+		return recorder.getSecondsProcessed();
+	}
+
+	public void recorderPlayFromDesiredSec(double seconds) {
+		recorder.playFromDesiredSec(seconds);
+	}
+
+	public float getRecorderSecondsProcessed() {
+		return recorder.getSecondsProcessed();
+	}
+
+	public void recorderTimerCancel() {
+		recorder.timerCancel();
+	}
+
+	public void recorderSliderPressed() {
+		recorder.recorderSliderPressed();
+	}
+
+	public void saveAudioFile(String path) {
+		recorder.saveAudioFile(path);
+	}
+
+	public void setCurrentValueToRecordFileDurationSlider(Double currentSeconds) {
+		mainController.setCurrentValueToRecordDuratinSlider(currentSeconds);
 	}
 	
 	// AudioRecorder methods stop
-	public void stopRecord() {
-		try {
-			recorder.stopRecord();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	// AudioRecorder methods stop
+
 	
 	//AudioCloudDAO methods start
 	public boolean chekcforUser(String user) {

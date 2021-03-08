@@ -31,6 +31,7 @@ public class AudioMuunnin {
 
 	private File file;
 	private AudioDispatcher adp;
+	private AudioDispatcher liveDispatcher;
 	private WaveformSimilarityBasedOverlapAdd wsola;
 	private GainProcessor gainProcessor;
 	private AudioPlayer audioPlayer;
@@ -180,29 +181,25 @@ public class AudioMuunnin {
 		TargetDataLine line = null;
 		try {
 			line = (TargetDataLine) AudioSystem.getLine(info);
-			System.out.println("info " +info);
-			System.out.println("line " +line.getFormat());
 			line.open(format2);
 			line.start();
-		} catch (LineUnavailableException e) {
+			AudioInputStream ais = new AudioInputStream(line);
+			JVMAudioInputStream audioStream = new JVMAudioInputStream(ais);
+			AudioDispatcher liveDispatcher = new AudioDispatcher(audioStream, wsola.getInputBufferSize(), wsola.getOverlap());
+			wsola.setDispatcher(liveDispatcher);
+			liveDispatcher.addAudioProcessor(wsola);
+			liveDispatcher.addAudioProcessor(rateTransposer);
+			liveDispatcher.addAudioProcessor(delayEffect);
+			liveDispatcher.addAudioProcessor(gainProcessor);
+			liveDispatcher.addAudioProcessor(flangerEffect);
+			liveDispatcher.addAudioProcessor(audioPlayer);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-		AudioInputStream ais = new AudioInputStream(line);
-		JVMAudioInputStream audioStream = new JVMAudioInputStream(ais);
-		AudioDispatcher liveDispatcher = new AudioDispatcher(audioStream, wsola.getInputBufferSize(),
-				wsola.getOverlap());
-		wsola.setDispatcher(liveDispatcher);
-		liveDispatcher.addAudioProcessor(wsola);
-		liveDispatcher.addAudioProcessor(rateTransposer);
-		liveDispatcher.addAudioProcessor(delayEffect);
-		liveDispatcher.addAudioProcessor(gainProcessor);
-		liveDispatcher.addAudioProcessor(flangerEffect);
-		liveDispatcher.addAudioProcessor(audioPlayer);
-
 		try {
 			Thread t = new Thread(liveDispatcher);
 			t.start();
+			System.out.println("test filter started");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -252,7 +249,7 @@ public class AudioMuunnin {
 				controller.setCurrentPositionToAudioDurationText(kokonaiskesto);
 			}
 		};
-		timer.schedule(task, 0, 500); // käynnistää timerin, joka suorittaa taskin 0,5 sekunnin välein alkaen kohdasta 0s
+		timer.schedule(task, 100, 500); // käynnistää timerin, joka suorittaa taskin 0,5 sekunnin välein alkaen kohdasta 0s
 
 	}
 
@@ -288,7 +285,7 @@ public class AudioMuunnin {
 			isPlaying = false;
 			// secondsProcessed = adp.secondsProcessed();
 			System.out.println(kokonaiskesto);
-			playbackStartingPoint = (float) (kokonaiskesto);
+			playbackStartingPoint = adp.secondsProcessed();
 			adp.stop();
 		}
 		

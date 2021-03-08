@@ -29,7 +29,6 @@ public class MixerSettingsController implements Initializable{
 	MainController mc;
 	
 	public MixerSettingsController() {
-		controller = new Controller();
 		mc = new MainController();
 	}
 	
