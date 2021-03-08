@@ -1,6 +1,5 @@
 package otp.group6.view;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -11,10 +10,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
 import java.util.regex.Matcher;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;

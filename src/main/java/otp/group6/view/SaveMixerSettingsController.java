@@ -142,9 +142,9 @@ public class SaveMixerSettingsController {
 	                        // popup tooltip on the right, you can adjust these values for different positions
 								mixName.getScene().getWindow().getX() + mixName.getLayoutX() + mixName.getWidth() -220, //
 								mixName.getScene().getWindow().getY() + mixName.getLayoutY() + mixName.getHeight()+200);
-	            } else {
-	            	mixNameField.hide();
-	            }
+		            } else {
+		            	mixNameField.hide();
+		            }
 				}
 			});
 

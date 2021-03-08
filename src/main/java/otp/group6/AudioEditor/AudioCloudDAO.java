@@ -3,9 +3,6 @@ package otp.group6.AudioEditor;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.swing.JOptionPane;
-
 import java.sql.*;
 import java.time.LocalDate;
 
@@ -264,9 +261,6 @@ public class AudioCloudDAO {
 			ResultSet rset = myStatement.executeQuery();
 			
 			if (!rset.next()) {
-				// TODO käyttäjälle palaute, ehkäpä käyttöliittymään, ei tänne :)
-				//JOptionPane.showMessageDialog(null, "Validointi ei onnistu, koita uudelleen?"); //Ei voi kertoa ettei tunnusta ole //Nämä ponnahtaa myös testeissä!
-				//System.out.println("Käyttäjätunnusta ei ole olemassa"); //Poistettava
 				return "No user";
 			}
 			
@@ -276,23 +270,17 @@ public class AudioCloudDAO {
 			boolean pwMatch = PasswordUtils.verifyUserPassword(p, pw, salt);
 			
 			if (pwMatch) {
-				// TODO käyttäjälle palaute, ehkäpä käyttöliittymään, ei tänne :)
-				//JOptionPane.showMessageDialog(null, "Tervetuloa! "+rset.getString("username")); //Nämä ponnahtaa myös testeissä!
-				//System.out.println("Tervetuloa "+rset.getString("username")); //Poistettava
 				userclass.setUser((rset.getString("username")));
 				return "Welcome "+rset.getString("username");
 			} else {
-				// TODO käyttäjälle palaute, ehkäpä käyttöliittymään, ei tänne :)
-				//JOptionPane.showMessageDialog(null, "Käyttäjätunnus tai salasana väärä!", "HUOMIO!", JOptionPane.WARNING_MESSAGE); //Nämä ponnahtaa myös testeissä!
-				//System.out.println("Käyttäjätunnus tai salasana väärä!");//Poistettava
 				return "Incorrect user or pw";
 			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		// TODO käyttäjälle palaute, ehkäpä käyttöliittymään, ei tänne :)
-		return "Ei voi kirjautua sisälle!"; //Kunnollinen viesti!
+		
+		return "Unexpected error logging in, please try again!"; 
 	}
 	
 	/**
@@ -331,16 +319,13 @@ public class AudioCloudDAO {
 				} catch (Exception e) {
 					e.printStackTrace();
 					return false;
-				}	
-									
+				}									
 			} else {
 				return false;
 			}
-
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
-		// TODO käyttäjälle palaute, ehkäpä käyttöliittymään, ei tänne :)
+		}		
 		return false;
 	}
 	
@@ -361,12 +346,10 @@ public class AudioCloudDAO {
 	 * @return
 	 */
 	public boolean logoutUser() {
-		if (!(userclass.getUser()==" ")) {
-			// TODO käyttäjälle palaute, ehkäpä käyttöliittymään, ei tänne :)
+		if (!(userclass.getUser()==" ")) {		
 			userclass.setUser(" ");
 			return true;	
-		} else {
-			// TODO käyttäjälle palaute, ehkäpä käyttöliittymään, ei tänne :)
+		} else {		
 			return false;
 		}
 		
@@ -400,9 +383,7 @@ public class AudioCloudDAO {
 			float lowPass
 			) throws SQLException {
 
-		LocalDate date =  LocalDate.now(); //TODO Päivämäärä asetetaan jossain muualla?
-		
-		System.out.println("KIRJATUNUT KÄYTTÄJÄ: "+userclass.getUser()); //Poistettava
+		LocalDate date =  LocalDate.now();
 		
 		if (!(userclass.getUser()==" ")) {
 			//TODO lopullisesta tietokannasta tippuu TEST pois
@@ -420,8 +401,7 @@ public class AudioCloudDAO {
 				query.setDouble(11, wetness);
 				query.setDouble(12, lfoFrequency);
 				query.setFloat(13, lowPass);
-				query.executeUpdate();
-				//System.out.println("Mix tallennettu!"); //Poistetteava
+				query.executeUpdate();			
 				return true;
 			} catch (SQLException e) {
 				do {
@@ -431,8 +411,7 @@ public class AudioCloudDAO {
 				} while (e.getNextException() != null);
 			}
 			return false;
-		} else {
-			//JOptionPane.showMessageDialog(null, "Not logged in! Please log in to use this function.","Alert",JOptionPane.WARNING_MESSAGE); //Nämä ponnahtaa myös testeissä!
+		} else {			
 			return false;
 		}
 
@@ -597,15 +576,10 @@ public class AudioCloudDAO {
 		try (PreparedStatement statement = databaseConnection.prepareStatement("DELETE FROM accountsTEST WHERE username = ?")) {
 			statement.setString(1, userclass.getUser());
 			statement.executeUpdate();
-			// TODO käyttäjälle palaute, ehkäpä käyttöliittymään, ei tänne :)
-			//JOptionPane.showMessageDialog(null, "Käyttäjätunnus poistettu! :)"); //Nämä ponnahtaa myös testeissä!
-			//System.out.println("Käyttäjä poistettu!"); //Tämä poistoon
 			userclass.setUser(" ");
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
-			// TODO käyttäjälle palaute, ehkäpä käyttöliittymään, ei tänne :)
-			//JOptionPane.showMessageDialog(null, "Ei toimi ei tää poisto ei! :(("); //Nämä ponnahtaa myös testeissä!
 			return false;
 		}
 	}
