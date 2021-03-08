@@ -6,6 +6,10 @@ import java.text.DecimalFormat;
 import java.util.regex.Pattern;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.UnsupportedAudioFileException;
+
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import java.util.regex.Matcher;
@@ -15,6 +19,8 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
@@ -30,6 +36,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -126,8 +134,8 @@ public class MainController {
 	private Button buttonInfoLowPass;
 
 	// Muuttujat tiedoston kokonaiskestolle ja toistetulle ajalle
-	private String audioFileDurationString;
-	private String audioFileProcessedTimeString;
+	private String audioFileDurationString = "0:00";
+	private String audioFileProcessedTimeString = "0:00";
 	private DecimalFormat decimalFormat = new DecimalFormat("#0.00"); // kaikki luvut kahden desimaalin tarkkuuteen
 
 	public void initializeMixer() {
@@ -167,7 +175,19 @@ public class MainController {
 
 	@FXML
 	public void soundManipulatorSaveMixedFile() {
-		controller.soundManipulatorSaveFile();
+		FileChooser fileChooser = new FileChooser();
+		ExtensionFilter filter = new ExtensionFilter("WAV files (*.wav)", ".wav");
+		fileChooser.getExtensionFilters().add(filter);
+		File file = fileChooser.showSaveDialog(mainContainer.getScene().getWindow());
+		String fullPath;
+		try {
+			fullPath = file.getAbsolutePath();
+			if (!fullPath.endsWith(".wav")) {
+				fullPath = fullPath + ".wav";
+			}
+			controller.soundManipulatorSaveFile(fullPath);
+		} catch (Exception e) {
+		}
 	}
 
 	@FXML
@@ -178,26 +198,31 @@ public class MainController {
 	@FXML
 	public void soundManipulatorOpenFile() {
 		try {
-			// Avataan file AudioFileHandlerilla ja välitetään kontrollerille
+			// Avataan file AudioFileHandlerilla ja välitetään file kontrollerille
 			File file = AudioFileHandler.openFileExplorer(mainContainer.getScene().getWindow());
 			controller.soundManipulatorOpenFile(file);
-			AudioFormat format = AudioSystem.getAudioFileFormat(file.getAbsoluteFile()).getFormat();
-			
-			// Shows the name of the file in textSelectedFile element
-			textSelectedFile.setText("Selected file: " + file.getName());
-						
+
 			// Length of the audio file in seconds (file.length / (format.frameSize *
 			// format.frameRate))
+			AudioFormat format = AudioSystem.getAudioFileFormat(file.getAbsoluteFile()).getFormat();
 			double audioFileLengthInSec = file.length() / (format.getFrameSize() * format.getFrameRate());
-			System.out.println(file.length() + " " + format.getFrameSize() + " " + format.getFrameRate() );
-			System.out.println(audioFileLengthInSec);
 			audioFileDurationString = secondsToMinutesAndSeconds(audioFileLengthInSec);
-			
+
 			setMaxValueToAudioDurationSlider(audioFileLengthInSec);
-			textAudioFileDuration.setText(": / " + audioFileDurationString);
+			textAudioFileDuration.setText(audioFileProcessedTimeString + " / " + audioFileDurationString);
+
+			// Shows the name of the file in textSelectedFile element
+			textSelectedFile.setText("Selected file: " + file.getName());
 			
 			// Enables all sliders and audio player
 			enableMixerSlidersAndAudioPlayer();
+		} catch (UnsupportedAudioFileException e) {
+			System.out.println("Väärä tiedostomuoto");
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("Virhe!");
+			alert.setHeaderText("Väärä tiedostomuoto");
+			alert.setContentText("Valitse vain WAV-tyyppisiä tiedostoja");
+			alert.showAndWait();
 		} catch (Exception e) {
 		}
 	}
@@ -212,9 +237,10 @@ public class MainController {
 				controller.soundManipulatorSetPitchFactor(number);
 				sliderPitch.setValue(number);
 			} else {
+				System.out.println("Arvo yli viiterajojen");
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.out.println("Virheellinen syöte");
 		}
 	}
 
@@ -329,6 +355,18 @@ public class MainController {
 			System.out.println("Virheellinen syöte");
 		}
 	}
+	
+	@FXML
+	public void handleAudioFileDurationSliderClick() {
+		controller.timerCancel();
+
+		System.out.println("slideria klikattu " + sliderAudioFileDuration.getValue());
+		controller.soundManipulatorPlayFromDesiredSec(sliderAudioFileDuration.getValue());
+
+		// Nyk kesto tekstinä
+		audioFileProcessedTimeString = secondsToMinutesAndSeconds(sliderAudioFileDuration.getValue());
+		textAudioFileDuration.setText(audioFileProcessedTimeString + " / " + audioFileDurationString);
+	}
 
 	@FXML
 	public void soundManipulatorResetAllSliders() {
@@ -342,20 +380,34 @@ public class MainController {
 		sliderLowPass.setValue(44100);
 	}
 
-	// Audio file sliderin metodit
+	// Audio file sliderin metodit (controller kutsuu)
 	public void setMaxValueToAudioDurationSlider(double audioFileLengthInSec) {
 		sliderAudioFileDuration.setMax(audioFileLengthInSec);
 	}
 
-	public void setCurrentValueToAudioDuratinSlider(double currentSeconds) {
+	public void setCurrentValueToAudioDurationSlider(double currentSeconds) {
 		sliderAudioFileDuration.setValue(currentSeconds);
+		if (currentSeconds == sliderAudioFileDuration.getMax()){
+			buttonPlay.setDisable(false);
+			buttonStop.setDisable(true);
+			buttonPause.setDisable(true);
+		}
+	}
+
+	public void setCurrentPositionToAudioDurationText(double currentSeconds) {
+		audioFileProcessedTimeString = secondsToMinutesAndSeconds(currentSeconds);
+		textAudioFileDuration.setText(audioFileProcessedTimeString + " / " + audioFileDurationString);
 	}
 
 	// Apumetodeja
 	private String secondsToMinutesAndSeconds(double seconds) {
 		int numberOfminutes = (int) (seconds / 60);
 		int numberOfSeconds = (int) (seconds % 60);
-		return numberOfminutes + ":" + numberOfSeconds;
+		if (numberOfSeconds < 10) {
+			return numberOfminutes + ":0" + numberOfSeconds;
+		} else {
+			return numberOfminutes + ":" + numberOfSeconds;
+		}
 	}
 
 	private void enableMixerSlidersAndAudioPlayer() {
@@ -363,42 +415,6 @@ public class MainController {
 		paneMixerSliders.setDisable(false);
 	}
 
-	private void setTooltips() {
-		final Tooltip tooltipPitch = new Tooltip();
-		tooltipPitch.setText("Pitch");
-
-		final Tooltip tooltipGain = new Tooltip();
-		tooltipGain.setText("Gain");
-		
-		final Tooltip tooltipEchoLength = new Tooltip();
-		tooltipEchoLength.setText("echo");
-		
-		final Tooltip tooltipDecay = new Tooltip();
-		tooltipDecay.setText("decay");
-		
-		final Tooltip tooltipFlangerLength = new Tooltip();
-		tooltipFlangerLength.setText("flanger l");
-		
-		final Tooltip tooltipWetness = new Tooltip();
-		tooltipWetness.setText("wet sanoi mummo kaivossa");
-		
-		final Tooltip tooltipLfo = new Tooltip();
-		tooltipLfo.setText("lfo");
-		
-		final Tooltip tooltipLowPass = new Tooltip();
-		tooltipLowPass.setText("Low passss");
-
-		buttonInfoPitch.setTooltip(tooltipPitch);
-		buttonInfoGain.setTooltip(tooltipGain);
-		buttonInfoEchoLength.setTooltip(tooltipEchoLength);
-		buttonInfoDecay.setTooltip(tooltipDecay);
-		buttonInfoFlangerLength.setTooltip(tooltipFlangerLength);
-		buttonInfoWetness.setTooltip(tooltipWetness);
-		buttonInfoLfo.setTooltip(tooltipLfo);
-		buttonInfoLowPass.setTooltip(tooltipLowPass);
-	}
-	
-	
 	private void initializeSlidersAndTextFields() {
 		// Pitch slider
 		sliderPitch.valueProperty().addListener(new ChangeListener<Number>() {
@@ -440,6 +456,7 @@ public class MainController {
 				textFieldFlangerLength.setText(decimalFormat.format(newValue.doubleValue()));
 			}
 		});
+		// Wetness slider
 		sliderWetness.valueProperty().addListener(new ChangeListener<Number>() {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
@@ -447,6 +464,7 @@ public class MainController {
 				textFieldWetness.setText(decimalFormat.format(newValue.doubleValue()));
 			}
 		});
+		//Lfo slider
 		sliderLfoFrequency.valueProperty().addListener(new ChangeListener<Number>() {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
@@ -454,6 +472,7 @@ public class MainController {
 				textFieldLfo.setText(decimalFormat.format(newValue.doubleValue()));
 			}
 		});
+		//LowPass slider
 		sliderLowPass.valueProperty().addListener(new ChangeListener<Number>() {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
@@ -461,19 +480,65 @@ public class MainController {
 				textFieldLowPass.setText(decimalFormat.format(newValue.doubleValue()));
 			}
 		});
+		//AudioFileDuration slider
+		sliderAudioFileDuration.valueProperty().addListener(new InvalidationListener() {
+			public void invalidated(Observable arg0) {
+				if (sliderAudioFileDuration.isPressed()) {
+					controller.timerCancel();
 
-		// Audio File Duration Slider
-		sliderAudioFileDuration.valueProperty().addListener(new ChangeListener<Number>() {
-			@Override
-			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-				controller.soundManipulatorPlayFromDesiredSec(newValue.doubleValue());
-				audioFileProcessedTimeString = secondsToMinutesAndSeconds(newValue.doubleValue());
-				textAudioFileDuration.setText(audioFileProcessedTimeString + " / " + audioFileDurationString);
+					System.out.println("slideria klikattu " + sliderAudioFileDuration.getValue());
+					controller.soundManipulatorPlayFromDesiredSec(sliderAudioFileDuration.getValue());
+
+					// Nyk kesto tekstinä
+					audioFileProcessedTimeString = secondsToMinutesAndSeconds(sliderAudioFileDuration.getValue());
+					textAudioFileDuration.setText(audioFileProcessedTimeString + " / " + audioFileDurationString);
+				}
 			}
 		});
 	}
 
-	//// MIXER METHODS END HERE /////////////////////////////////////////////////////////////////////////////////////
+	/*
+	 * Sets a tooltip to every info button
+	 */
+	private void setTooltips() {
+		final Tooltip tooltipPitch = new Tooltip();
+		tooltipPitch.setText("Pitch");
+
+		final Tooltip tooltipGain = new Tooltip();
+		tooltipGain.setText("Gain");
+
+		final Tooltip tooltipEchoLength = new Tooltip();
+		tooltipEchoLength.setText("Echo");
+
+		final Tooltip tooltipDecay = new Tooltip();
+		tooltipDecay.setText("Decay");
+
+		final Tooltip tooltipFlangerLength = new Tooltip();
+		tooltipFlangerLength.setText("Flanger Length");
+
+		final Tooltip tooltipWetness = new Tooltip();
+		tooltipWetness.setText("Wet");
+
+		final Tooltip tooltipLfo = new Tooltip();
+		tooltipLfo.setText("LFO");
+
+		final Tooltip tooltipLowPass = new Tooltip();
+		tooltipLowPass.setText("Low Pass");
+
+		buttonInfoPitch.setTooltip(tooltipPitch);
+		buttonInfoGain.setTooltip(tooltipGain);
+		buttonInfoEchoLength.setTooltip(tooltipEchoLength);
+		buttonInfoDecay.setTooltip(tooltipDecay);
+		buttonInfoFlangerLength.setTooltip(tooltipFlangerLength);
+		buttonInfoWetness.setTooltip(tooltipWetness);
+		buttonInfoLfo.setTooltip(tooltipLfo);
+		buttonInfoLowPass.setTooltip(tooltipLowPass);
+	}
+
+
+
+	//// MIXER METHODS END HERE
+	//// /////////////////////////////////////////////////////////////////////////////////////
 
 	@FXML
 

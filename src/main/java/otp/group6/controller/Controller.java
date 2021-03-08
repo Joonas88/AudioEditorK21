@@ -95,22 +95,31 @@ public class Controller {
 		soundManipulator.playFromDesiredSec(seconds);
 	}
 	
-	public void soundManipulatorSaveFile() {
-		soundManipulator.saveFile();
+	public void soundManipulatorSaveFile(String path) {
+		soundManipulator.saveFile(path);
 	}
 	
 	public void testFilter() {
 		soundManipulator.testFilter();
 	}
 	
+	public void timerCancel() {
+		soundManipulator.timerCancel();
+	}
+	
+	
 	// FROM SOUNDMANIPULATOR TO VIEW
 	//Audio file sliderin metodit
 	public void setMaxValueToAudioDurationSlider(double maxLenghthInSeconds) {
-		mainController.setCurrentValueToAudioDuratinSlider(maxLenghthInSeconds);
+		mainController.setCurrentValueToAudioDurationSlider(maxLenghthInSeconds);
 	}
 	
 	public void setCurrentValueToAudioDuratinSlider(double currentSeconds) {
-		mainController.setCurrentValueToAudioDuratinSlider(currentSeconds);
+		mainController.setCurrentValueToAudioDurationSlider(currentSeconds);
+	}
+	
+	public void setCurrentPositionToAudioDurationText(double currentSeconds) {
+		mainController.setCurrentPositionToAudioDurationText(currentSeconds);
 	}
 	
 	// SoundManipulator methods end

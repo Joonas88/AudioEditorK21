@@ -99,6 +99,7 @@
                                        <children>
                                           <Text layoutX="89.0" layoutY="50.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Use microphone" AnchorPane.bottomAnchor="148.98828125" AnchorPane.leftAnchor="89.0" AnchorPane.rightAnchor="89.169921875" AnchorPane.topAnchor="37.05078125" />
                                           <Button layoutX="99.0" layoutY="87.0" mnemonicParsing="false" text="Start" AnchorPane.bottomAnchor="87.0" AnchorPane.leftAnchor="99.0" AnchorPane.rightAnchor="99.0" AnchorPane.topAnchor="87.0" />
+                                          <Button layoutX="98.0" layoutY="165.0" mnemonicParsing="false" onAction="#soundManipulatorTestFilter" text="Test Filter" />
                                        </children>
                                     </AnchorPane>
                                  </children>
@@ -138,7 +139,6 @@
                                                 <Button mnemonicParsing="false" onAction="#soundManipulatorResetAllSliders" text="Reset Sliders" />
                                             </buttons>
                                           </ButtonBar>
-                                          <Button layoutX="31.0" layoutY="59.0" mnemonicParsing="false" onAction="#soundManipulatorTestFilter" text="Test Filter" />
                                        </children>
                                     </AnchorPane>
                                     <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
@@ -203,7 +203,7 @@
                            </children></AnchorPane>
                         <AnchorPane fx:id="paneMixerAudioPlayer" disable="true" layoutX="14.0" layoutY="420.0" prefHeight="100.0" prefWidth="865.0" AnchorPane.bottomAnchor="17.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="420.0">
                            <children>
-                              <Slider fx:id="sliderAudioFileDuration" layoutX="100.0" layoutY="22.0" prefHeight="16.0" prefWidth="672.0" AnchorPane.bottomAnchor="61.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="22.0" />
+                              <Slider fx:id="sliderAudioFileDuration" blockIncrement="0.1" layoutX="100.0" layoutY="22.0" prefHeight="16.0" prefWidth="672.0" AnchorPane.bottomAnchor="61.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="22.0" />
                               <Text fx:id="textAudioFileDuration" layoutX="747.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0:00 / 0:00" AnchorPane.bottomAnchor="78.0" AnchorPane.leftAnchor="747.0" AnchorPane.rightAnchor="113.6201171875" AnchorPane.topAnchor="6.0" />
                               <ButtonBar layoutX="286.0" layoutY="50.0" prefHeight="40.0" prefWidth="294.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="286.0" AnchorPane.rightAnchor="284.0" AnchorPane.topAnchor="50.0">
                                 <buttons>
@@ -212,7 +212,7 @@
                                     <Button fx:id="buttonStop" disable="true" mnemonicParsing="false" onAction="#soundManipulatorStopAudio" text="Stop" />
                                 </buttons>
                               </ButtonBar>
-                              <Button layoutX="803.0" layoutY="70.0" mnemonicParsing="false" onAction="#soundManipulatorSaveMixedFile" text="Save" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="803.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="74.0" />
+                              <Button layoutX="775.0" layoutY="57.0" mnemonicParsing="false" onAction="#soundManipulatorSaveMixedFile" text="Save Mixed File" AnchorPane.bottomAnchor="17.0" AnchorPane.leftAnchor="775.0" AnchorPane.rightAnchor="28.0" AnchorPane.topAnchor="57.0" />
                            </children></AnchorPane>
                      </children></AnchorPane>
               </content>
