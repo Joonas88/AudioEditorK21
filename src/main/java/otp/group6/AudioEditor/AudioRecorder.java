@@ -124,7 +124,7 @@ public class AudioRecorder extends Thread {
 
 	public void stopRecord() {
 		adp.stop();
-		System.out.println(adp.secondsProcessed());
+		System.out.println("Record duration: " + adp.secondsProcessed());
 		System.out.println("Recording stopped");
 	}
 

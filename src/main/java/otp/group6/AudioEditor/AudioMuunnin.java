@@ -45,6 +45,7 @@ public class AudioMuunnin {
 	private TimerTask task;
 	private JVMAudioInputStream audioInputStreamForTarsos;
 	private AudioInputStream audioInputStream;
+	private TargetDataLine line = null;
 
 	// Original values
 	private float sampleRate;
@@ -176,7 +177,6 @@ public class AudioMuunnin {
 	public void testFilter() {
 		AudioFormat format2 = getAudioFormat();
 		DataLine.Info info = new DataLine.Info(TargetDataLine.class, format2);
-		TargetDataLine line = null;
 		try {
 			line = (TargetDataLine) AudioSystem.getLine(info);
 			line.open(format2);
@@ -185,6 +185,7 @@ public class AudioMuunnin {
 			JVMAudioInputStream audioStream = new JVMAudioInputStream(ais);
 			liveDispatcher = new AudioDispatcher(audioStream, wsola.getInputBufferSize(),
 					wsola.getOverlap());
+			audioPlayer = new AudioPlayer(format2);
 			wsola.setDispatcher(liveDispatcher);
 			liveDispatcher.addAudioProcessor(wsola);
 			liveDispatcher.addAudioProcessor(rateTransposer);
@@ -202,6 +203,19 @@ public class AudioMuunnin {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void stopTestFilter() {
+		liveDispatcher.stop();
+		liveDispatcher.removeAudioProcessor(wsola);
+		liveDispatcher.removeAudioProcessor(rateTransposer);
+		liveDispatcher.removeAudioProcessor(delayEffect);
+		liveDispatcher.removeAudioProcessor(gainProcessor);
+		liveDispatcher.removeAudioProcessor(flangerEffect);
+		liveDispatcher.removeAudioProcessor(audioPlayer);
+		line.close();
+		line.stop();
+		System.out.println("Test filter stopped");
 	}
 
 	// MEDIAPLAYER METHODS

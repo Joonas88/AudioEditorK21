@@ -130,6 +130,8 @@ public class MainController {
 	@FXML
 	private Button buttonStop;
 	@FXML
+	private ToggleButton toggleButtonTestFilter;
+	@FXML
 	private Button recorderButtonPlay;
 	@FXML
 	private Button recorderButtonPause;
@@ -160,6 +162,7 @@ public class MainController {
 	private String audioFileDurationString = "0:00";
 	private String audioFileProcessedTimeString = "0:00";
 	private DecimalFormat decimalFormat = new DecimalFormat("#0.00"); // kaikki luvut kahden desimaalin tarkkuuteen
+	private Boolean testFilterOn = false;
 
 	private Boolean isRecording = false;
 	private Timer timer;
@@ -198,7 +201,13 @@ public class MainController {
 
 	@FXML
 	public void soundManipulatorTestFilter() {
-		controller.testFilter();
+		if(!testFilterOn) {
+			controller.testFilter();
+			testFilterOn = true;
+		}else {
+			controller.stopTestFilter();
+			testFilterOn = false;
+		}
 	}
 
 	@FXML

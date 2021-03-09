@@ -106,6 +106,10 @@ public class Controller {
 	public void testFilter() {
 		soundManipulator.testFilter();
 	}
+	
+	public void stopTestFilter() {
+		soundManipulator.stopTestFilter();
+	}
 
 	public void timerCancel() {
 		soundManipulator.timerCancel();
