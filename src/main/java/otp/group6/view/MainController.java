@@ -213,7 +213,7 @@ public class MainController {
 	@FXML
 	public void soundManipulatorSaveMixedFile() {
 		FileChooser fileChooser = new FileChooser();
-		ExtensionFilter filter = new ExtensionFilter("WAV files (*.wav)", ".wav");
+		ExtensionFilter filter = new ExtensionFilter("WAV files (*.wav)", "*.wav");
 		fileChooser.getExtensionFilters().add(filter);
 		File file = fileChooser.showSaveDialog(mainContainer.getScene().getWindow());
 		String fullPath;
@@ -223,7 +223,7 @@ public class MainController {
 				fullPath = fullPath + ".wav";
 			}
 			controller.soundManipulatorSaveFile(fullPath);
-			System.out.println(fullPath);
+			System.out.println("saved to " +fullPath);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
