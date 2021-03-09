@@ -829,8 +829,16 @@ public class MainController {
 			}
 
 		});
+		MenuItem renameButton = (MenuItem) mp.getItems().get(0);
+		renameButton.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent event) {
+				renameButton(description, ap, index);
+			}
+		});
 
-		MenuItem editButton = (MenuItem) mp.getItems().get(0);
+		MenuItem editButton = (MenuItem) mp.getItems().get(1);
 		editButton.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
@@ -840,7 +848,7 @@ public class MainController {
 
 		});
 
-		MenuItem deleteButton = mp.getItems().get(1);
+		MenuItem deleteButton = mp.getItems().get(2);
 		deleteButton.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
