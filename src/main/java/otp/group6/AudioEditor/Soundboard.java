@@ -140,6 +140,28 @@ public class Soundboard {
 			player.openAudio(sampleArray.get(sampleIndex).getSample());
 			player.start();
 		}
+	}
 
+	/**
+	 * Stops the sample output and closes audio
+	 */
+	public void stopSample() {
+		if (player != null || !player.isAlive()) {
+			player.closeAudio();
+		}
+	}
+
+	/**
+	 * Function to determine if player is active
+	 * 
+	 * @return returns true if player is active; otherwise returns false if player
+	 *         is null or not playing
+	 */
+	public boolean isPlaying() {
+		if (player == null || !player.isAlive()) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 }

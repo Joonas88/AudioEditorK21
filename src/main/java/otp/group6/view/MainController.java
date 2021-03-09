@@ -719,6 +719,8 @@ public class MainController {
 
 	//// RECORDER METHODS END
 	//// HERE////////////////////////////////////////////////////////////////
+	// Used in play button methods
+	public Button lastButton;
 
 	/**
 	 * Used to edit existing sample in the sample array Opens File explorer and
@@ -797,7 +799,6 @@ public class MainController {
 			configureSoundButton((AnchorPane) soundButtonRoot, index);
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return;
 		}
@@ -817,7 +818,7 @@ public class MainController {
 		play.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				controller.playSound(index);
+				playButtonFunctionality(play, index);
 			}
 		});
 		description.setText(controller.getSampleName(index));
@@ -831,7 +832,7 @@ public class MainController {
 		});
 		MenuItem renameButton = (MenuItem) mp.getItems().get(0);
 		renameButton.setOnAction(new EventHandler<ActionEvent>() {
-			
+
 			@Override
 			public void handle(ActionEvent event) {
 				renameButton(description, ap, index);
@@ -859,6 +860,15 @@ public class MainController {
 			}
 
 		});
+	}
+
+	public void playButtonFunctionality(Button button, int index) {
+		if (!controller.isPlaying() || lastButton != button) {
+			controller.playSound(index);
+		} else {
+			controller.stopSound();
+		}
+		lastButton = button;
 	}
 
 	/**

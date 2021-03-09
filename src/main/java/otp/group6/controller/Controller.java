@@ -137,7 +137,12 @@ public class Controller {
 		}
 
 	}
-
+	public void stopSound() {
+		soundboard.stopSample();
+	}
+	public boolean isPlaying() {
+		return soundboard.isPlaying();
+	}
 	/**
 	 * Adds sample to Soundboard SampleArray
 	 * 
