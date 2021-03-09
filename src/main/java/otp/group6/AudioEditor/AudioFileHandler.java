@@ -4,8 +4,10 @@ import javax.sound.sampled.*;
 import javax.sound.sampled.AudioFileFormat.Type;
 import javax.swing.JFileChooser;
 
+import be.tarsos.dsp.io.jvm.WaveformWriter;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
+import javafx.stage.FileChooser.ExtensionFilter;
 
 import java.awt.Desktop;
 import java.io.File;
@@ -70,6 +72,8 @@ public class AudioFileHandler {
 
 	public static File openFileExplorer(Window window) {
 		FileChooser fc = new FileChooser();
+		ExtensionFilter filter = new ExtensionFilter("Wav files", "*.wav");
+		fc.getExtensionFilters().add(filter);
 		File file = fc.showOpenDialog(window);
 		return file;
 

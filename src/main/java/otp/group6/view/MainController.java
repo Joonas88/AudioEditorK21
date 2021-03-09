@@ -214,8 +214,9 @@ public class MainController {
 				fullPath = fullPath + ".wav";
 			}
 			controller.soundManipulatorSaveFile(fullPath);
+			System.out.println(fullPath);
 		} catch (Exception e) {
-
+			e.printStackTrace();
 		}
 	}
 
