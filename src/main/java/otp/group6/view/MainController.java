@@ -3,7 +3,11 @@ package otp.group6.view;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URL;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Optional;
+import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.regex.Matcher;
@@ -19,16 +23,20 @@ import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
@@ -57,11 +65,16 @@ import otp.group6.controller.Controller;
  * @author Kevin Akkoyun
  * @version 0.1
  */
-public class MainController {
+public class MainController implements Initializable{
 	Controller controller;
 
 	public MainController() {
 		controller = new Controller(this);
+	}
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		controller.readSampleData();
+		checkSavedSamples();
 	}
 
 	/**
@@ -721,7 +734,10 @@ public class MainController {
 	//// HERE////////////////////////////////////////////////////////////////
 	// Used in play button methods
 	public Button lastButton;
-
+	
+	@FXML
+	Button clearButton;
+	
 	/**
 	 * Used to edit existing sample in the sample array Opens File explorer and
 	 * edits sample with given index to contain selected wav file Checks file
@@ -873,7 +889,7 @@ public class MainController {
 
 	/**
 	 * Method for renaming soundboard buttons
-	 * 
+	 * @author Kevin Akkoyun
 	 * @param text  -- text element of the button
 	 * @param ap    -- parent of the button
 	 * @param index -- index of the GridPane child
@@ -928,7 +944,7 @@ public class MainController {
 
 	/**
 	 * Checks if string contains only whitespaces
-	 * 
+	 * @author Kevin Akkoyun
 	 * @param input -- String to be checked
 	 * @return returns true if string contains only whitespaces, otherwise returns
 	 *         false
@@ -940,6 +956,7 @@ public class MainController {
 
 	/**
 	 * Refreshes soundboard buttons and reassigns their names
+	 * @author Kevin Akkoyun
 	 */
 	public void refreshButtons() {
 		int length = controller.getSampleArrayLength();
@@ -953,6 +970,7 @@ public class MainController {
 
 	/**
 	 * Removes last soundboard button
+	 * @author Kevin Akkoyun
 	 */
 	public void removeLast() {
 		int length = controller.getSampleArrayLength();
@@ -967,6 +985,59 @@ public class MainController {
 			gridRoot.getChildren().remove(0);
 			gridRoot.getChildren().add(newSoundButton);
 		}
+	}
+	@FXML
+	public void removeAllCheck() {
+		Alert alert = new Alert(Alert.AlertType.NONE);
+		alert.setContentText("Are you sure you want to clear everything?");
+		
+		ButtonType type = new ButtonType("Yes", ButtonData.OK_DONE);
+		ButtonType ntype = new ButtonType("No",ButtonData.CANCEL_CLOSE);
+
+		
+		alert.getButtonTypes().add(type);
+		alert.getButtonTypes().add(ntype);
+		
+		alert.setTitle("WARNING");
+		
+		Optional<ButtonType> result = alert.showAndWait();
+		if(result.get().getButtonData() == ButtonData.OK_DONE) {
+			removeAll();
+		}
+	}
+	
+	public void removeAll() {
+		try {
+			ArrayList<AnchorPane> temp = new ArrayList<AnchorPane>();
+			ObservableList<Node> gridList = buttonGrid.getChildren();
+			gridList.forEach(root -> {
+				temp.add((AnchorPane)root);
+			});
+			temp.forEach(root -> {
+				if(!root.getChildren().isEmpty()) {
+					root.getChildren().remove(0);
+				}
+			});
+			AnchorPane firstGrid = (AnchorPane) buttonGrid.getChildren().get(0);
+			firstGrid.getChildren().add(newSoundButton);
+			controller.clearSampleData();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	/**
+	 * @author Kevin Akkoyun
+	 */
+	public void checkSavedSamples() {
+		int length = controller.getSampleArrayLength();
+		if(length > 0) {
+			for(int index = 0; index < length; index++ ) {
+				addButton(index);
+			}
+		}
+	}
+	public void saveSamples() {
+		controller.saveSampleData();
 	}
 
 	/**

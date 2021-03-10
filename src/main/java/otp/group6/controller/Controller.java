@@ -179,6 +179,15 @@ public class Controller {
 	public int getSampleArrayLength() {
 		return soundboard.getSampleArrayLength();
 	}
+	public void saveSampleData() {
+		soundboard.saveSampleData();
+	}
+	public void readSampleData() {
+		soundboard.readSampleData();
+	}
+	public void clearSampleData() {
+		soundboard.clearSampleData();
+	}
 	// Soundboard methods stop
 
 	// AudioRecorder methods start

@@ -29,26 +29,27 @@ public class MainApplication extends Application {
 
 	private Stage primaryStage;
 	private AnchorPane rootLayout;
-
+	private MainController mainController;
 	public static void main(String[] args) {
 		launch(args);
 	}
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		// Sulkee ohjelman, kun käyttäjä sulkee ikkunan
-		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-			@Override
-			public void handle(WindowEvent t) {
-				Platform.exit();
-				System.exit(0);
-			}
-		});
-
+		
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle("AudioEditor");
 
 		initializeRootLayout();
+		// Sulkee ohjelman, kun käyttäjä sulkee ikkunan
+		this.primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+			@Override
+			public void handle(WindowEvent t) {
+				mainController.saveSamples();
+				Platform.exit();
+				System.exit(0);
+			}
+		});
 
 		/*
 		 * //ALKUP Parent root =
@@ -74,7 +75,7 @@ public class MainApplication extends Application {
 			primaryStage.setScene(scene);
 			primaryStage.show();
 
-			MainController mainController = loader.getController();
+			mainController = loader.getController();
 
 			mainController.initializeMixer();
 
