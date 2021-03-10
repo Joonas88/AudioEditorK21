@@ -183,7 +183,7 @@ public class AudioMuunnin {
 			line.start();
 			AudioInputStream ais = new AudioInputStream(line);
 			JVMAudioInputStream audioStream = new JVMAudioInputStream(ais);
-			AudioDispatcher liveDispatcher = new AudioDispatcher(audioStream, wsola.getInputBufferSize(),
+			liveDispatcher = new AudioDispatcher(audioStream, wsola.getInputBufferSize(),
 					wsola.getOverlap());
 			wsola.setDispatcher(liveDispatcher);
 			liveDispatcher.addAudioProcessor(wsola);

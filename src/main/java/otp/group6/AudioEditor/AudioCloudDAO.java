@@ -174,7 +174,7 @@ public class AudioCloudDAO {
 	public AudioCloudDAO() {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			databaseConnection = DriverManager.getConnection("jdbc:mysql://10.114.32.5:2280/audiocloud", "yleinen",
+			databaseConnection = DriverManager.getConnection("jdbc:mysql://localhost:2280/audiocloud", "yleinen", 
 					"J0k3OnR0");
 		} catch (Exception e) {
 			System.err.println("Virhe tietokantayhteyden muodostamisessa. " + e);
@@ -547,8 +547,9 @@ public class AudioCloudDAO {
 	}
 
 	/**
-	 * TODO määritä millä tavalla poistetaan! ID? TAPAA EI VIELÄ TOTEUTETTU Used to
-	 * delete a mixer setting.
+	 * TODO määritä millä tavalla poistetaan! ID? TAPAA EI VIELÄ TOTEUTETTU 
+	 * 
+	 * Mehtod deletes mixer settings from the database
 	 * 
 	 * @param specify is a variable that specifies the id.
 	 * @return true or false according to the success of the method.

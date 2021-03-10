@@ -3,6 +3,7 @@ package otp.group6.view;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import otp.group6.controller.Controller;
 
@@ -19,7 +20,8 @@ public class SaveSelectionController {
 
 	@FXML
 	private Button closeButton;
-
+	@FXML
+	AnchorPane mainContainer;
 	/**
 	 * Method to get mainController
 	 * 
@@ -61,9 +63,9 @@ public class SaveSelectionController {
 	 * Method for storing settings on users computer
 	 */
 	public void saveLocal() {
-		mc.soundManipulatorSaveMixerSettings();
+		mc.soundManipulatorSaveMixerSettings();	
 		Stage stage = (Stage) closeButton.getScene().getWindow();
 		stage.close();
 	}
-
+	
 }
