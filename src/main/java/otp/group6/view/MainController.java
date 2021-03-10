@@ -586,7 +586,7 @@ public class MainController {
 			}
 		});
 
-		//		
+		//
 		textFieldPitch.setOnKeyPressed(event -> {
 			if (event.getCode() == KeyCode.ENTER) {
 				getTextFieldPitch();
@@ -616,7 +616,7 @@ public class MainController {
 				getTextFieldFlangerLength();
 			}
 		});
-		
+
 		textFieldWetness.setOnKeyPressed(event -> {
 			if (event.getCode() == KeyCode.ENTER) {
 				getTextFieldWetness();

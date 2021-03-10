@@ -67,7 +67,7 @@ public class AudioFileHandler {
 	public static File openFileExplorer(Window window) {
 		FileChooser fc = new FileChooser();
 		ExtensionFilter filter = new ExtensionFilter("Wav files", "*.wav");
-        fc.getExtensionFilters().add(filter);
+		fc.getExtensionFilters().add(filter);
 		File file = fc.showOpenDialog(window);
 		return file;
 
