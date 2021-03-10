@@ -205,8 +205,8 @@ public class MainController implements Initializable {
 		buttonPause.setDisable(false);
 		buttonStop.setDisable(false);
 		paneControl.setDisable(true);
-		buttonSaveSettings.setDisable(true);
-		buttonLoadSettings.setDisable(true);
+		//buttonSaveSettings.setDisable(true);
+		//buttonLoadSettings.setDisable(true);
 		paneLowPass.setDisable(true);
 	}
 
@@ -217,8 +217,8 @@ public class MainController implements Initializable {
 		buttonPause.setDisable(true);
 		buttonStop.setDisable(true);
 		paneControl.setDisable(false);
-		buttonSaveSettings.setDisable(false);
-		buttonLoadSettings.setDisable(false);
+		//buttonSaveSettings.setDisable(false);
+		//buttonLoadSettings.setDisable(false);
 		paneLowPass.setDisable(false);
 	}
 
@@ -229,8 +229,8 @@ public class MainController implements Initializable {
 		buttonPause.setDisable(true);
 		buttonStop.setDisable(false);
 		paneControl.setDisable(false);
-		buttonSaveSettings.setDisable(false);
-		buttonLoadSettings.setDisable(false);
+		//buttonSaveSettings.setDisable(false);
+		//buttonLoadSettings.setDisable(false);
 		paneLowPass.setDisable(false);
 	}
 
@@ -240,16 +240,16 @@ public class MainController implements Initializable {
 			controller.testFilter();
 			buttonMixerFileOpener.setDisable(true);
 			buttonMixerStartRecording.setDisable(true);
-			buttonSaveSettings.setDisable(true);
-			buttonLoadSettings.setDisable(true);
+			//buttonSaveSettings.setDisable(true);
+			//buttonLoadSettings.setDisable(true);
 			paneMixerAudioPlayer.setDisable(true);
 			paneLowPass.setDisable(true);
 		} else {
 			controller.testFilter();
 			buttonMixerFileOpener.setDisable(false);
 			buttonMixerStartRecording.setDisable(false);
-			buttonSaveSettings.setDisable(false);
-			buttonLoadSettings.setDisable(false);
+			//buttonSaveSettings.setDisable(false);
+			//buttonLoadSettings.setDisable(false);
 			paneMixerAudioPlayer.setDisable(false);
 			paneLowPass.setDisable(false);
 		}
@@ -725,8 +725,6 @@ public class MainController implements Initializable {
 					double audioFileLengthInSec = file.length() / (format.getFrameSize() * format.getFrameRate());
 					setMaxValueToRecordDurationSlider(audioFileLengthInSec);
 					audioFileDurationString = secondsToMinutesAndSeconds(audioFileLengthInSec);
-					textAudioFileDuration.setText(": / " + audioFileDurationString);
-
 					textRecordFileDuration.setText("0:00 / " + audioFileDurationString);
 				} catch (Exception e) {
 

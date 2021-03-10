@@ -162,7 +162,7 @@ public class SaveMixerSettingsController {
 			} else {
 				Alert alert = new Alert(AlertType.ERROR);
 				alert.setTitle("Error!");
-				alert.setHeaderText("Something went wrong savin mixer settings, please try again");
+				alert.setHeaderText("Something went wrong saving mixer settings, please try again");
 				alert.setContentText("If this error continues, please contact support");
 				alert.showAndWait();
 			}
