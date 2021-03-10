@@ -2,16 +2,17 @@ package otp.group6.view;
 
 import javafx.scene.control.TextArea;
 import java.sql.SQLException;
-import javax.swing.JOptionPane;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.OverrunStyle;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 import otp.group6.controller.Controller;
 
@@ -151,13 +152,19 @@ public class SaveMixerSettingsController {
 		} else {
 			if (controller.createMix(mixName.getText(), description.getText(), pitch, echo, decay, gain, flangerLenght,
 					wetness, lfoFrequency, lowPass)) {
-				JOptionPane.showMessageDialog(null, "Mixer settings saved!", "All Good!",
-						JOptionPane.INFORMATION_MESSAGE); // Onko tämä kaikille ok?
+				Alert alert = new Alert(AlertType.INFORMATION);
+				alert.setTitle("Information!");
+				alert.setHeaderText("Mixer settings saved!");
+				alert.setContentText("Mixer settings have been saved succesfully to the database");
+				alert.showAndWait();
 				Stage stage = (Stage) closeButton.getScene().getWindow();
 				stage.close();
 			} else {
-				JOptionPane.showMessageDialog(null, "Something went wrong savin mixer settings, please try again",
-						"Alert", JOptionPane.WARNING_MESSAGE); // Onko tämä kaikille ok?
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.setTitle("Error!");
+				alert.setHeaderText("Something went wrong savin mixer settings, please try again");
+				alert.setContentText("If this error continues, please contact support");
+				alert.showAndWait();
 			}
 
 		}

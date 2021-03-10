@@ -69,6 +69,7 @@
                               <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="4" GridPane.rowIndex="3" />
                            </children>
                         </GridPane>
+                        <Button fx:id="clearButton" layoutX="819.0" layoutY="500.0" mnemonicParsing="false" onAction="#removeAllCheck" text="Clear" AnchorPane.bottomAnchor="11.0" AnchorPane.leftAnchor="819.0" AnchorPane.rightAnchor="29.0" AnchorPane.topAnchor="500.0" />
                      </children>
                   </AnchorPane>
                </content>

@@ -25,7 +25,7 @@ import be.tarsos.dsp.io.jvm.WaveformWriter;
 import be.tarsos.dsp.resample.RateTransposer;
 import otp.group6.controller.Controller;
 
-public class AudioMuunnin {
+public class AudioManipulator {
 
 	private Controller controller;
 
@@ -65,7 +65,7 @@ public class AudioMuunnin {
 	private boolean isTestingFilter = false;
 
 	// Konstruktori
-	public AudioMuunnin(Controller controller) {
+	public AudioManipulator(Controller controller) {
 		this.controller = controller;
 	}
 
