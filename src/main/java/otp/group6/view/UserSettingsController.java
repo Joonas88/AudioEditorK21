@@ -105,7 +105,7 @@ public class UserSettingsController {
 		} else {
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.setTitle("Error!");
-			alert.setHeaderText("Something went wrong savin mixer settings, please try again");
+			alert.setHeaderText("Something went wrong changing password, please try again");
 			alert.setContentText("If this error continues, please contact support");
 			alert.showAndWait();
 		}

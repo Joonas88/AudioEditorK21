@@ -224,7 +224,7 @@ public class MixerSettingsController implements Initializable {
 			getMixes();
 		} catch (ClassNotFoundException | IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 		fin.close();
 	}

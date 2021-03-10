@@ -40,12 +40,12 @@
                               <Font size="14.0" />
                            </font>
                         </Button>
-                        <Button fx:id="closeButton" mnemonicParsing="false" onAction="#handleCloseButtonAction" prefHeight="25.0" prefWidth="116.0" text="Cancel">
+                        <Button mnemonicParsing="false" onAction="#checkForloggedin" prefHeight="25.0" prefWidth="114.0" text="Cloud">
                            <font>
                               <Font size="14.0" />
                            </font>
                         </Button>
-                        <Button mnemonicParsing="false" onAction="#checkForloggedin" prefHeight="25.0" prefWidth="114.0" text="Cloud">
+                        <Button fx:id="closeButton" mnemonicParsing="false" onAction="#handleCloseButtonAction" prefHeight="25.0" prefWidth="116.0" text="Cancel">
                            <font>
                               <Font size="14.0" />
                            </font>
