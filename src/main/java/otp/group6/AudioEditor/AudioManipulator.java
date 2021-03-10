@@ -25,7 +25,7 @@ import be.tarsos.dsp.io.jvm.WaveformWriter;
 import be.tarsos.dsp.resample.RateTransposer;
 import otp.group6.controller.Controller;
 
-public class AudioMuunnin {
+public class AudioManipulator {
 
 	private Controller controller;
 
@@ -65,7 +65,7 @@ public class AudioMuunnin {
 	private boolean isTestingFilter = false;
 
 	// Konstruktori
-	public AudioMuunnin(Controller controller) {
+	public AudioManipulator(Controller controller) {
 		this.controller = controller;
 	}
 
@@ -178,20 +178,19 @@ public class AudioMuunnin {
 		if (liveDispatcher != null) {
 			liveDispatcher.addAudioProcessor(lowPassSP);
 		}
-		
 
 	}
 
 	public void testFilter() {
-		//Stop liveDispatcher if playing and disable mixer sliders
+		// Stop liveDispatcher if playing and disable mixer sliders
 		if (isTestingFilter == true) {
 			liveDispatcher.stop();
 			isTestingFilter = false;
-			if(file == null) {
+			if (file == null) {
 				controller.setDisableMixerSliders(true);
 			}
-			
-		} else { //Start liveDispatcher and enable 	mixer sliders
+
+		} else { // Start liveDispatcher and enable mixer sliders
 			isTestingFilter = true;
 			AudioFormat format2 = getAudioFormat();
 			DataLine.Info info = new DataLine.Info(TargetDataLine.class, format2);

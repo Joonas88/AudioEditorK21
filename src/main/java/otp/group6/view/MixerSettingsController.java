@@ -34,7 +34,8 @@ import otp.group6.AudioEditor.AudioCloudDAO.MixerSetting;
 import otp.group6.controller.Controller;
 
 /**
- * Class handles database stored mixer settings, displaying them, adding them to favorites and storing the favorites list locally.
+ * Class handles database stored mixer settings, displaying them, adding them to
+ * favorites and storing the favorites list locally.
  * 
  * @author Joonas Soininen
  *
@@ -117,12 +118,12 @@ public class MixerSettingsController implements Initializable {
 			this.getChildren().addAll(label, button);
 		}
 	}
-	
+
 	/**
-	 * TODO Metodi suosikkien tallentamiseen tietokantaan puuttuu
-	 * TODO Metodi suosikin poistamiseen puuttuu
+	 * TODO Metodi suosikkien tallentamiseen tietokantaan puuttuu TODO Metodi
+	 * suosikin poistamiseen puuttuu
 	 */
-	
+
 	/**
 	 * Method to set the favorite buttons function
 	 * 
@@ -192,13 +193,13 @@ public class MixerSettingsController implements Initializable {
 	 */
 	@SuppressWarnings({ "unchecked" })
 	public void read() throws IOException {
-		//TODO Varmista oikea tiedostomuoto
+		// TODO Varmista oikea tiedostomuoto
 		File file = AudioFileHandler.openFileExplorer(mainContainer.getScene().getWindow());
 		FileInputStream fin = new FileInputStream(file);
 		ObjectInputStream ois = new ObjectInputStream(fin);
 		try {
 			localList = (ArrayList<String>) ois.readObject();
-			//System.out.println(localList);
+			// System.out.println(localList);
 			ObservableList<Object> mixerID = FXCollections.observableArrayList();
 			MixerSetting[] setlist = controller.getAllMixArray();
 			for (MixerSetting mix : setlist) {
@@ -288,7 +289,9 @@ public class MixerSettingsController implements Initializable {
 					lowPass = mix.getLowPass();
 				}
 			}
-			//System.out.println(pitch + " " + echo + " " + decay + " " + gain + " " + flangerLenght + " " + wetness + " "+ lfoFrequency + " " + lowPass); // POistettava
+			// System.out.println(pitch + " " + echo + " " + decay + " " + gain + " " +
+			// flangerLenght + " " + wetness + " "+ lfoFrequency + " " + lowPass); //
+			// POistettava
 			mc.setSliderValues(pitch, echo, decay, gain, flangerLenght, wetness, lfoFrequency, lowPass);
 			Stage stage = (Stage) closeButton.getScene().getWindow();
 			stage.close();

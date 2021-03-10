@@ -14,7 +14,8 @@ import otp.group6.AudioEditor.AudioFileHandler;
 import otp.group6.controller.Controller;
 
 /**
- * Class is used for loading slider values from our database or locally from the users computer,
+ * Class is used for loading slider values from our database or locally from the
+ * users computer,
  * 
  * @author Joonas Soininen
  *

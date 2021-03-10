@@ -19,7 +19,8 @@ import javafx.stage.Stage;
 import otp.group6.controller.Controller;
 
 /**
- * Class is used to change users password or delete users account from our database
+ * Class is used to change users password or delete users account from our
+ * database
  * 
  * @author Joonas Soininen
  *
@@ -69,13 +70,14 @@ public class UserSettingsController {
 	public void deleteUser() {
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		alert.setTitle("Delete user?");
-		alert.setHeaderText("You are about to permanently delete your account!\nAll user data will be lost and can not be returned!");
+		alert.setHeaderText(
+				"You are about to permanently delete your account!\nAll user data will be lost and can not be returned!");
 		alert.setContentText("Are you sure you want to delete your account?");
 		Optional<ButtonType> result = alert.showAndWait();
-		if (result.get() == ButtonType.OK){
+		if (result.get() == ButtonType.OK) {
 			controller.deleteUser();
 			mc.setlogUserOut();
-			Alert alert2= new Alert(AlertType.INFORMATION);
+			Alert alert2 = new Alert(AlertType.INFORMATION);
 			alert2.setTitle("Information");
 			alert2.setHeaderText("User deleted succesfully");
 			alert2.setContentText("Thank you for using our software!");
@@ -83,7 +85,7 @@ public class UserSettingsController {
 			Stage stage = (Stage) closeButton.getScene().getWindow();
 			stage.close();
 		} else {
-		    // ... user chose CANCEL or closed the dialog
+			// ... user chose CANCEL or closed the dialog
 		}
 	}
 

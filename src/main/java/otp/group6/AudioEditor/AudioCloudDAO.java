@@ -174,7 +174,7 @@ public class AudioCloudDAO {
 	public AudioCloudDAO() {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			databaseConnection = DriverManager.getConnection("jdbc:mysql://localhost:2280/audiocloud", "yleinen", 
+			databaseConnection = DriverManager.getConnection("jdbc:mysql://localhost:2280/audiocloud", "yleinen",
 
 					"J0k3OnR0");
 		} catch (Exception e) {
@@ -548,7 +548,7 @@ public class AudioCloudDAO {
 	}
 
 	/**
-	 * TODO määritä millä tavalla poistetaan! ID? TAPAA EI VIELÄ TOTEUTETTU 
+	 * TODO määritä millä tavalla poistetaan! ID? TAPAA EI VIELÄ TOTEUTETTU
 	 * 
 	 * Mehtod deletes mixer settings from the database
 	 * 

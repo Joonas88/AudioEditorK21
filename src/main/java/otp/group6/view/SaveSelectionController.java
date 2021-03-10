@@ -22,6 +22,7 @@ public class SaveSelectionController {
 	private Button closeButton;
 	@FXML
 	AnchorPane mainContainer;
+
 	/**
 	 * Method to get mainController
 	 * 
@@ -63,9 +64,9 @@ public class SaveSelectionController {
 	 * Method for storing settings on users computer
 	 */
 	public void saveLocal() {
-		mc.soundManipulatorSaveMixerSettings();	
+		mc.soundManipulatorSaveMixerSettings();
 		Stage stage = (Stage) closeButton.getScene().getWindow();
 		stage.close();
 	}
-	
+
 }

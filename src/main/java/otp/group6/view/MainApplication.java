@@ -30,13 +30,14 @@ public class MainApplication extends Application {
 	private Stage primaryStage;
 	private AnchorPane rootLayout;
 	private MainController mainController;
+
 	public static void main(String[] args) {
 		launch(args);
 	}
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		
+
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle("AudioEditor");
 

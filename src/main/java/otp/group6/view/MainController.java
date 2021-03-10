@@ -62,12 +62,13 @@ import otp.group6.controller.Controller;
  * @author Kevin Akkoyun
  * @version 0.1
  */
-public class MainController implements Initializable{
+public class MainController implements Initializable {
 	Controller controller;
 
 	public MainController() {
 		controller = new Controller(this);
 	}
+
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		controller.readSampleData();
@@ -596,7 +597,7 @@ public class MainController implements Initializable{
 			}
 		});
 
-		//		
+		//
 		textFieldPitch.setOnKeyPressed(event -> {
 			if (event.getCode() == KeyCode.ENTER) {
 				getTextFieldPitch();
@@ -626,7 +627,7 @@ public class MainController implements Initializable{
 				getTextFieldFlangerLength();
 			}
 		});
-		
+
 		textFieldWetness.setOnKeyPressed(event -> {
 			if (event.getCode() == KeyCode.ENTER) {
 				getTextFieldWetness();
@@ -835,10 +836,10 @@ public class MainController implements Initializable{
 	//// HERE////////////////////////////////////////////////////////////////
 	// Used in play button methods
 	public Button lastButton;
-	
+
 	@FXML
 	Button clearButton;
-	
+
 	/**
 	 * Used to edit existing sample in the sample array Opens File explorer and
 	 * edits sample with given index to contain selected wav file Checks file
@@ -990,6 +991,7 @@ public class MainController implements Initializable{
 
 	/**
 	 * Method for renaming soundboard buttons
+	 * 
 	 * @author Kevin Akkoyun
 	 * @param text  -- text element of the button
 	 * @param ap    -- parent of the button
@@ -1045,6 +1047,7 @@ public class MainController implements Initializable{
 
 	/**
 	 * Checks if string contains only whitespaces
+	 * 
 	 * @author Kevin Akkoyun
 	 * @param input -- String to be checked
 	 * @return returns true if string contains only whitespaces, otherwise returns
@@ -1057,6 +1060,7 @@ public class MainController implements Initializable{
 
 	/**
 	 * Refreshes soundboard buttons and reassigns their names
+	 * 
 	 * @author Kevin Akkoyun
 	 */
 	public void refreshButtons() {
@@ -1071,6 +1075,7 @@ public class MainController implements Initializable{
 
 	/**
 	 * Removes last soundboard button
+	 * 
 	 * @author Kevin Akkoyun
 	 */
 	public void removeLast() {
@@ -1087,56 +1092,58 @@ public class MainController implements Initializable{
 			gridRoot.getChildren().add(newSoundButton);
 		}
 	}
+
 	@FXML
 	public void removeAllCheck() {
 		Alert alert = new Alert(Alert.AlertType.NONE);
 		alert.setContentText("Are you sure you want to clear everything?");
-		
-		ButtonType type = new ButtonType("Yes", ButtonData.OK_DONE);
-		ButtonType ntype = new ButtonType("No",ButtonData.CANCEL_CLOSE);
 
-		
+		ButtonType type = new ButtonType("Yes", ButtonData.OK_DONE);
+		ButtonType ntype = new ButtonType("No", ButtonData.CANCEL_CLOSE);
+
 		alert.getButtonTypes().add(type);
 		alert.getButtonTypes().add(ntype);
-		
+
 		alert.setTitle("WARNING");
-		
+
 		Optional<ButtonType> result = alert.showAndWait();
-		if(result.get().getButtonData() == ButtonData.OK_DONE) {
+		if (result.get().getButtonData() == ButtonData.OK_DONE) {
 			removeAll();
 		}
 	}
-	
+
 	public void removeAll() {
 		try {
 			ArrayList<AnchorPane> temp = new ArrayList<AnchorPane>();
 			ObservableList<Node> gridList = buttonGrid.getChildren();
 			gridList.forEach(root -> {
-				temp.add((AnchorPane)root);
+				temp.add((AnchorPane) root);
 			});
 			temp.forEach(root -> {
-				if(!root.getChildren().isEmpty()) {
+				if (!root.getChildren().isEmpty()) {
 					root.getChildren().remove(0);
 				}
 			});
 			AnchorPane firstGrid = (AnchorPane) buttonGrid.getChildren().get(0);
 			firstGrid.getChildren().add(newSoundButton);
 			controller.clearSampleData();
-		}catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+
 	/**
 	 * @author Kevin Akkoyun
 	 */
 	public void checkSavedSamples() {
 		int length = controller.getSampleArrayLength();
-		if(length > 0) {
-			for(int index = 0; index < length; index++ ) {
+		if (length > 0) {
+			for (int index = 0; index < length; index++) {
 				addButton(index);
 			}
 		}
 	}
+
 	public void saveSamples() {
 		controller.saveSampleData();
 	}
@@ -1146,14 +1153,15 @@ public class MainController implements Initializable{
 	 */
 
 	/**
-	 * Following variables and methods mostly open new stages and handle slider values back and forth from files.
-	 * More specific explanations with each method.
+	 * Following variables and methods mostly open new stages and handle slider
+	 * values back and forth from files. More specific explanations with each
+	 * method.
 	 */
 	@FXML
 	private Label loggedinuser;
 	@FXML
 	private MenuItem userSettings;
-	private MenuButton userMenuButton =  new MenuButton();
+	private MenuButton userMenuButton = new MenuButton();
 	private MenuItem menu1 = new MenuItem("User settings");
 	private MenuItem menu2 = new MenuItem("log out");
 	@FXML
@@ -1393,7 +1401,6 @@ public class MainController implements Initializable{
 		userSettings.setVisible(true);
 		loginoption.setVisible(false);
 	}
-
 
 	/**
 	 * Method to change visibility of certain labels and menu items.
