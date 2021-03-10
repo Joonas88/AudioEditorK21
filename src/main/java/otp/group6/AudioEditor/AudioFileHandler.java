@@ -63,11 +63,11 @@ public class AudioFileHandler {
 		}
 
 	}
-
+	// TODO Jokaiselle oikea tiedostomuoto, eli useampi metodi, yks per tiedostomuoto.
 	public static File openFileExplorer(Window window) {
 		FileChooser fc = new FileChooser();
-		ExtensionFilter filter = new ExtensionFilter("Wav files", "*.wav");
-		fc.getExtensionFilters().add(filter);
+		//ExtensionFilter filter = new ExtensionFilter("Wav files", "*.wav"); Nämä takas käyttöön, kun on metodeille omat
+		//fc.getExtensionFilters().add(filter);
 		File file = fc.showOpenDialog(window);
 		return file;
 

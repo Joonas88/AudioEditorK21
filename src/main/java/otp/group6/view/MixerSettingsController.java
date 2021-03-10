@@ -10,31 +10,32 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.FileChooser.ExtensionFilter;
 import otp.group6.AudioEditor.AudioFileHandler;
 import otp.group6.AudioEditor.AudioCloudDAO.MixerSetting;
 import otp.group6.controller.Controller;
 
 /**
- * Class handles database stored mixer settings, displaying them and storing
- * them locally
+ * Class handles database stored mixer settings, displaying them, adding them to
+ * favorites and storing the favorites list locally.
  * 
  * @author Joonas Soininen
  *
@@ -77,6 +78,7 @@ public class MixerSettingsController implements Initializable {
 	private RadioButton radioDescription;
 
 	/**
+	 * Inner class to handle buttons on the ListView.
 	 * 
 	 * @author Joonas Soininen
 	 *
@@ -86,7 +88,7 @@ public class MixerSettingsController implements Initializable {
 		Button button = new Button();
 
 		/**
-		 * Method to create buttons into a listview
+		 * Method to create buttons into the ListView
 		 * 
 		 * @param labelText
 		 * @param buttonText
@@ -117,9 +119,10 @@ public class MixerSettingsController implements Initializable {
 		}
 	}
 
-	// TODO Metodi suosikkien tallentamiseen tietokantaan puuttuu
-
-	// TODO Metodi suosikin poistamiseen puuttuu
+	/**
+	 * TODO Metodi suosikkien tallentamiseen tietokantaan puuttuu TODO Metodi
+	 * suosikin poistamiseen puuttuu
+	 */
 
 	/**
 	 * Method to set the favorite buttons function
@@ -144,34 +147,43 @@ public class MixerSettingsController implements Initializable {
 
 	}
 
-	// TODO ratkaise tiedostomuotongelma,nyt oltava tiedosto valmiina
 	/**
-	 * Method to save locally users favorited mixer settings
+	 * Method to save locally users favorite mixer settings
 	 * 
 	 * @throws IOException
 	 */
 	public void save() throws IOException {
-		JFrame parentFrame = new JFrame();
-
-		JFileChooser fileChooser = new JFileChooser();
-		fileChooser.setDialogTitle("Specify a file to save");
-
-		int userSelection = fileChooser.showSaveDialog(parentFrame);
-
-		if (userSelection == JFileChooser.APPROVE_OPTION) {
-			File fileToSave = fileChooser.getSelectedFile();
-			System.out.println("Save as file: " + fileToSave.getAbsolutePath());
+		FileChooser fileChooser = new FileChooser();
+		ExtensionFilter filter = new ExtensionFilter("TXT files (*.txt)", "*.txt");
+		fileChooser.getExtensionFilters().add(filter);
+		File file = fileChooser.showSaveDialog(mainContainer.getScene().getWindow());
+		String fullPath;
+		try {
+			fullPath = file.getAbsolutePath();
+			if (!fullPath.endsWith(".txt")) {
+				fullPath = fullPath + ".txt";
+			}
 			try {
-				FileOutputStream fout = new FileOutputStream(fileToSave);
+				FileOutputStream fout = new FileOutputStream(fullPath);
 				ObjectOutputStream oos = new ObjectOutputStream(fout);
 				oos.writeObject(localList);
 				fout.close();
+				Alert alert = new Alert(AlertType.INFORMATION);
+				alert.setTitle("Information");
+				alert.setHeaderText("Setting saved succesfully!");
+				alert.showAndWait();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.setTitle("Error!");
+				alert.setHeaderText("Something went wrong!");
+				alert.setContentText("If this keeps happening, contact support! :)");
+				alert.showAndWait();
 			}
-		}
+		} catch (Exception e) {
 
+		}
 	}
 
 	/**
@@ -181,12 +193,13 @@ public class MixerSettingsController implements Initializable {
 	 */
 	@SuppressWarnings({ "unchecked" })
 	public void read() throws IOException {
+		// TODO Varmista oikea tiedostomuoto
 		File file = AudioFileHandler.openFileExplorer(mainContainer.getScene().getWindow());
 		FileInputStream fin = new FileInputStream(file);
 		ObjectInputStream ois = new ObjectInputStream(fin);
 		try {
 			localList = (ArrayList<String>) ois.readObject();
-			System.out.println(localList);
+			// System.out.println(localList);
 			ObservableList<Object> mixerID = FXCollections.observableArrayList();
 			MixerSetting[] setlist = controller.getAllMixArray();
 			for (MixerSetting mix : setlist) {
@@ -211,7 +224,7 @@ public class MixerSettingsController implements Initializable {
 			getMixes();
 		} catch (ClassNotFoundException | IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 		fin.close();
 	}
@@ -222,7 +235,6 @@ public class MixerSettingsController implements Initializable {
 	 */
 	@FXML
 	public void getMixes() {
-
 		controller.intializeDatabaseConnection();
 		MixerSetting[] setlist = controller.getAllMixArray();
 		ObservableList<Object> mixerID = FXCollections.observableArrayList();
@@ -244,22 +256,7 @@ public class MixerSettingsController implements Initializable {
 					// index+", Mixer ID: "+identification);
 					setMixerIndetification(identification);
 				});
-		/*
-		 * //Edellinen tapa toimia ilman nappia per rivi MixerSetting[] setlist =
-		 * controller.getCertainMixesArray(2, searchField.getText()); mixerSettings =
-		 * FXCollections.observableArrayList(); ObservableList<Object> mixerID =
-		 * FXCollections.observableArrayList(); for (MixerSetting mix : setlist) {
-		 * mixerSettings.add("Creator: "+mix.getCreatorName()+"\nMix Name: "+mix.
-		 * getMixName()+"\nMix Description: "+mix.getDescription());
-		 * mixerID.add(mix.getMixID()); mixListView.setItems(mixerSettings);
-		 * //mixListView.getSelectionModel().selectFirst(); }
-		 * 
-		 * mixListView.getSelectionModel().selectedItemProperty().addListener((
-		 * ObservableValue<? extends String> ov, String old_val, String new_val) ->{ int
-		 * index = mixListView.getSelectionModel().getSelectedIndex(); int
-		 * identification = (int) mixerID.get(index);
-		 * setMixerIndetification(identification); });
-		 */
+
 	}
 
 	/**
@@ -268,11 +265,13 @@ public class MixerSettingsController implements Initializable {
 	 */
 	@FXML
 	private void selectMIX() {
-		System.out.println(getMixerIndetification());
 		controller.intializeDatabaseConnection();
 		if (getMixerIndetification() == 0) {
-			JOptionPane.showMessageDialog(null, "Please select one setting from the list.", "Alert",
-					JOptionPane.WARNING_MESSAGE); // Onko tämä kaikille ok?
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("Error");
+			alert.setHeaderText("No input detected!");
+			alert.setContentText("Please select one setting from the list.");
+			alert.showAndWait();
 		} else {
 			MixerSetting[] setlist = controller.getAllMixArray();
 			double pitch = 0, echo = 0, decay = 0, gain = 0, flangerLenght = 0, wetness = 0, lfoFrequency = 0;
@@ -290,8 +289,9 @@ public class MixerSettingsController implements Initializable {
 					lowPass = mix.getLowPass();
 				}
 			}
-			System.out.println(pitch + " " + echo + " " + decay + " " + gain + " " + flangerLenght + " " + wetness + " "
-					+ lfoFrequency + " " + lowPass); // POistettava
+			// System.out.println(pitch + " " + echo + " " + decay + " " + gain + " " +
+			// flangerLenght + " " + wetness + " "+ lfoFrequency + " " + lowPass); //
+			// POistettava
 			mc.setSliderValues(pitch, echo, decay, gain, flangerLenght, wetness, lfoFrequency, lowPass);
 			Stage stage = (Stage) closeButton.getScene().getWindow();
 			stage.close();
@@ -299,7 +299,6 @@ public class MixerSettingsController implements Initializable {
 
 	}
 
-	// TODO Korjaa nappien kanssa toimivaksi!!!!
 	/**
 	 * Method searches the database for any specific mix according to the creator,
 	 * mix name or description

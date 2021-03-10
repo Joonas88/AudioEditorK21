@@ -1,20 +1,30 @@
 package otp.group6.view;
 
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.swing.JOptionPane;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.OverrunStyle;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 import otp.group6.controller.Controller;
 
+/**
+ * Class is used to change users password or delete users account from our
+ * database
+ * 
+ * @author Joonas Soininen
+ *
+ */
 public class UserSettingsController {
 	Controller controller;
 	MainController mc;
@@ -58,14 +68,24 @@ public class UserSettingsController {
 	 */
 	@FXML
 	public void deleteUser() {
-		int reply = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete " + controller.loggedIn(),
-				"WARNING", JOptionPane.YES_NO_CANCEL_OPTION);
-		if (reply == JOptionPane.YES_OPTION) {
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.setTitle("Delete user?");
+		alert.setHeaderText(
+				"You are about to permanently delete your account!\nAll user data will be lost and can not be returned!");
+		alert.setContentText("Are you sure you want to delete your account?");
+		Optional<ButtonType> result = alert.showAndWait();
+		if (result.get() == ButtonType.OK) {
 			controller.deleteUser();
 			mc.setlogUserOut();
-			JOptionPane.showMessageDialog(null, "User deletion succesful");
+			Alert alert2 = new Alert(AlertType.INFORMATION);
+			alert2.setTitle("Information");
+			alert2.setHeaderText("User deleted succesfully");
+			alert2.setContentText("Thank you for using our software!");
+			alert2.showAndWait();
 			Stage stage = (Stage) closeButton.getScene().getWindow();
 			stage.close();
+		} else {
+			// ... user chose CANCEL or closed the dialog
 		}
 	}
 
@@ -76,12 +96,18 @@ public class UserSettingsController {
 	public void changePassword() {
 		if (isValid(npassword.getText())) {
 			controller.changePW(controller.loggedIn(), password.getText(), npassword.getText());
-			JOptionPane.showMessageDialog(null, "Password changed succesfully!");
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("Information");
+			alert.setHeaderText("Password changed succesfully!");
+			alert.showAndWait();
 			Stage stage = (Stage) closeButton.getScene().getWindow();
 			stage.close();
 		} else {
-			JOptionPane.showMessageDialog(null,
-					"Something went wrong!\nPlease try again.\nIf this error continues, please contact support.");
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("Error!");
+			alert.setHeaderText("Something went wrong changing password, please try again");
+			alert.setContentText("If this error continues, please contact support");
+			alert.showAndWait();
 		}
 
 	}

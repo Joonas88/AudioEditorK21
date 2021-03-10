@@ -4,7 +4,7 @@ import java.io.File;
 import java.sql.SQLException;
 import otp.group6.AudioEditor.AudioCloudDAO;
 import otp.group6.AudioEditor.AudioCloudDAO.MixerSetting;
-import otp.group6.AudioEditor.AudioMuunnin;
+import otp.group6.AudioEditor.AudioManipulator;
 import otp.group6.AudioEditor.AudioRecorder;
 import otp.group6.AudioEditor.Soundboard;
 import otp.group6.view.MainController;
@@ -18,7 +18,7 @@ public class Controller {
 
 	private Soundboard soundboard;
 	private AudioRecorder recorder;
-	private AudioMuunnin soundManipulator;
+	private AudioManipulator soundManipulator;
 	private AudioCloudDAO audioDAO;
 	private MainController mainController;
 
@@ -30,7 +30,7 @@ public class Controller {
 	public void initialConfig() {
 		soundboard = new Soundboard();
 		recorder = new AudioRecorder(this);
-		soundManipulator = new AudioMuunnin(this);
+		soundManipulator = new AudioManipulator(this);
 	}
 
 	// SoundManipulator methods start
@@ -161,6 +161,14 @@ public class Controller {
 
 	}
 
+	public void stopSound() {
+		soundboard.stopSample();
+	}
+
+	public boolean isPlaying() {
+		return soundboard.isPlaying();
+	}
+
 	/**
 	 * Adds sample to Soundboard SampleArray
 	 * 
@@ -196,6 +204,18 @@ public class Controller {
 
 	public int getSampleArrayLength() {
 		return soundboard.getSampleArrayLength();
+	}
+
+	public void saveSampleData() {
+		soundboard.saveSampleData();
+	}
+
+	public void readSampleData() {
+		soundboard.readSampleData();
+	}
+
+	public void clearSampleData() {
+		soundboard.clearSampleData();
 	}
 	// Soundboard methods stop
 

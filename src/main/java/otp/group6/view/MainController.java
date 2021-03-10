@@ -3,7 +3,11 @@ package otp.group6.view;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URL;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Optional;
+import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.regex.Matcher;
@@ -12,23 +16,24 @@ import java.util.regex.Pattern;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
@@ -57,11 +62,17 @@ import otp.group6.controller.Controller;
  * @author Kevin Akkoyun
  * @version 0.1
  */
-public class MainController {
+public class MainController implements Initializable {
 	Controller controller;
 
 	public MainController() {
 		controller = new Controller(this);
+	}
+
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		controller.readSampleData();
+		checkSavedSamples();
 	}
 
 	/**
@@ -193,8 +204,8 @@ public class MainController {
 		buttonPause.setDisable(false);
 		buttonStop.setDisable(false);
 		paneControl.setDisable(true);
-		buttonSaveSettings.setDisable(true);
-		buttonLoadSettings.setDisable(true);
+		//buttonSaveSettings.setDisable(true);
+		//buttonLoadSettings.setDisable(true);
 		paneLowPass.setDisable(true);
 	}
 
@@ -205,8 +216,8 @@ public class MainController {
 		buttonPause.setDisable(true);
 		buttonStop.setDisable(true);
 		paneControl.setDisable(false);
-		buttonSaveSettings.setDisable(false);
-		buttonLoadSettings.setDisable(false);
+		//buttonSaveSettings.setDisable(false);
+		//buttonLoadSettings.setDisable(false);
 		paneLowPass.setDisable(false);
 	}
 
@@ -217,8 +228,8 @@ public class MainController {
 		buttonPause.setDisable(true);
 		buttonStop.setDisable(false);
 		paneControl.setDisable(false);
-		buttonSaveSettings.setDisable(false);
-		buttonLoadSettings.setDisable(false);
+		//buttonSaveSettings.setDisable(false);
+		//buttonLoadSettings.setDisable(false);
 		paneLowPass.setDisable(false);
 	}
 
@@ -228,16 +239,16 @@ public class MainController {
 			controller.testFilter();
 			buttonMixerFileOpener.setDisable(true);
 			buttonMixerStartRecording.setDisable(true);
-			buttonSaveSettings.setDisable(true);
-			buttonLoadSettings.setDisable(true);
+			//buttonSaveSettings.setDisable(true);
+			//buttonLoadSettings.setDisable(true);
 			paneMixerAudioPlayer.setDisable(true);
 			paneLowPass.setDisable(true);
 		} else {
 			controller.testFilter();
 			buttonMixerFileOpener.setDisable(false);
 			buttonMixerStartRecording.setDisable(false);
-			buttonSaveSettings.setDisable(false);
-			buttonLoadSettings.setDisable(false);
+			//buttonSaveSettings.setDisable(false);
+			//buttonLoadSettings.setDisable(false);
 			paneMixerAudioPlayer.setDisable(false);
 			paneLowPass.setDisable(false);
 		}
@@ -713,8 +724,6 @@ public class MainController {
 					double audioFileLengthInSec = file.length() / (format.getFrameSize() * format.getFrameRate());
 					setMaxValueToRecordDurationSlider(audioFileLengthInSec);
 					audioFileDurationString = secondsToMinutesAndSeconds(audioFileLengthInSec);
-					textAudioFileDuration.setText(": / " + audioFileDurationString);
-
 					textRecordFileDuration.setText("0:00 / " + audioFileDurationString);
 				} catch (Exception e) {
 
@@ -823,6 +832,11 @@ public class MainController {
 
 	//// RECORDER METHODS END
 	//// HERE////////////////////////////////////////////////////////////////
+	// Used in play button methods
+	public Button lastButton;
+
+	@FXML
+	Button clearButton;
 
 	/**
 	 * Used to edit existing sample in the sample array Opens File explorer and
@@ -901,7 +915,6 @@ public class MainController {
 			configureSoundButton((AnchorPane) soundButtonRoot, index);
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return;
 		}
@@ -921,7 +934,7 @@ public class MainController {
 		play.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				controller.playSound(index);
+				playButtonFunctionality(play, index);
 			}
 		});
 		description.setText(controller.getSampleName(index));
@@ -933,8 +946,16 @@ public class MainController {
 			}
 
 		});
+		MenuItem renameButton = (MenuItem) mp.getItems().get(0);
+		renameButton.setOnAction(new EventHandler<ActionEvent>() {
 
-		MenuItem editButton = (MenuItem) mp.getItems().get(0);
+			@Override
+			public void handle(ActionEvent event) {
+				renameButton(description, ap, index);
+			}
+		});
+
+		MenuItem editButton = (MenuItem) mp.getItems().get(1);
 		editButton.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
@@ -944,7 +965,7 @@ public class MainController {
 
 		});
 
-		MenuItem deleteButton = mp.getItems().get(1);
+		MenuItem deleteButton = mp.getItems().get(2);
 		deleteButton.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
@@ -957,9 +978,19 @@ public class MainController {
 		});
 	}
 
+	public void playButtonFunctionality(Button button, int index) {
+		if (!controller.isPlaying() || lastButton != button) {
+			controller.playSound(index);
+		} else {
+			controller.stopSound();
+		}
+		lastButton = button;
+	}
+
 	/**
 	 * Method for renaming soundboard buttons
 	 * 
+	 * @author Kevin Akkoyun
 	 * @param text  -- text element of the button
 	 * @param ap    -- parent of the button
 	 * @param index -- index of the GridPane child
@@ -1015,6 +1046,7 @@ public class MainController {
 	/**
 	 * Checks if string contains only whitespaces
 	 * 
+	 * @author Kevin Akkoyun
 	 * @param input -- String to be checked
 	 * @return returns true if string contains only whitespaces, otherwise returns
 	 *         false
@@ -1026,6 +1058,8 @@ public class MainController {
 
 	/**
 	 * Refreshes soundboard buttons and reassigns their names
+	 * 
+	 * @author Kevin Akkoyun
 	 */
 	public void refreshButtons() {
 		int length = controller.getSampleArrayLength();
@@ -1039,6 +1073,8 @@ public class MainController {
 
 	/**
 	 * Removes last soundboard button
+	 * 
+	 * @author Kevin Akkoyun
 	 */
 	public void removeLast() {
 		int length = controller.getSampleArrayLength();
@@ -1055,20 +1091,77 @@ public class MainController {
 		}
 	}
 
+	@FXML
+	public void removeAllCheck() {
+		Alert alert = new Alert(Alert.AlertType.NONE);
+		alert.setContentText("Are you sure you want to clear everything?");
+
+		ButtonType type = new ButtonType("Yes", ButtonData.OK_DONE);
+		ButtonType ntype = new ButtonType("No", ButtonData.CANCEL_CLOSE);
+
+		alert.getButtonTypes().add(type);
+		alert.getButtonTypes().add(ntype);
+
+		alert.setTitle("WARNING");
+
+		Optional<ButtonType> result = alert.showAndWait();
+		if (result.get().getButtonData() == ButtonData.OK_DONE) {
+			removeAll();
+		}
+	}
+
+	public void removeAll() {
+		try {
+			ArrayList<AnchorPane> temp = new ArrayList<AnchorPane>();
+			ObservableList<Node> gridList = buttonGrid.getChildren();
+			gridList.forEach(root -> {
+				temp.add((AnchorPane) root);
+			});
+			temp.forEach(root -> {
+				if (!root.getChildren().isEmpty()) {
+					root.getChildren().remove(0);
+				}
+			});
+			AnchorPane firstGrid = (AnchorPane) buttonGrid.getChildren().get(0);
+			firstGrid.getChildren().add(newSoundButton);
+			controller.clearSampleData();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	/**
-	 * Joonaksen tekemiä lisäyksiä Tietokannan tarpeita Uusien ikkunoiden avaamista
-	 * ja sulkemista Liukukytkimien arvojen asettamista
+	 * @author Kevin Akkoyun
 	 */
+	public void checkSavedSamples() {
+		int length = controller.getSampleArrayLength();
+		if (length > 0) {
+			for (int index = 0; index < length; index++) {
+				addButton(index);
+			}
+		}
+	}
+
+	public void saveSamples() {
+		controller.saveSampleData();
+	}
 
 	/**
 	 * @author Joonas Soininen
 	 */
 
+	/**
+	 * Following variables and methods mostly open new stages and handle slider
+	 * values back and forth from files. More specific explanations with each
+	 * method.
+	 */
 	@FXML
 	private Label loggedinuser;
 	@FXML
 	private MenuItem userSettings;
-	private Button logoutButton = new Button("Log out");
+	private MenuButton userMenuButton = new MenuButton();
+	private MenuItem menu1 = new MenuItem("User settings");
+	private MenuItem menu2 = new MenuItem("log out");
 	@FXML
 	private MenuItem loginoption;
 	@FXML
@@ -1248,20 +1341,18 @@ public class MainController {
 	 * Method to store mixer settings locally
 	 */
 	public void soundManipulatorSaveMixerSettings() {
-		// TODO INFO KÄYTTÄJÄLLE
-		// TODO Tiedostosijainti!
-		JFrame parentFrame = new JFrame();
-
-		JFileChooser fileChooser = new JFileChooser();
-		fileChooser.setDialogTitle("Specify a file to save");
-
-		int userSelection = fileChooser.showSaveDialog(parentFrame);
-
-		if (userSelection == JFileChooser.APPROVE_OPTION) {
-			File fileToSave = fileChooser.getSelectedFile();
-			System.out.println("Save as file: " + fileToSave.getAbsolutePath());
+		FileChooser fileChooser = new FileChooser();
+		ExtensionFilter filter = new ExtensionFilter("TXT files (*.txt)", "*.txt");
+		fileChooser.getExtensionFilters().add(filter);
+		File file = fileChooser.showSaveDialog(mainContainer.getScene().getWindow());
+		String fullPath;
+		try {
+			fullPath = file.getAbsolutePath();
+			if (!fullPath.endsWith(".txt")) {
+				fullPath = fullPath + ".txt";
+			}
 			try {
-				FileWriter writeFile = new FileWriter(fileToSave);
+				FileWriter writeFile = new FileWriter(fullPath);
 				writeFile.write(Double.toString(sliderPitch.getValue()) + "\n");
 				writeFile.write(Double.toString(sliderEchoLength.getValue()) + "\n");
 				writeFile.write(Double.toString(sliderDecay.getValue()) + "\n");
@@ -1271,13 +1362,21 @@ public class MainController {
 				writeFile.write(Double.toString(sliderLfoFrequency.getValue()) + "\n");
 				writeFile.write(Float.toString((float) sliderLowPass.getValue()) + "\n");
 				writeFile.close();
-				System.out.println("EHKÄPÄ");
+				Alert alert = new Alert(AlertType.INFORMATION);
+				alert.setTitle("Information");
+				alert.setHeaderText("Setting saved succesfully!");
+				alert.showAndWait();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.setTitle("Error!");
+				alert.setHeaderText("Something went wrong!");
+				alert.setContentText("If this keeps happening, contact support! :)");
+				alert.showAndWait();
 			}
-		}
+		} catch (Exception e) {
 
+		}
 	}
 
 	/**
@@ -1285,12 +1384,19 @@ public class MainController {
 	 * for logging out
 	 */
 	public void setlogUserIn() {
-		logoutButton.setStyle("-fx-font-size: 8pt; -fx-text-fill:black;");
-		loggedinuser.setText("Logged in as: " + controller.loggedIn());
-		loggedinuser.setGraphic(logoutButton);
+		menu1.setOnAction(event -> {
+			openUserSettings();
+		});
+		menu2.setOnAction(event -> {
+			setlogUserOut();
+		});
+		userMenuButton.setText(controller.loggedIn());
+		userMenuButton.setStyle("-fx-font-size: 10pt; -fx-text-fill:black;");
+		userMenuButton.getItems().addAll(menu1, menu2);
+		loggedinuser.setText("Logged in as: ");
+		loggedinuser.setGraphic(userMenuButton);
 		loggedinuser.setContentDisplay(ContentDisplay.RIGHT);
 		userSettings.setVisible(true);
-		logoutButton.setOnAction(event -> setlogUserOut());
 		loginoption.setVisible(false);
 	}
 
