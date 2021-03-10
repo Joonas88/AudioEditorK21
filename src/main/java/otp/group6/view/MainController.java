@@ -222,7 +222,6 @@ public class MainController {
 		paneLowPass.setDisable(false);
 	}
 
-
 	@FXML
 	public void soundManipulatorTestFilter() {
 		if (toggleButtonTestFilter.isSelected() == true) {
@@ -242,9 +241,7 @@ public class MainController {
 			paneMixerAudioPlayer.setDisable(false);
 			paneLowPass.setDisable(false);
 		}
-		
-		
-		
+
 	}
 
 	@FXML
@@ -264,13 +261,12 @@ public class MainController {
 
 		}
 	}
-	
-			
+
 	@FXML
 	public void soundManipulatorOpenFile() {
 		try {
 			Pattern pattern = Pattern.compile("(\\.wav)$", Pattern.CASE_INSENSITIVE);
-			
+
 			// Avataan file AudioFileHandlerilla ja välitetään file kontrollerille
 			File file = AudioFileHandler.openFileExplorer(mainContainer.getScene().getWindow());
 			Matcher matcher = pattern.matcher(file.getName());
@@ -278,13 +274,13 @@ public class MainController {
 				soundManipulatorResetMediaPlayer();
 				controller.soundManipulatorOpenFile(file);
 			} else {
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.setTitle("Error");
-			alert.setHeaderText("Wrong audio format");
-			alert.setContentText("Please select only WAV files");
-			alert.showAndWait();
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.setTitle("Error");
+				alert.setHeaderText("Wrong audio format");
+				alert.setContentText("Please select only WAV files");
+				alert.showAndWait();
 			}
-			
+
 			// Length of the audio file in seconds (file.length / (format.frameSize *
 			// format.frameRate))
 			AudioFormat format = AudioSystem.getAudioFileFormat(file.getAbsoluteFile()).getFormat();
@@ -299,16 +295,14 @@ public class MainController {
 
 			// Enables all sliders and audio player
 			enableMixerSlidersAndAudioPlayer();
-			
+
 		} catch (Exception e) {
 		}
 	}
 
 	// Methods for getting TextField input values
-	@FXML
-	public void getTextFieldPitch() {
+	private void getTextFieldPitch() {
 		String text = textFieldPitch.getText();
-		text.replace(',', '.');
 		try {
 			double number = Double.parseDouble(text);
 			if (number <= 4.0 && number >= 0.1) {
@@ -322,10 +316,8 @@ public class MainController {
 		}
 	}
 
-	@FXML
-	public void getTextFieldGain() {
+	private void getTextFieldGain() {
 		String text = textFieldGain.getText();
-		text.replace(',', '.');
 		try {
 			double number = Double.parseDouble(text);
 			if (number >= 0 && number <= 5) {
@@ -339,10 +331,8 @@ public class MainController {
 		}
 	}
 
-	@FXML
-	public void getTextFieldEchoLength() {
+	private void getTextFieldEchoLength() {
 		String text = textFieldEchoLength.getText();
-		text.replace(',', '.');
 		try {
 			double number = Double.parseDouble(text);
 			if (number >= 0 && number <= 5) {
@@ -356,10 +346,8 @@ public class MainController {
 		}
 	}
 
-	@FXML
-	public void getTextFieldDecay() {
+	private void getTextFieldDecay() {
 		String text = textFieldDecay.getText();
-		text.replace(',', '.');
 		try {
 			double number = Double.parseDouble(text);
 			if (number >= 0 && number <= 1) {
@@ -373,10 +361,8 @@ public class MainController {
 		}
 	}
 
-	@FXML
-	public void getTextFieldFlangerLength() {
+	private void getTextFieldFlangerLength() {
 		String text = textFieldFlangerLength.getText();
-		text.replace(',', '.');
 		try {
 			double number = Double.parseDouble(text);
 			if (number >= 0 && number <= 1) {
@@ -390,10 +376,8 @@ public class MainController {
 		}
 	}
 
-	@FXML
-	public void getTextFieldWetness() {
+	private void getTextFieldWetness() {
 		String text = textFieldWetness.getText();
-		text.replace(',', '.');
 		try {
 			double number = Double.parseDouble(text);
 			if (number >= 0 && number <= 1) {
@@ -407,10 +391,8 @@ public class MainController {
 		}
 	}
 
-	@FXML
-	public void getTextFieldLfo() {
+	private void getTextFieldLfo() {
 		String text = textFieldLfo.getText();
-		text.replace(',', '.');
 		try {
 			double number = Double.parseDouble(text);
 			if (number >= 0 && number <= 100) {
@@ -424,10 +406,8 @@ public class MainController {
 		}
 	}
 
-	@FXML
-	public void getTextFieldLowPass() {
+	private void getTextFieldLowPass() {
 		String text = textFieldLowPass.getText();
-		text.replace(',', '.');
 		try {
 			double number = Double.parseDouble(text);
 			if (number >= 0 && number <= 44100) {
@@ -503,11 +483,10 @@ public class MainController {
 		paneMixerAudioPlayer.setDisable(false);
 		paneMixerSliders.setDisable(false);
 	}
-	
+
 	public void setDisableMixerSliders(boolean trueOrFalse) {
 		paneMixerSliders.setDisable(trueOrFalse);
 	}
-	
 
 	private void initializeSlidersAndTextFields() {
 		// Pitch slider
@@ -515,7 +494,8 @@ public class MainController {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				controller.soundManipulatorSetPitchFactor(newValue.doubleValue());
-				textFieldPitch.setText(decimalFormat.format(newValue.doubleValue()));
+				String value = decimalFormat.format(newValue.doubleValue());
+				textFieldPitch.setText(value.replace(",", "."));
 			}
 		});
 
@@ -524,7 +504,8 @@ public class MainController {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				controller.soundManipulatorSetGain(newValue.doubleValue());
-				textFieldGain.setText(decimalFormat.format(newValue.doubleValue()));
+				String value = decimalFormat.format(newValue.doubleValue());
+				textFieldGain.setText(value.replace(",", "."));
 			}
 		});
 
@@ -533,7 +514,8 @@ public class MainController {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				controller.soundManipulatorSetEchoLength(newValue.doubleValue());
-				textFieldEchoLength.setText(decimalFormat.format(newValue.doubleValue()));
+				String value = decimalFormat.format(newValue.doubleValue());
+				textFieldEchoLength.setText(value.replace(",", "."));
 			}
 		});
 
@@ -542,7 +524,8 @@ public class MainController {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				controller.soundManipulatorSetDecay(newValue.doubleValue());
-				textFieldDecay.setText(decimalFormat.format(newValue.doubleValue()));
+				String value = decimalFormat.format(newValue.doubleValue());
+				textFieldDecay.setText(value.replace(",", "."));
 			}
 		});
 
@@ -551,7 +534,8 @@ public class MainController {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				controller.soundManipulatorSetFlangerLength(newValue.doubleValue());
-				textFieldFlangerLength.setText(decimalFormat.format(newValue.doubleValue()));
+				String value = decimalFormat.format(newValue.doubleValue());
+				textFieldFlangerLength.setText(value.replace(",", "."));
 			}
 		});
 
@@ -560,7 +544,8 @@ public class MainController {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				controller.soundManipulatorSetWetness(newValue.doubleValue());
-				textFieldWetness.setText(decimalFormat.format(newValue.doubleValue()));
+				String value = decimalFormat.format(newValue.doubleValue());
+				textFieldWetness.setText(value.replace(",", "."));
 			}
 		});
 
@@ -569,7 +554,8 @@ public class MainController {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				controller.soundManipulatorSetLFO(newValue.doubleValue());
-				textFieldLfo.setText(decimalFormat.format(newValue.doubleValue()));
+				String value = decimalFormat.format(newValue.doubleValue());
+				textFieldLfo.setText(value.replace(",", "."));
 			}
 		});
 
@@ -578,7 +564,8 @@ public class MainController {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				controller.soundManipulatorSetLowPass(newValue.floatValue());
-				textFieldLowPass.setText(decimalFormat.format(newValue.doubleValue()));
+				String value = decimalFormat.format(newValue.doubleValue());
+				textFieldLowPass.setText(value.replace(",", "."));
 			}
 		});
 
@@ -596,6 +583,55 @@ public class MainController {
 					textAudioFileDuration.setText(audioFileProcessedTimeString + " / " + audioFileDurationString);
 				}
 
+			}
+		});
+
+		//		
+		textFieldPitch.setOnKeyPressed(event -> {
+			if (event.getCode() == KeyCode.ENTER) {
+				getTextFieldPitch();
+			}
+		});
+
+		textFieldGain.setOnKeyPressed(event -> {
+			if (event.getCode() == KeyCode.ENTER) {
+				getTextFieldGain();
+			}
+		});
+
+		textFieldEchoLength.setOnKeyPressed(event -> {
+			if (event.getCode() == KeyCode.ENTER) {
+				getTextFieldEchoLength();
+			}
+		});
+
+		textFieldDecay.setOnKeyPressed(event -> {
+			if (event.getCode() == KeyCode.ENTER) {
+				getTextFieldDecay();
+			}
+		});
+
+		textFieldFlangerLength.setOnKeyPressed(event -> {
+			if (event.getCode() == KeyCode.ENTER) {
+				getTextFieldFlangerLength();
+			}
+		});
+		
+		textFieldWetness.setOnKeyPressed(event -> {
+			if (event.getCode() == KeyCode.ENTER) {
+				getTextFieldWetness();
+			}
+		});
+
+		textFieldLfo.setOnKeyPressed(event -> {
+			if (event.getCode() == KeyCode.ENTER) {
+				getTextFieldLfo();
+			}
+		});
+
+		textFieldLowPass.setOnKeyPressed(event -> {
+			if (event.getCode() == KeyCode.ENTER) {
+				getTextFieldLowPass();
 			}
 		});
 	}

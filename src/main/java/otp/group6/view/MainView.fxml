@@ -125,11 +125,9 @@
                                           <Slider fx:id="sliderFlangerLength" blockIncrement="0.1" layoutX="20.0" layoutY="59.0" majorTickUnit="0.5" max="1.0" minorTickCount="4" showTickLabels="true" showTickMarks="true" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
                                           <Text layoutX="14.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Flanger" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="14.0" />
                                           <Label layoutX="20.0" layoutY="33.0" text="Length (s)" />
-                                          <TextField fx:id="textFieldFlangerLength" layoutX="211.0" layoutY="31.0" onKeyReleased="#getTextFieldFlangerLength" prefWidth="40.0" AnchorPane.rightAnchor="48.0" />
+                                          <TextField fx:id="textFieldFlangerLength" layoutX="211.0" layoutY="31.0" prefWidth="40.0" AnchorPane.rightAnchor="48.0" />
                                           <Button fx:id="buttonInfoFlangerLength" layoutX="272.0" layoutY="31.0" mnemonicParsing="false" text="?" AnchorPane.rightAnchor="20.0" />
                                           <Label layoutX="17.0" layoutY="106.0" text="Wetness" />
-                                          <TextField fx:id="textFieldWetness" layoutX="217.0" layoutY="102.0" onKeyReleased="#getTextFieldWetness" prefWidth="40.0" AnchorPane.rightAnchor="48.0" />
-                                          <Button fx:id="buttonInfoWetness" layoutX="263.0" layoutY="102.0" mnemonicParsing="false" text="?" AnchorPane.rightAnchor="20.0" />
                                        </children>
                                     </AnchorPane>
                                     <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
@@ -165,11 +163,13 @@
                                     </AnchorPane>
                                     <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                        <children>
-                                          <Slider fx:id="sliderWetness" blockIncrement="0.1" layoutX="20.0" layoutY="14.0" majorTickUnit="0.5" max="1.0" minorTickCount="4" showTickLabels="true" showTickMarks="true" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
+                                          <Slider fx:id="sliderWetness" blockIncrement="0.1" layoutX="20.0" layoutY="27.0" majorTickUnit="0.5" max="1.0" minorTickCount="4" prefHeight="25.0" prefWidth="265.0" showTickLabels="true" showTickMarks="true" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
                                           <Label layoutX="20.0" layoutY="57.0" text="LFO" />
-                                          <TextField fx:id="textFieldLfo" layoutX="217.0" layoutY="53.0" onKeyReleased="#getTextFieldLfo" prefWidth="40.0" AnchorPane.rightAnchor="48.0" />
+                                          <TextField fx:id="textFieldLfo" layoutX="217.0" layoutY="53.0" prefWidth="40.0" AnchorPane.rightAnchor="48.0" />
                                           <Button fx:id="buttonInfoLfo" layoutX="263.0" layoutY="53.0" mnemonicParsing="false" text="?" AnchorPane.rightAnchor="20.0" />
                                           <Slider fx:id="sliderLfoFrequency" blockIncrement="1.0" layoutX="31.0" layoutY="79.0" majorTickUnit="10.0" minorTickCount="4" showTickLabels="true" showTickMarks="true" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
+                                          <TextField fx:id="textFieldWetness" layoutX="213.0" layoutY="6.0" prefWidth="40.0" AnchorPane.rightAnchor="52.0" />
+                                          <Button fx:id="buttonInfoWetness" layoutX="263.0" layoutY="6.0" mnemonicParsing="false" text="?" AnchorPane.rightAnchor="20.0" />
                                        </children>
                                     </AnchorPane>
                                     <AnchorPane prefHeight="107.0" prefWidth="306.0" GridPane.rowIndex="2">
@@ -178,13 +178,13 @@
                                           <Label layoutX="20.0" layoutY="34.0" text="Length (s)" />
                                           <Slider fx:id="sliderEchoLength" blockIncrement="0.1" layoutX="39.0" layoutY="59.0" majorTickUnit="1.0" max="5.0" showTickLabels="true" showTickMarks="true" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
                                           <Button fx:id="buttonInfoEchoLength" layoutX="264.0" layoutY="30.0" mnemonicParsing="false" text="?" AnchorPane.rightAnchor="20.0" />
-                                          <TextField fx:id="textFieldEchoLength" layoutX="218.0" layoutY="30.0" onKeyReleased="#getTextFieldEchoLength" prefWidth="40.0" AnchorPane.rightAnchor="48.0" />
+                                          <TextField fx:id="textFieldEchoLength" layoutX="218.0" layoutY="30.0" prefWidth="40.0" AnchorPane.rightAnchor="48.0" />
                                        </children>
                                     </AnchorPane>
                                     <AnchorPane fx:id="paneLowPass" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                        <children>
                                           <Text layoutX="14.0" layoutY="47.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Low Pass" />
-                                          <TextField fx:id="textFieldLowPass" layoutX="217.0" layoutY="30.0" onKeyReleased="#getTextFieldLowPass" prefWidth="40.0" AnchorPane.rightAnchor="48.0" />
+                                          <TextField fx:id="textFieldLowPass" layoutX="217.0" layoutY="30.0" prefWidth="40.0" AnchorPane.rightAnchor="48.0" />
                                           <Button fx:id="buttonInfoLowPass" layoutX="266.0" layoutY="30.0" mnemonicParsing="false" text="?" AnchorPane.rightAnchor="17.0" />
                                           <Slider fx:id="sliderLowPass" layoutX="12.0" layoutY="59.0" majorTickUnit="10000.0" max="44100.0" showTickLabels="true" showTickMarks="true" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
                                        </children>
@@ -194,7 +194,7 @@
                                           <Slider fx:id="sliderPitch" blockIncrement="0.5" layoutX="20.0" layoutY="44.0" majorTickUnit="1.0" max="4.0" min="0.1" showTickLabels="true" showTickMarks="true" value="1.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="44.0" />
                                           <Text layoutX="40.0" layoutY="30.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Pitch" />
                                           <Button fx:id="buttonInfoPitch" layoutX="264.0" layoutY="13.0" mnemonicParsing="false" text="?" AnchorPane.rightAnchor="20.0" />
-                                          <TextField fx:id="textFieldPitch" layoutX="218.0" layoutY="13.0" onKeyReleased="#getTextFieldPitch" prefWidth="40.0" AnchorPane.rightAnchor="48.0" />
+                                          <TextField fx:id="textFieldPitch" layoutX="218.0" layoutY="13.0" prefWidth="40.0" AnchorPane.rightAnchor="48.0" />
                                           <CheckBox layoutX="6.0" layoutY="17.0" mnemonicParsing="false" />
                                        </children>
                                     </AnchorPane>
@@ -202,7 +202,7 @@
                                        <children>
                                           <Text layoutX="14.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Gain" />
                                           <Slider fx:id="sliderGain" blockIncrement="0.1" layoutX="20.0" layoutY="32.0" majorTickUnit="1.0" max="5.0" prefHeight="38.0" prefWidth="306.0" showTickLabels="true" showTickMarks="true" value="1.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="44.0" />
-                                          <TextField fx:id="textFieldGain" layoutX="216.0" layoutY="10.0" onKeyReleased="#getTextFieldGain" prefWidth="40.0" AnchorPane.rightAnchor="48.0" />
+                                          <TextField fx:id="textFieldGain" layoutX="216.0" layoutY="10.0" prefWidth="40.0" AnchorPane.rightAnchor="48.0" />
                                           <Button fx:id="buttonInfoGain" layoutX="264.0" layoutY="10.0" mnemonicParsing="false" text="?" AnchorPane.rightAnchor="20.0" />
                                        </children>
                                     </AnchorPane>
@@ -210,7 +210,7 @@
                                        <children>
                                           <Label layoutX="20.0" layoutY="6.0" text="Decay" />
                                           <Slider fx:id="sliderDecay" blockIncrement="0.1" layoutX="20.0" layoutY="32.0" majorTickUnit="0.5" max="1.0" minorTickCount="4" prefHeight="38.0" prefWidth="264.0" showTickLabels="true" showTickMarks="true" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
-                                          <TextField fx:id="textFieldDecay" layoutX="224.0" layoutY="5.0" onKeyReleased="#getTextFieldDecay" prefWidth="40.0" AnchorPane.rightAnchor="48.0" />
+                                          <TextField fx:id="textFieldDecay" layoutX="224.0" layoutY="5.0" prefWidth="40.0" AnchorPane.rightAnchor="48.0" />
                                           <Button fx:id="buttonInfoDecay" layoutX="264.0" layoutY="5.0" mnemonicParsing="false" text="?" AnchorPane.rightAnchor="20.0" />
                                        </children>
                                     </AnchorPane>
