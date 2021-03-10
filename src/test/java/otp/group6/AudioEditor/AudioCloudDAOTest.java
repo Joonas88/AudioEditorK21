@@ -9,9 +9,6 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import otp.group6.AudioEditor.AudioCloudDAO.MixerSetting;
-import otp.group6.AudioEditor.AudioCloudDAO.User;
-import org.junit.jupiter.api.Disabled;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 /**
@@ -31,17 +28,18 @@ class AudioCloudDAOTest {
 	@Test
 	@DisplayName("Cheking the database for availability in the username")
 	@Order(1)
-	void testChekcforUser() {		
-		assertTrue(dao.chekcforUser(user1), "chekforUser(user): true, when the username is in the database");		
-		assertFalse(dao.chekcforUser(user2),"chekforUser(user): false, when the username is not in the database");
+	void testChekcforUser() {
+		assertTrue(dao.chekcforUser(user1), "chekforUser(user): true, when the username is in the database");
+		assertFalse(dao.chekcforUser(user2), "chekforUser(user): false, when the username is not in the database");
 	}
 
 	@Test
 	@DisplayName("Regitsering a new user")
 	@Order(2)
-	void testCreateUser() throws SQLException {			
-		assertFalse(AudioCloudDAO.isValid(pw1), "isValid(String): false, when the password does not match the requirements");		
-		assertTrue(AudioCloudDAO.isValid(pw2), "isValid(String): true, when the password is in a correct format");				
+	void testCreateUser() throws SQLException {
+		assertFalse(AudioCloudDAO.isValid(pw1),
+				"isValid(String): false, when the password does not match the requirements");
+		assertTrue(AudioCloudDAO.isValid(pw2), "isValid(String): true, when the password is in a correct format");
 		assertTrue(dao.createUser(user2, pw2), "createUser(user): true when there is a problem creatin the user");
 	}
 
@@ -51,14 +49,16 @@ class AudioCloudDAOTest {
 	void testLoginUser() {
 		assertEquals("Welcome Joonas123", dao.loginUser(user2, pw2), "loginUser(String, String): ");
 	}
-	
+
 	@Test
 	@DisplayName("Creating a new mixer setting")
 	@Order(7)
 	void testCreateMix() throws SQLException {
-		assertFalse(dao.createMix("testi", "Filtteriä kuvaava teksti", 1.1, 2.2, 3.3, 4.4, 5.5, 6.6, 7.7, (float) 8.8), "createMix(Mixersetting): false, User needs to be logged in");
+		assertFalse(dao.createMix("testi", "Filtteriä kuvaava teksti", 1.1, 2.2, 3.3, 4.4, 5.5, 6.6, 7.7, (float) 8.8),
+				"createMix(Mixersetting): false, User needs to be logged in");
 		dao.loginUser("test6", "Example1!");
-		assertTrue(dao.createMix("testi", "Filtteriä kuvaava teksti", 1.1, 2.2, 3.3, 4.4, 5.5, 6.6, 7.7, (float) 8.8), "createMix(Mixersetting): true, when setting was created");
+		assertTrue(dao.createMix("testi", "Filtteriä kuvaava teksti", 1.1, 2.2, 3.3, 4.4, 5.5, 6.6, 7.7, (float) 8.8),
+				"createMix(Mixersetting): true, when setting was created");
 	}
 
 	@Test
@@ -87,9 +87,12 @@ class AudioCloudDAOTest {
 	@Test
 	@DisplayName("Getting specific mixer setting")
 	void testGetCertainMixesArray() {
-		assertEquals(dao.getCertainMixesArray(1, "Joonas").length, 13, "Checks for the amount of entries including specified symbols");
-		assertEquals(dao.getCertainMixesArray(2, "7").length, 0,"Checks for the amount of entries including specified symbols");
-		assertEquals(dao.getCertainMixesArray(3, "usko").length, 1, "Checks for the amount of entries including specified symbols");
+		assertEquals(dao.getCertainMixesArray(1, "Joonas").length, 13,
+				"Checks for the amount of entries including specified symbols");
+		assertEquals(dao.getCertainMixesArray(2, "7").length, 0,
+				"Checks for the amount of entries including specified symbols");
+		assertEquals(dao.getCertainMixesArray(3, "usko").length, 1,
+				"Checks for the amount of entries including specified symbols");
 	}
 
 	@Test
@@ -98,12 +101,12 @@ class AudioCloudDAOTest {
 	void testDeleteMix() {
 		assertTrue(dao.deleteMix("testi"), "deleteMix(String): true, if the specified mix was deleted");
 	}
-	
+
 	@Test
 	@DisplayName("Deleting the just created user")
 	@Order(6)
 	void testDeleteUser() {
-		//dao.loginUser(user2, pw2);
+		// dao.loginUser(user2, pw2);
 		assertTrue(dao.deleteUser(), "deleteUser(): true, when user deletion is ok");
 	}
 
@@ -112,16 +115,17 @@ class AudioCloudDAOTest {
 	void testIsValid() {
 		assertTrue(AudioCloudDAO.isValid(pw2), "YES YES");
 	}
-	
+
 	@Test
 	@DisplayName("Change password")
 	@Order(5)
 	void testChangePassword() {
 		dao.loginUser(user2, pw2);
-		assertFalse(AudioCloudDAO.isValid(pw1), "isValid(String): false, when the password does not match the requirements");		
-		assertTrue(AudioCloudDAO.isValid(pw2), "isValid(String): true, when the password is in a correct format");	
-		assertTrue(dao.changePassword(user2, pw2, pw2), "changePassword(String,String,String): true if the change was succesfull ");
+		assertFalse(AudioCloudDAO.isValid(pw1),
+				"isValid(String): false, when the password does not match the requirements");
+		assertTrue(AudioCloudDAO.isValid(pw2), "isValid(String): true, when the password is in a correct format");
+		assertTrue(dao.changePassword(user2, pw2, pw2),
+				"changePassword(String,String,String): true if the change was succesfull ");
 	}
-	
 
 }
