@@ -2,15 +2,11 @@ package otp.group6.AudioEditor;
 
 import javax.sound.sampled.*;
 import javax.sound.sampled.AudioFileFormat.Type;
-import javax.swing.JFileChooser;
-
 import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Window;
 
-import java.awt.Desktop;
 import java.io.File;
-import java.io.IOException;
-import java.net.URI;
 
 /**
  * 
@@ -70,6 +66,8 @@ public class AudioFileHandler {
 
 	public static File openFileExplorer(Window window) {
 		FileChooser fc = new FileChooser();
+		ExtensionFilter filter = new ExtensionFilter("Wav files", "*.wav");
+        fc.getExtensionFilters().add(filter);
 		File file = fc.showOpenDialog(window);
 		return file;
 

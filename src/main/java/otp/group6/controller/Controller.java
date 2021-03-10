@@ -106,6 +106,10 @@ public class Controller {
 	public void testFilter() {
 		soundManipulator.testFilter();
 	}
+	
+	public void soundManipulatorResetMediaPlayer() {
+		soundManipulator.resetMediaPlayer();
+	}
 
 	public void timerCancel() {
 		soundManipulator.timerCancel();
@@ -113,16 +117,34 @@ public class Controller {
 
 	// FROM SOUNDMANIPULATOR TO VIEW
 	// Audio file sliderin metodit
+	/**
+	 * Sets max value to audio duration slider in MainController
+	 * 
+	 * @param maxLenghthInSeconds 
+	 */
 	public void setMaxValueToAudioDurationSlider(double maxLenghthInSeconds) {
 		mainController.setCurrentValueToAudioDurationSlider(maxLenghthInSeconds);
 	}
 
-	public void setCurrentValueToAudioDuratinSlider(double currentSeconds) {
+	/**
+	 * Sets current position to the audio duration slider
+	 * 
+	 * @param currentSeconds
+	 */
+	public void setCurrentValueToAudioDurationSlider(double currentSeconds) {
 		mainController.setCurrentValueToAudioDurationSlider(currentSeconds);
 	}
 
+	/**
+	 * Sets the current progress of the song in audio duration text 
+	 * @param currentSeconds
+	 */
 	public void setCurrentPositionToAudioDurationText(double currentSeconds) {
 		mainController.setCurrentPositionToAudioDurationText(currentSeconds);
+	}
+	
+	public void setDisableMixerSliders(boolean trueOrFalse) {
+		mainController.setDisableMixerSliders(trueOrFalse);
 	}
 
 	// SoundManipulator methods end

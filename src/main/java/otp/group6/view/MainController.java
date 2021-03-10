@@ -155,6 +155,20 @@ public class MainController {
 	private Button buttonInfoLfo;
 	@FXML
 	private Button buttonInfoLowPass;
+	@FXML
+	private AnchorPane paneControl;
+	@FXML
+	private Button buttonSaveSettings;
+	@FXML
+	private Button buttonLoadSettings;
+	@FXML
+	private Button buttonMixerFileOpener;
+	@FXML
+	private Button buttonMixerStartRecording;
+	@FXML
+	private ToggleButton toggleButtonTestFilter;
+	@FXML
+	private AnchorPane paneLowPass;
 
 	// Muuttujat tiedoston kokonaiskestolle ja toistetulle ajalle
 	private String audioFileDurationString = "0:00";
@@ -178,6 +192,10 @@ public class MainController {
 		buttonPlay.setDisable(true);
 		buttonPause.setDisable(false);
 		buttonStop.setDisable(false);
+		paneControl.setDisable(true);
+		buttonSaveSettings.setDisable(true);
+		buttonLoadSettings.setDisable(true);
+		paneLowPass.setDisable(true);
 	}
 
 	@FXML
@@ -186,6 +204,10 @@ public class MainController {
 		buttonPlay.setDisable(false);
 		buttonPause.setDisable(true);
 		buttonStop.setDisable(true);
+		paneControl.setDisable(false);
+		buttonSaveSettings.setDisable(false);
+		buttonLoadSettings.setDisable(false);
+		paneLowPass.setDisable(false);
 	}
 
 	@FXML
@@ -194,17 +216,41 @@ public class MainController {
 		buttonPlay.setDisable(false);
 		buttonPause.setDisable(true);
 		buttonStop.setDisable(false);
+		paneControl.setDisable(false);
+		buttonSaveSettings.setDisable(false);
+		buttonLoadSettings.setDisable(false);
+		paneLowPass.setDisable(false);
 	}
+
 
 	@FXML
 	public void soundManipulatorTestFilter() {
-		controller.testFilter();
+		if (toggleButtonTestFilter.isSelected() == true) {
+			controller.testFilter();
+			buttonMixerFileOpener.setDisable(true);
+			buttonMixerStartRecording.setDisable(true);
+			buttonSaveSettings.setDisable(true);
+			buttonLoadSettings.setDisable(true);
+			paneMixerAudioPlayer.setDisable(true);
+			paneLowPass.setDisable(true);
+		} else {
+			controller.testFilter();
+			buttonMixerFileOpener.setDisable(false);
+			buttonMixerStartRecording.setDisable(false);
+			buttonSaveSettings.setDisable(false);
+			buttonLoadSettings.setDisable(false);
+			paneMixerAudioPlayer.setDisable(false);
+			paneLowPass.setDisable(false);
+		}
+		
+		
+		
 	}
 
 	@FXML
 	public void soundManipulatorSaveMixedFile() {
 		FileChooser fileChooser = new FileChooser();
-		ExtensionFilter filter = new ExtensionFilter("WAV files (*.wav)", ".wav");
+		ExtensionFilter filter = new ExtensionFilter("WAV files (*.wav)", "*.wav");
 		fileChooser.getExtensionFilters().add(filter);
 		File file = fileChooser.showSaveDialog(mainContainer.getScene().getWindow());
 		String fullPath;
@@ -218,14 +264,27 @@ public class MainController {
 
 		}
 	}
-
+	
+			
 	@FXML
 	public void soundManipulatorOpenFile() {
 		try {
+			Pattern pattern = Pattern.compile("(\\.wav)$", Pattern.CASE_INSENSITIVE);
+			
 			// Avataan file AudioFileHandlerilla ja välitetään file kontrollerille
 			File file = AudioFileHandler.openFileExplorer(mainContainer.getScene().getWindow());
-			controller.soundManipulatorOpenFile(file);
-
+			Matcher matcher = pattern.matcher(file.getName());
+			if (matcher.find()) {
+				soundManipulatorResetMediaPlayer();
+				controller.soundManipulatorOpenFile(file);
+			} else {
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("Error");
+			alert.setHeaderText("Wrong audio format");
+			alert.setContentText("Please select only WAV files");
+			alert.showAndWait();
+			}
+			
 			// Length of the audio file in seconds (file.length / (format.frameSize *
 			// format.frameRate))
 			AudioFormat format = AudioSystem.getAudioFileFormat(file.getAbsoluteFile()).getFormat();
@@ -240,16 +299,8 @@ public class MainController {
 
 			// Enables all sliders and audio player
 			enableMixerSlidersAndAudioPlayer();
-
-		} catch (UnsupportedAudioFileException e) {
-			System.out.println("Väärä tiedostomuoto");
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.setTitle("Virhe!");
-			alert.setHeaderText("Väärä tiedostomuoto");
-			alert.setContentText("Valitse vain WAV-tyyppisiä tiedostoja");
-			alert.showAndWait();
+			
 		} catch (Exception e) {
-			e.printStackTrace();
 		}
 	}
 
@@ -257,6 +308,7 @@ public class MainController {
 	@FXML
 	public void getTextFieldPitch() {
 		String text = textFieldPitch.getText();
+		text.replace(',', '.');
 		try {
 			double number = Double.parseDouble(text);
 			if (number <= 4.0 && number >= 0.1) {
@@ -273,6 +325,7 @@ public class MainController {
 	@FXML
 	public void getTextFieldGain() {
 		String text = textFieldGain.getText();
+		text.replace(',', '.');
 		try {
 			double number = Double.parseDouble(text);
 			if (number >= 0 && number <= 5) {
@@ -289,6 +342,7 @@ public class MainController {
 	@FXML
 	public void getTextFieldEchoLength() {
 		String text = textFieldEchoLength.getText();
+		text.replace(',', '.');
 		try {
 			double number = Double.parseDouble(text);
 			if (number >= 0 && number <= 5) {
@@ -305,6 +359,7 @@ public class MainController {
 	@FXML
 	public void getTextFieldDecay() {
 		String text = textFieldDecay.getText();
+		text.replace(',', '.');
 		try {
 			double number = Double.parseDouble(text);
 			if (number >= 0 && number <= 1) {
@@ -321,6 +376,7 @@ public class MainController {
 	@FXML
 	public void getTextFieldFlangerLength() {
 		String text = textFieldFlangerLength.getText();
+		text.replace(',', '.');
 		try {
 			double number = Double.parseDouble(text);
 			if (number >= 0 && number <= 1) {
@@ -337,6 +393,7 @@ public class MainController {
 	@FXML
 	public void getTextFieldWetness() {
 		String text = textFieldWetness.getText();
+		text.replace(',', '.');
 		try {
 			double number = Double.parseDouble(text);
 			if (number >= 0 && number <= 1) {
@@ -353,6 +410,7 @@ public class MainController {
 	@FXML
 	public void getTextFieldLfo() {
 		String text = textFieldLfo.getText();
+		text.replace(',', '.');
 		try {
 			double number = Double.parseDouble(text);
 			if (number >= 0 && number <= 100) {
@@ -369,6 +427,7 @@ public class MainController {
 	@FXML
 	public void getTextFieldLowPass() {
 		String text = textFieldLowPass.getText();
+		text.replace(',', '.');
 		try {
 			double number = Double.parseDouble(text);
 			if (number >= 0 && number <= 44100) {
@@ -406,6 +465,10 @@ public class MainController {
 		sliderLowPass.setValue(44100);
 	}
 
+	private void soundManipulatorResetMediaPlayer() {
+		controller.soundManipulatorResetMediaPlayer();
+	}
+
 	// Audio file sliderin metodit (controller kutsuu)
 	public void setMaxValueToAudioDurationSlider(double audioFileLengthInSec) {
 		sliderAudioFileDuration.setMax(audioFileLengthInSec);
@@ -436,10 +499,15 @@ public class MainController {
 		}
 	}
 
-	private void enableMixerSlidersAndAudioPlayer() {
+	public void enableMixerSlidersAndAudioPlayer() {
 		paneMixerAudioPlayer.setDisable(false);
 		paneMixerSliders.setDisable(false);
 	}
+	
+	public void setDisableMixerSliders(boolean trueOrFalse) {
+		paneMixerSliders.setDisable(trueOrFalse);
+	}
+	
 
 	private void initializeSlidersAndTextFields() {
 		// Pitch slider

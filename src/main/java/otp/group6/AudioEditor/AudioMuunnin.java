@@ -32,19 +32,21 @@ public class AudioMuunnin {
 	private File file;
 	private AudioDispatcher adp;
 	private AudioDispatcher liveDispatcher;
-	private WaveformSimilarityBasedOverlapAdd wsola;
-	private GainProcessor gainProcessor;
-	private AudioPlayer audioPlayer;
-	private RateTransposer rateTransposer;
+	private AudioInputStream audioInputStream;
+	private JVMAudioInputStream audioInputStreamForTarsos;
 	private TarsosDSPAudioFormat format;
+	private AudioPlayer audioPlayer;
 	private WaveformWriter writer;
+	private WaveformSimilarityBasedOverlapAdd wsola;
+
+	private GainProcessor gainProcessor;
+	private RateTransposer rateTransposer;
 	private FlangerEffect flangerEffect;
 	private DelayEffect delayEffect;
 	private LowPassSP lowPassSP;
+
 	private Timer timer;
 	private TimerTask task;
-	private JVMAudioInputStream audioInputStreamForTarsos;
-	private AudioInputStream audioInputStream;
 
 	// Original values
 	private float sampleRate;
@@ -60,6 +62,7 @@ public class AudioMuunnin {
 	private float playbackStartingPoint = (float) 0.0;// pause-nappia varten
 	private float kokonaiskesto;
 	private boolean isPlaying = false;
+	private boolean isTestingFilter = false;
 
 	// Konstruktori
 	public AudioMuunnin(Controller controller) {
@@ -169,39 +172,75 @@ public class AudioMuunnin {
 	public void setLowPass(float lowPass) {
 		this.lowPass = lowPass;
 		lowPassSP = new LowPassSP(lowPass, sampleRate);
-		adp.addAudioProcessor(lowPassSP);
+		if (adp != null) {
+			adp.addAudioProcessor(lowPassSP);
+		}
+		if (liveDispatcher != null) {
+			liveDispatcher.addAudioProcessor(lowPassSP);
+		}
+		
 
 	}
 
 	public void testFilter() {
-		AudioFormat format2 = getAudioFormat();
-		DataLine.Info info = new DataLine.Info(TargetDataLine.class, format2);
-		TargetDataLine line = null;
-		try {
-			line = (TargetDataLine) AudioSystem.getLine(info);
-			line.open(format2);
-			line.start();
-			AudioInputStream ais = new AudioInputStream(line);
-			JVMAudioInputStream audioStream = new JVMAudioInputStream(ais);
-			AudioDispatcher liveDispatcher = new AudioDispatcher(audioStream, wsola.getInputBufferSize(),
-					wsola.getOverlap());
-			wsola.setDispatcher(liveDispatcher);
-			liveDispatcher.addAudioProcessor(wsola);
-			liveDispatcher.addAudioProcessor(rateTransposer);
-			liveDispatcher.addAudioProcessor(delayEffect);
-			liveDispatcher.addAudioProcessor(gainProcessor);
-			liveDispatcher.addAudioProcessor(flangerEffect);
-			liveDispatcher.addAudioProcessor(audioPlayer);
-		} catch (Exception e) {
-			e.printStackTrace();
+		//Stop liveDispatcher if playing and disable mixer sliders
+		if (isTestingFilter == true) {
+			liveDispatcher.stop();
+			isTestingFilter = false;
+			if(file == null) {
+				controller.setDisableMixerSliders(true);
+			}
+			
+		} else { //Start liveDispatcher and enable 	mixer sliders
+			isTestingFilter = true;
+			AudioFormat format2 = getAudioFormat();
+			DataLine.Info info = new DataLine.Info(TargetDataLine.class, format2);
+			TargetDataLine line = null;
+			try {
+				line = (TargetDataLine) AudioSystem.getLine(info);
+				line.open(format2);
+				line.start();
+				AudioInputStream ais = new AudioInputStream(line);
+				JVMAudioInputStream audioStream = new JVMAudioInputStream(ais);
+				//
+				// formaatti ja sampleRate instanssimuuttujiin
+				this.format = audioStream.getFormat();
+				this.sampleRate = format.getSampleRate();
+
+				wsola = new WaveformSimilarityBasedOverlapAdd(
+						Parameters.musicDefaults(pitchFactor, audioStream.getFormat().getSampleRate()));
+				//
+				liveDispatcher = new AudioDispatcher(audioStream, wsola.getInputBufferSize(), wsola.getOverlap());
+				wsola.setDispatcher(liveDispatcher);
+				liveDispatcher.addAudioProcessor(wsola);
+
+				rateTransposer = new RateTransposer(pitchFactor);
+				delayEffect = new DelayEffect(echoLength, decay, sampleRate);
+				gainProcessor = new GainProcessor(gain);
+				flangerEffect = new FlangerEffect(flangerLength, wetness, sampleRate, lfo);
+				liveDispatcher.addAudioProcessor(flangerEffect);
+				lowPassSP = new LowPassSP(lowPass, sampleRate);
+				audioPlayer = new AudioPlayer(format);
+
+				liveDispatcher.addAudioProcessor(rateTransposer);
+				liveDispatcher.addAudioProcessor(delayEffect);
+				liveDispatcher.addAudioProcessor(gainProcessor);
+				liveDispatcher.addAudioProcessor(flangerEffect);
+				liveDispatcher.addAudioProcessor(lowPassSP);
+				liveDispatcher.addAudioProcessor(audioPlayer);
+				controller.setDisableMixerSliders(false);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			try {
+				Thread t = new Thread(liveDispatcher);
+				t.start();
+				System.out.println("test filter started");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
-		try {
-			Thread t = new Thread(liveDispatcher);
-			t.start();
-			System.out.println("test filter started");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+
 	}
 
 	// MEDIAPLAYER METHODS
@@ -243,8 +282,7 @@ public class AudioMuunnin {
 			public void run() {
 				kokonaiskesto = playbackStartingPoint;
 				kokonaiskesto += (float) (audioPlayer.getMicroSecondPosition() / 1000000.0);
-				System.out.println(" timer" + kokonaiskesto);
-				setCurrentPositionToAudioFileDurationSlider(kokonaiskesto);
+				controller.setCurrentValueToAudioDurationSlider(kokonaiskesto);
 				controller.setCurrentPositionToAudioDurationText(kokonaiskesto);
 			}
 		};
@@ -271,7 +309,9 @@ public class AudioMuunnin {
 			isPlaying = false;
 			playbackStartingPoint = (float) 0.0;
 			// Asettaa kestosliderin nollaan
-			setCurrentPositionToAudioFileDurationSlider(0);
+			controller.setCurrentValueToAudioDurationSlider(0.0);
+			controller.setCurrentPositionToAudioDurationText(0.0);
+
 		}
 	}
 
@@ -283,7 +323,6 @@ public class AudioMuunnin {
 		if (adp != null) {
 			// kohta mihin jäätiin
 			isPlaying = false;
-			// secondsProcessed = adp.secondsProcessed();
 			System.out.println(kokonaiskesto);
 			playbackStartingPoint = adp.secondsProcessed();
 			adp.stop();
@@ -291,8 +330,13 @@ public class AudioMuunnin {
 
 	}
 
-	private void setCurrentPositionToAudioFileDurationSlider(double seconds) {
-		controller.setCurrentValueToAudioDuratinSlider(seconds);
+	public void resetMediaPlayer() {
+		controller.setCurrentValueToAudioDurationSlider(0.0);
+		controller.setCurrentPositionToAudioDurationText(0.0);
+		playbackStartingPoint = 0;
+		kokonaiskesto = 0;
+		isPlaying = false;
+
 	}
 
 	// Timer metodit
@@ -318,7 +362,9 @@ public class AudioMuunnin {
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public void saveFile(String path) {
+		createAudioProcessors();
 		writer = new WaveformWriter(format, path);
+		adp.removeAudioProcessor(audioPlayer);
 		adp.addAudioProcessor(writer);
 		try {
 			Thread t = new Thread(adp);
@@ -329,19 +375,20 @@ public class AudioMuunnin {
 	}
 
 	// PRIVATE METHODS
+	/**
+	 * Creates following audio processors: WaveformSimilarityBasedOverlapAdd,
+	 * RateTransposer, DelayEffect, GainProcessor, FlangerEffect, LowPassSP and
+	 * AudioPlayer
+	 */
 	private void createAudioProcessors() {
 		try {
 			// WaveformSimilarityBasedOverlapAdd pitää tiedoston samanmittaisena
 			// pitch-arvosta riippumatta
 			wsola = new WaveformSimilarityBasedOverlapAdd(Parameters.musicDefaults(pitchFactor, sampleRate));
 			audioInputStream = AudioSystem.getAudioInputStream(file);
-			// audioInputStreamForTarsos = getMonoAudioInputStream(audioInputStream);
 			audioInputStreamForTarsos = new JVMAudioInputStream(
 					AudioSystem.getAudioInputStream(getAudioFormat(), audioInputStream));
 			adp = new AudioDispatcher(audioInputStreamForTarsos, wsola.getInputBufferSize(), wsola.getOverlap());
-			// adp = AudioDispatcherFactory.fromFile(wavFile, wsola.getInputBufferSize(),
-			// wsola.getOverlap());
-
 			wsola.setDispatcher(adp);
 			adp.addAudioProcessor(wsola);
 		} catch (Exception e) {
