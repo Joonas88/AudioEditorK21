@@ -207,12 +207,6 @@ public class AudioMuunnin {
 	
 	public void stopTestFilter() {
 		liveDispatcher.stop();
-		liveDispatcher.removeAudioProcessor(wsola);
-		liveDispatcher.removeAudioProcessor(rateTransposer);
-		liveDispatcher.removeAudioProcessor(delayEffect);
-		liveDispatcher.removeAudioProcessor(gainProcessor);
-		liveDispatcher.removeAudioProcessor(flangerEffect);
-		liveDispatcher.removeAudioProcessor(audioPlayer);
 		line.close();
 		line.stop();
 		System.out.println("Test filter stopped");
@@ -226,7 +220,6 @@ public class AudioMuunnin {
 		}
 		isPlaying = true;
 		createAudioProcessors();
-
 		adp.addAudioProcessor(new AudioProcessor() {
 			@Override
 			public void processingFinished() {
@@ -333,7 +326,8 @@ public class AudioMuunnin {
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public void saveFile(String path) { 
-		
+		createAudioProcessors();
+		adp.removeAudioProcessor(audioPlayer);
 		writer = new WaveformWriter(format, path);
 		adp.addAudioProcessor(writer);
 		try {

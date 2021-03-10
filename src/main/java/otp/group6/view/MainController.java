@@ -225,7 +225,6 @@ public class MainController {
 			controller.soundManipulatorSaveFile(fullPath);
 			System.out.println("saved to " +fullPath);
 		} catch (Exception e) {
-			e.printStackTrace();
 		}
 	}
 
