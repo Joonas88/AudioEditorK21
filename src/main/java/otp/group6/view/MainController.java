@@ -12,9 +12,6 @@ import java.util.regex.Pattern;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
@@ -1056,19 +1053,20 @@ public class MainController {
 	}
 
 	/**
-	 * Joonaksen tekemiä lisäyksiä Tietokannan tarpeita Uusien ikkunoiden avaamista
-	 * ja sulkemista Liukukytkimien arvojen asettamista
-	 */
-
-	/**
 	 * @author Joonas Soininen
 	 */
 
+	/**
+	 * Following variables and methods mostly open new stages and handle slider values back and forth from files.
+	 * More specific explanations with each method.
+	 */
 	@FXML
 	private Label loggedinuser;
 	@FXML
 	private MenuItem userSettings;
-	private Button logoutButton = new Button("Log out");
+	private MenuButton userMenuButton =  new MenuButton();
+	private MenuItem menu1 = new MenuItem("User settings");
+	private MenuItem menu2 = new MenuItem("log out");
 	@FXML
 	private MenuItem loginoption;
 	@FXML
@@ -1248,20 +1246,18 @@ public class MainController {
 	 * Method to store mixer settings locally
 	 */
 	public void soundManipulatorSaveMixerSettings() {
-		// TODO INFO KÄYTTÄJÄLLE
-		// TODO Tiedostosijainti!
-		JFrame parentFrame = new JFrame();
-
-		JFileChooser fileChooser = new JFileChooser();
-		fileChooser.setDialogTitle("Specify a file to save");
-
-		int userSelection = fileChooser.showSaveDialog(parentFrame);
-
-		if (userSelection == JFileChooser.APPROVE_OPTION) {
-			File fileToSave = fileChooser.getSelectedFile();
-			System.out.println("Save as file: " + fileToSave.getAbsolutePath());
+		FileChooser fileChooser = new FileChooser();
+		ExtensionFilter filter = new ExtensionFilter("TXT files (*.txt)", "*.txt");
+		fileChooser.getExtensionFilters().add(filter);
+		File file = fileChooser.showSaveDialog(mainContainer.getScene().getWindow());
+		String fullPath;
+		try {
+			fullPath = file.getAbsolutePath();
+			if (!fullPath.endsWith(".txt")) {
+				fullPath = fullPath + ".txt";
+			}
 			try {
-				FileWriter writeFile = new FileWriter(fileToSave);
+				FileWriter writeFile = new FileWriter(fullPath);
 				writeFile.write(Double.toString(sliderPitch.getValue()) + "\n");
 				writeFile.write(Double.toString(sliderEchoLength.getValue()) + "\n");
 				writeFile.write(Double.toString(sliderDecay.getValue()) + "\n");
@@ -1271,13 +1267,21 @@ public class MainController {
 				writeFile.write(Double.toString(sliderLfoFrequency.getValue()) + "\n");
 				writeFile.write(Float.toString((float) sliderLowPass.getValue()) + "\n");
 				writeFile.close();
-				System.out.println("EHKÄPÄ");
+				Alert alert = new Alert(AlertType.INFORMATION);
+				alert.setTitle("Information");
+				alert.setHeaderText("Setting saved succesfully!");
+				alert.showAndWait();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.setTitle("Error!");
+				alert.setHeaderText("Something went wrong!");
+				alert.setContentText("If this keeps happening, contact support! :)");
+				alert.showAndWait();
 			}
-		}
+		} catch (Exception e) {
 
+		}
 	}
 
 	/**
@@ -1285,14 +1289,22 @@ public class MainController {
 	 * for logging out
 	 */
 	public void setlogUserIn() {
-		logoutButton.setStyle("-fx-font-size: 8pt; -fx-text-fill:black;");
-		loggedinuser.setText("Logged in as: " + controller.loggedIn());
-		loggedinuser.setGraphic(logoutButton);
+		menu1.setOnAction(event -> {
+			openUserSettings();
+		});
+		menu2.setOnAction(event -> {
+			setlogUserOut();
+		});
+		userMenuButton.setText(controller.loggedIn());
+		userMenuButton.setStyle("-fx-font-size: 10pt; -fx-text-fill:black;");
+		userMenuButton.getItems().addAll(menu1, menu2);
+		loggedinuser.setText("Logged in as: ");
+		loggedinuser.setGraphic(userMenuButton);
 		loggedinuser.setContentDisplay(ContentDisplay.RIGHT);
 		userSettings.setVisible(true);
-		logoutButton.setOnAction(event -> setlogUserOut());
 		loginoption.setVisible(false);
 	}
+
 
 	/**
 	 * Method to change visibility of certain labels and menu items.

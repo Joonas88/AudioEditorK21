@@ -98,18 +98,18 @@ public class RegisterLoginController {
 	 * @throws SQLException
 	 */
 	public void registerUser(ActionEvent event) throws SQLException {
-		System.out.println(username.getText().toString().length());// Poistettava
-		System.out.println(password.getText());// Poistettava
+		//System.out.println(username.getText().toString().length());// Poistettava
+		//System.out.println(password.getText());// Poistettava
 
 		if ((!controller.chekcforUser(username.getText())) && username.getText().toString().length() > 0) {
-			System.out.println("VAPAA"); // Poistettava
+			//System.out.println("VAPAA"); // Poistettava
 			username.setStyle("-fx-text-fill: green; -fx-font-size: 16px;");
 			wuntooltip.hide();
 			if (isValid(password.getText())) {
 				controller.createUser(username.getText(), password.getText());
 				loginUser();
 			} else {
-				System.out.println("UUS PASSU"); // Poistettava
+				//System.out.println("UUS PASSU"); // Poistettava
 				password.setStyle("-fx-text-fill: red; -fx-font-size: 16px;");
 				// password.setStyle("-fx-control-inner-background:#000000; -fx-font-family:
 				// Consolas; -fx-highlight-fill: #00ff00; -fx-highlight-text-fill: #000000;
@@ -122,7 +122,7 @@ public class RegisterLoginController {
 			username.setStyle("-fx-text-fill: red; -fx-font-size: 16px;");
 			wuntooltip.setWrapText(true);
 			wuntooltip.setTextOverrun(OverrunStyle.ELLIPSIS);
-			System.out.println("Varattu!"); // Poistettava
+			//System.out.println("Varattu!"); // Poistettava
 			username.focusedProperty().addListener(new ChangeListener<Boolean>() {
 				@Override
 				public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {

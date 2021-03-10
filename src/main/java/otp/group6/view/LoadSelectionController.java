@@ -14,7 +14,7 @@ import otp.group6.AudioEditor.AudioFileHandler;
 import otp.group6.controller.Controller;
 
 /**
- * Class is used for storage selection, local or database
+ * Class is used for loading slider values from our database or locally from the users computer,
  * 
  * @author Joonas Soininen
  *
@@ -62,7 +62,7 @@ public class LoadSelectionController {
 	 * Method to load mixer settings from local storage
 	 */
 	public void loadFromLocal() {
-		// mc.loadLocalMixerSettings();
+		// TODO Varmista oikea tiedostomuoto
 		try {
 			File file = AudioFileHandler.openFileExplorer(mainContainer.getScene().getWindow());
 			Scanner myReader = new Scanner(file);
