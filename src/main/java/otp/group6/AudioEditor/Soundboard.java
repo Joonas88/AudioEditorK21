@@ -1,6 +1,10 @@
 package otp.group6.AudioEditor;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import javax.sound.sampled.AudioInputStream;
 
@@ -31,9 +35,16 @@ public class Soundboard {
 			this.filepath = filepath;
 			this.name = "New Sound(" + sampleArray.size() + ")";
 		}
+		public Sample(String name,String filepath) {
+			this.filepath = filepath;
+			this.name = name;
+		}
 
 		public void setSamplePath(String filepath) {
 			this.filepath = filepath;
+		}
+		public String getSamplePath() {
+			return this.filepath;
 		}
 
 		public void setName(String name) {
@@ -62,7 +73,8 @@ public class Soundboard {
 			return file;
 		}
 	}
-
+	private String sampleData = "";
+	
 	private AudioOutput player;
 
 	private ArrayList<Sample> sampleArray = new ArrayList<Sample>();
@@ -140,6 +152,99 @@ public class Soundboard {
 			player.openAudio(sampleArray.get(sampleIndex).getSample());
 			player.start();
 		}
+	}
 
+	/**
+	 * @author Kevin Akkoyun
+	 * Stops the sample output and closes audio
+	 */
+	public void stopSample() {
+		if (player != null || !player.isAlive()) {
+			player.closeAudio();
+		}
+	}
+
+	/**
+	 * @author Kevin Akkoyun
+	 * Function to determine if player is active
+	 * @return returns true if player is active; otherwise returns false if player
+	 *         is null or not playing
+	 */
+	public boolean isPlaying() {
+		if (player == null || !player.isAlive()) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+	/**
+	 * @author Kevin Akkoyun
+	 * Shortens sampleArray until its size is 20
+	 */
+	public void validateSampleArray() {
+		while(sampleArray.size() > 20) {
+			sampleArray.remove(sampleArray.size() - 1);
+		}
+	}
+	/**
+	 * @author Kevin Akkoyun
+	 * Saves sample data to a text file
+	 * uses ; to separate sample name and path.
+	 */
+	public void saveSampleData() {
+		
+		try {
+			File targetFile = new File("sampledata.txt");
+			targetFile.createNewFile();
+			
+			FileWriter dataWriter = new FileWriter(targetFile);
+			sampleArray.forEach((sample) -> {
+				sampleData = sampleData.concat(sample.getName() + ";" + sample.getSamplePath() + "\n");			
+			});
+			dataWriter.write(sampleData);
+			dataWriter.close();
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * @author Kevin Akkoyun
+	 * Reads sample data from text file and adds valid lines to sample array
+	 * Checks if sampleArray is oversized and reduces it to 20 if needed
+	 */
+	public void readSampleData() {
+		try {
+			File targetFile = new File("sampledata.txt");
+			Scanner fileReader = new Scanner(targetFile);
+			
+			while(fileReader.hasNextLine()) {
+				String temp = fileReader.nextLine();
+				String[] sampleParts = temp.split(";");
+				File tester = new File(sampleParts[1]);
+				if(tester.exists()) {
+					sampleArray.add(new Sample(sampleParts[0], sampleParts[1]));
+				}
+				validateSampleArray();
+			}
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
+	/**
+	 * @author Kevin Akkoyun
+	 * Clears sampleData and sampleArray
+	 * Writes blank to sampledata.txt
+	 */
+	public void clearSampleData() {
+		try {
+			File targetFile = new File("sampledata.txt");
+			FileWriter writer = new FileWriter(targetFile);
+			writer.write("");
+			writer.close();
+			sampleArray = new ArrayList<Sample>();
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

@@ -159,7 +159,12 @@ public class Controller {
 		}
 
 	}
-
+	public void stopSound() {
+		soundboard.stopSample();
+	}
+	public boolean isPlaying() {
+		return soundboard.isPlaying();
+	}
 	/**
 	 * Adds sample to Soundboard SampleArray
 	 * 
@@ -195,6 +200,15 @@ public class Controller {
 
 	public int getSampleArrayLength() {
 		return soundboard.getSampleArrayLength();
+	}
+	public void saveSampleData() {
+		soundboard.saveSampleData();
+	}
+	public void readSampleData() {
+		soundboard.readSampleData();
+	}
+	public void clearSampleData() {
+		soundboard.clearSampleData();
 	}
 	// Soundboard methods stop
 
