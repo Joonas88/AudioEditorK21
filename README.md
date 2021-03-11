@@ -14,7 +14,7 @@ Desktop application for recording, mixing and playing sound files. AudioEditor w
 
 ## Installation guide
 
-**TO-DO**
+*TO-DO*
 
 ## Developers
 
