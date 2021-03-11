@@ -4,17 +4,17 @@ Desktop application for recording, mixing and playing sound files. AudioEditor w
 
 # Technologies used
 
-Java, SQL
-JavaFX, Scene Builder
-Maven
-Jenkins
-GitLab
-Eclipse (IDE)
-TarsosDSP (Open Java library)
+- Java, SQL
+- JavaFX, Scene Builder
+- Maven
+- Jenkins
+- GitLab
+- Eclipse (IDE)
+- TarsosDSP (Open Java library)
 
 # Developers
 
-Joonas Soininen 
-Kevin Akkoyun
-Roosa Laukkanen
-Onni Lukkarila
+- Joonas Soininen 
+- Kevin Akkoyun
+- Roosa Laukkanen
+- Onni Lukkarila
