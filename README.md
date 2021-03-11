@@ -12,6 +12,10 @@ Desktop application for recording, mixing and playing sound files. AudioEditor w
 - Eclipse (IDE)
 - TarsosDSP (Open Java library)
 
+## Installation guide
+
+//TODO
+
 ## Developers
 
 - Joonas Soininen 
