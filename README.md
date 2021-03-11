@@ -1,4 +1,4 @@
-## AudioEditor
+# AudioEditor
 
 Desktop application for recording, mixing and playing sound files. AudioEditor was made as a group project at Metropolia University of Applied Sciences. The application was developed with Java as a Maven project.
 
