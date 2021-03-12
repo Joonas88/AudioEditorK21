@@ -2,6 +2,10 @@
 
 Desktop application for recording, mixing and playing sound files. AudioEditor was made as a group project at Metropolia University of Applied Sciences. The application was developed with Java as a Maven project.
 
+## Installation guide
+
+*TO-DO*
+
 ## Technologies used
 
 - Java, SQL
@@ -12,11 +16,7 @@ Desktop application for recording, mixing and playing sound files. AudioEditor w
 - Eclipse (IDE)
 - TarsosDSP (Open Java library)
 
-## Installation guide
-
-*TO-DO*
-
-## Developers
+## Group members
 
 - Joonas Soininen 
 - Kevin Akkoyun
