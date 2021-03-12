@@ -4,6 +4,7 @@ Desktop application for recording, mixing and playing sound files. AudioEditor w
 
 ## Installation guide
 Attention!
+
 For the moment there is a problem with the Apacne Maven dependency and plugin with the JavaFX. 
 To run the project you must run MainApplication.java directly.
 We are working on this issue.
