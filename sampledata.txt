@@ -1,0 +1,5 @@
+New Sound(0);/home/kevin/projektit/audioeditor/src/audio/miksattuAudio.wav
+New Sound(1);/home/kevin/projektit/audioeditor/src/audio/test1.wav
+New Sound(2);/home/kevin/projektit/audioeditor/src/audio/jumalauta.wav
+New Sound(3);/home/kevin/projektit/audioeditor/src/audio/jumalauta.wav
+New Sound(4);/home/kevin/projektit/audioeditor/src/audio/miksattuAudio.wav

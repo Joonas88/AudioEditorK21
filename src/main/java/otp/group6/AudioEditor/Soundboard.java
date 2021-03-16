@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.LineListener;
 
 /**
  * Soundboard class for storing and playing sampled audio
@@ -78,7 +79,7 @@ public class Soundboard {
 
 	private String sampleData = "";
 
-	private AudioOutput player;
+	private SoundboardPlayer player;
 
 	private ArrayList<Sample> sampleArray = new ArrayList<Sample>();
 
@@ -105,7 +106,7 @@ public class Soundboard {
 	}
 
 	public Soundboard() {
-		player = null;
+		player = new SoundboardPlayer();
 	}
 
 	/**
@@ -140,21 +141,12 @@ public class Soundboard {
 	}
 
 	/**
-	 * Plays a sample with AudioOutput
+	 * Plays a sample with SoundboardPlayer
 	 * 
 	 * @param sampleIndex
 	 */
 	public void playSample(int sampleIndex) {
-		if (player == null || !player.isAlive()) {
-			player = new AudioOutput();
-			player.openAudio(sampleArray.get(sampleIndex).getSample());
-			player.start();
-		} else {
-			player.closeAudio();
-			player = new AudioOutput();
-			player.openAudio(sampleArray.get(sampleIndex).getSample());
-			player.start();
-		}
+		player.playAudio(sampleArray.get(sampleIndex).getSample());
 	}
 
 	/**
@@ -247,5 +239,11 @@ public class Soundboard {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	public void setListener(LineListener listener) {
+		player.setOnClose(listener);
+	}
+	public void removeListener(LineListener listener) {
+		player.removeListeners(listener);
 	}
 }

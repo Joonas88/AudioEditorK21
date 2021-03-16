@@ -15,7 +15,12 @@ import java.util.regex.Pattern;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.LineEvent;
+import javax.sound.sampled.LineEvent.Type;
+import javax.sound.sampled.LineListener;
 import javax.sound.sampled.UnsupportedAudioFileException;
+
+import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
@@ -73,6 +78,7 @@ public class MainController implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 		controller.readSampleData();
 		checkSavedSamples();
+		soundboardInit();
 	}
 
 	/**
@@ -835,7 +841,7 @@ public class MainController implements Initializable {
 	//// RECORDER METHODS END
 	//// HERE////////////////////////////////////////////////////////////////
 	// Used in play button methods
-	public Button lastButton;
+	public static Button lastButton,currentButton;
 
 	@FXML
 	Button clearButton;
@@ -979,16 +985,63 @@ public class MainController implements Initializable {
 
 		});
 	}
-
+	/**
+	 * Kooi atm al dente eli spagettia - TODO REWORK
+	 * @param button
+	 * @param index
+	 */
 	public void playButtonFunctionality(Button button, int index) {
 		if (!controller.isPlaying() || lastButton != button) {
+			currentButton = button;
+			resetAllButtonNames();
 			controller.playSound(index);
+			button.setText("Stop");
 		} else {
+			resetAllButtonNames();
 			controller.stopSound();
 		}
 		lastButton = button;
 	}
+	public void soundboardInit() {
+		controller.setListener(new LineListener() {
 
+			@Override
+			public void update(LineEvent event) {
+				if(event.getType() == Type.STOP) {
+					Platform.runLater(new Runnable() {
+
+						@Override
+						public void run() {
+							resetAllButtonNames();
+							if(controller.isPlaying()) {
+								currentButton.setText("Stop");
+							}
+						}
+						
+					});
+				}
+			}
+			
+		});
+	}
+	/**
+	 * ATM raviolia eli TODO REWORK
+	 * jos se toimii nii se toimii - älä valita
+	 */
+	public void resetAllButtonNames() {
+		ObservableList<Node> tempList =(ObservableList<Node>) buttonGrid.getChildren();
+		ArrayList<AnchorPane> apList = new ArrayList<AnchorPane>();
+		int index = controller.getSampleArrayLength();
+		tempList.forEach(root -> {
+			apList.add((AnchorPane) root);
+		});
+		for(int i = 0; i < index ;i++) {
+			AnchorPane apRoot = apList.get(i);
+			AnchorPane btnRoot = (AnchorPane) apRoot.getChildren().get(0);
+			Button btnTemp = (Button) btnRoot.getChildren().get(0);
+			btnTemp.setText("Play");
+		}
+	}
 	/**
 	 * Method for renaming soundboard buttons
 	 * 
