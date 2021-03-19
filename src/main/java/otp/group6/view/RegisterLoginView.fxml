@@ -54,6 +54,14 @@
                               <Font size="16.0" />
                            </font>
                         </PasswordField>
+                        <TextField fx:id="visiblePW" editable="false" onAction="#loginUser" onKeyTyped="#pwReminder" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                           <GridPane.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </GridPane.margin>
+                        </TextField>
                         <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="17.0" prefWidth="157.0" text="Password" GridPane.rowIndex="2">
                            <font>
                               <Font size="16.0" />
@@ -90,6 +98,7 @@
                         <Font size="14.0" />
                      </font>
                   </Hyperlink>
+                  <Label fx:id="showPW" layoutX="317.0" layoutY="139.0" onMouseEntered="#showPW" onMouseExited="#hidePW" text="SEE" />
                </children>
                <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

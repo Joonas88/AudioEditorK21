@@ -154,12 +154,13 @@
                                        <rowConstraints>
                                           <RowConstraints maxHeight="428.0" minHeight="53.0" prefHeight="66.0" vgrow="SOMETIMES" />
                                           <RowConstraints maxHeight="353.0" minHeight="10.0" prefHeight="74.0" vgrow="SOMETIMES" />
-                                          <RowConstraints maxHeight="324.0" minHeight="10.0" prefHeight="296.0" vgrow="SOMETIMES" />
-                                          <RowConstraints maxHeight="316.0" minHeight="0.0" prefHeight="69.0" vgrow="SOMETIMES" />
+                                          <RowConstraints maxHeight="353.0" minHeight="10.0" prefHeight="74.0" vgrow="SOMETIMES" />
+                                          <RowConstraints maxHeight="324.0" minHeight="10.0" prefHeight="225.0" vgrow="SOMETIMES" />
+                                          <RowConstraints maxHeight="316.0" minHeight="0.0" prefHeight="74.0" vgrow="SOMETIMES" />
                                           <RowConstraints maxHeight="184.0" minHeight="10.0" prefHeight="73.0" vgrow="SOMETIMES" />
                                        </rowConstraints>
                                        <children>
-                                          <Button mnemonicParsing="false" onAction="#selectMIX" prefHeight="25.0" prefWidth="198.0" text="Use Setting" GridPane.rowIndex="3">
+                                          <Button mnemonicParsing="false" onAction="#selectMIX" prefHeight="25.0" prefWidth="198.0" text="Use Setting" GridPane.rowIndex="4">
                                              <font>
                                                 <Font size="24.0" />
                                              </font>
@@ -167,7 +168,7 @@
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                              </GridPane.margin>
                                           </Button>
-                                          <Button fx:id="closeButton1" mnemonicParsing="false" onAction="#handleCloseButtonAction" prefHeight="25.0" prefWidth="209.0" text="Cancel" GridPane.rowIndex="4">
+                                          <Button fx:id="closeButton1" mnemonicParsing="false" onAction="#handleCloseButtonAction" prefHeight="25.0" prefWidth="209.0" text="Cancel" GridPane.rowIndex="5">
                                              <font>
                                                 <Font size="24.0" />
                                              </font>
@@ -175,12 +176,17 @@
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                              </GridPane.margin>
                                           </Button>
-                                          <Button mnemonicParsing="false" onAction="#save" prefHeight="25.0" prefWidth="198.0" text="Save Favorites">
+                                          <Button disable="true" mnemonicParsing="false" prefHeight="25.0" prefWidth="198.0" text="Save Favorites">
                                              <font>
                                                 <Font size="24.0" />
                                              </font>
                                           </Button>
-                                          <Button mnemonicParsing="false" onAction="#read" prefHeight="25.0" prefWidth="198.0" text="Load Favorites" GridPane.rowIndex="1">
+                                          <Button disable="true" mnemonicParsing="false" prefHeight="25.0" prefWidth="198.0" text="Load Favorites" GridPane.rowIndex="1">
+                                             <font>
+                                                <Font size="24.0" />
+                                             </font>
+                                          </Button>
+                                          <Button fx:id="removeFav" disable="true" mnemonicParsing="false" onAction="#removeFav" prefHeight="25.0" prefWidth="198.0" text="Remove Fav.." GridPane.rowIndex="2">
                                              <font>
                                                 <Font size="24.0" />
                                              </font>

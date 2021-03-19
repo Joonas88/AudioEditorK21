@@ -3,6 +3,10 @@ package otp.group6.AudioEditor;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+
 import java.sql.*;
 import java.time.LocalDate;
 
@@ -168,18 +172,25 @@ public class AudioCloudDAO {
 	private Connection databaseConnection;
 	private User userclass = new User();
 
+	private boolean hasconnected=true;
+	
 	/**
 	 * Connection to the database
 	 */
 	public AudioCloudDAO() {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			databaseConnection = DriverManager.getConnection("jdbc:mysql://localhost:2280/audiocloud", "yleinen",
-
-					"J0k3OnR0");
+			databaseConnection = DriverManager.getConnection("jdbc:mysql://localhost:2280/audiocloud", "yleinen", "J0k3OnR0");
+			
 		} catch (Exception e) {
+			setHasconnected(false);
 			System.err.println("Virhe tietokantayhteyden muodostamisessa. " + e);
-			System.exit(-1);
+			//System.exit(-1);
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("Error!");
+			alert.setHeaderText("Can not connect to the database!");
+			alert.setContentText("Please try again later.\nIf this keeps happening, contact support! :)");
+			alert.showAndWait();
 		}
 	}
 
@@ -612,6 +623,14 @@ public class AudioCloudDAO {
 	public static boolean isValid(final String password) {
 		Matcher matcher = pattern.matcher(password);
 		return matcher.matches();
+	}
+
+	public boolean isHasconnected() {
+		return hasconnected;
+	}
+
+	public void setHasconnected(boolean hasconnected) {
+		this.hasconnected = hasconnected;
 	}
 
 }
