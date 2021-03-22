@@ -332,5 +332,9 @@ public class Controller {
 	public boolean changePW(String u, String p, String np) {
 		return audioDAO.changePassword(u, p, np);
 	}
+	
+	public boolean isConnected() {
+		return audioDAO.isHasconnected();
+	}
 	// AudioCloudDAO methods stop
 }

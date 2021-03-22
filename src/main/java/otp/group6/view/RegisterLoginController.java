@@ -8,6 +8,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.OverrunStyle;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
@@ -33,6 +34,10 @@ public class RegisterLoginController {
 	@FXML
 	private TextField password;
 	@FXML
+	private TextField visiblePW;
+	@FXML
+	private Label showPW;
+	@FXML
 	private Button closeButton;
 	@FXML
 	private Button loginButton;
@@ -40,10 +45,30 @@ public class RegisterLoginController {
 	final Tooltip pwtooltip = new Tooltip("Paswords must contain 8-20 characters.\n"
 			+ "Must contain one uppercase letter\n" + "Must contain at least one number");
 
-	final Tooltip wuntooltip = new Tooltip("Can not set this username\n" + "Please select another one");
+	final Tooltip wuntooltip = new Tooltip("Can not set this username\nMake sure there are no white spaces or \nselect another one");
 
 	final Tooltip logintip = new Tooltip("Username or password incorrect!\n Please try again :)");
-
+	
+	/**
+	 * Method for user to see their password on hover
+	 */
+	@FXML
+	public void showPW() {
+		password.setVisible(false);
+		visiblePW.setVisible(true);
+		visiblePW.setEditable(true);
+		visiblePW.setText(password.getText());
+	}
+	
+	/**
+	 * Method to hide the password when exiting the hover
+	 */
+	@FXML
+	public void hidePW() {
+		visiblePW.setVisible(false);
+		password.setVisible(true);
+	}
+	
 	/**
 	 * Method to close opened scenes
 	 * 
@@ -101,11 +126,11 @@ public class RegisterLoginController {
 		// System.out.println(username.getText().toString().length());// Poistettava
 		// System.out.println(password.getText());// Poistettava
 
-		if ((!controller.chekcforUser(username.getText())) && username.getText().toString().length() > 0) {
+		if ((unisValid(username.getText()))) {
 			// System.out.println("VAPAA"); // Poistettava
 			username.setStyle("-fx-text-fill: green; -fx-font-size: 16px;");
 			wuntooltip.hide();
-			if (isValid(password.getText())) {
+			if (pwIsValid(password.getText())) {
 				controller.createUser(username.getText(), password.getText());
 				loginUser();
 			} else {
@@ -206,7 +231,7 @@ public class RegisterLoginController {
 	}
 
 	private static final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$";
-	private static final Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
+	private static final Pattern pwPattern = Pattern.compile(PASSWORD_PATTERN);
 
 	/**
 	 * Used to check for password security
@@ -214,8 +239,16 @@ public class RegisterLoginController {
 	 * @param password is the inputed password
 	 * @return true if it matches requirements
 	 */
-	public static boolean isValid(final String password) {
-		Matcher matcher = pattern.matcher(password);
+	public static boolean pwIsValid(final String password) {
+		Matcher matcher = pwPattern.matcher(password);
+		return matcher.matches();
+	}
+	
+	private static final String USERNAME_PATTERN = "^[a-zA-Z0-9]([._-](?![._-])|[a-zA-Z0-9]){3,18}[a-zA-Z0-9]$";
+	private static final Pattern unPattern = Pattern.compile(USERNAME_PATTERN);
+	
+	public static boolean unisValid(final String username) {
+		Matcher matcher = unPattern.matcher(username);
 		return matcher.matches();
 	}
 

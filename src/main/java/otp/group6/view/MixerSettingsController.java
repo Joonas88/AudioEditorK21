@@ -76,6 +76,8 @@ public class MixerSettingsController implements Initializable {
 	private RadioButton radioName;
 	@FXML
 	private RadioButton radioDescription;
+	@FXML
+	private Button removeFav;
 
 	/**
 	 * Inner class to handle buttons on the ListView.
@@ -111,7 +113,12 @@ public class MixerSettingsController implements Initializable {
 				button.setDisable(true);
 			}
 			button.setOnAction(e -> {
-				favoriteButton(button.getId(), labelText);
+				try {
+					favoriteButton(button.getId(), labelText);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				button.setDisable(true);
 			});
 
@@ -129,20 +136,24 @@ public class MixerSettingsController implements Initializable {
 	 * 
 	 * @param id
 	 * @param title
+	 * @throws IOException 
 	 */
-	public void favoriteButton(String id, String title) {
+	public void favoriteButton(String id, String title) throws IOException {
 		ObservableList<Object> mixerID = FXCollections.observableArrayList();
 		hlist.add(title);
 		localList.add(id);
 		mixerID.add(Integer.valueOf(id));
 		mixerSettings = FXCollections.observableArrayList(hlist);
 		mixListView.setItems(mixerSettings);
-
+		save();
 		mixListView.getSelectionModel().selectedItemProperty()
 				.addListener((ObservableValue<? extends String> ov, String old_val, String new_val) -> {
 					int index = mixListView.getSelectionModel().getSelectedIndex();
 					int identification = (int) mixerID.get(index);
 					setMixerIndetification(identification);
+					String selectedItem = mixListView.getSelectionModel().getSelectedItem(); //POISTETTAVA
+					System.out.println(selectedItem); //POISTETTAVA
+					removeFav.setDisable(false);
 				});
 
 	}
@@ -153,6 +164,23 @@ public class MixerSettingsController implements Initializable {
 	 * @throws IOException
 	 */
 	public void save() throws IOException {
+		//Automatic save 
+		File file1 = new File("src/localfav/Fav1.txt");
+		try {
+			FileOutputStream fout = new FileOutputStream(file1);
+			ObjectOutputStream oos = new ObjectOutputStream(fout);
+			oos.writeObject(localList);
+			fout.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("Error!");
+			alert.setHeaderText("Something went wrong!");
+			alert.setContentText("If this keeps happening, contact support! :)");
+			alert.showAndWait();
+		}
+		//Manual save
+		/*
 		FileChooser fileChooser = new FileChooser();
 		ExtensionFilter filter = new ExtensionFilter("TXT files (*.txt)", "*.txt");
 		fileChooser.getExtensionFilters().add(filter);
@@ -182,8 +210,9 @@ public class MixerSettingsController implements Initializable {
 				alert.showAndWait();
 			}
 		} catch (Exception e) {
-
+			e.printStackTrace();
 		}
+		*/
 	}
 
 	/**
@@ -193,13 +222,13 @@ public class MixerSettingsController implements Initializable {
 	 */
 	@SuppressWarnings({ "unchecked" })
 	public void read() throws IOException {
-		// TODO Varmista oikea tiedostomuoto
-		File file = AudioFileHandler.openFileExplorer(mainContainer.getScene().getWindow());
-		FileInputStream fin = new FileInputStream(file);
+		//File file = AudioFileHandler.openFileExplorer(mainContainer.getScene().getWindow());
+		File autofile= new File("src/localfav/Fav1.txt");
+		FileInputStream fin = new FileInputStream(autofile);
 		ObjectInputStream ois = new ObjectInputStream(fin);
 		try {
 			localList = (ArrayList<String>) ois.readObject();
-			// System.out.println(localList);
+			System.out.println(localList);
 			ObservableList<Object> mixerID = FXCollections.observableArrayList();
 			MixerSetting[] setlist = controller.getAllMixArray();
 			for (MixerSetting mix : setlist) {
@@ -212,7 +241,8 @@ public class MixerSettingsController implements Initializable {
 				}
 
 			}
-			mixerSettings = FXCollections.observableArrayList(hlist);
+			mixerSettings = FXCollections.observableArrayList(hlist);			
+	
 			mixListView.setItems(mixerSettings);
 
 			mixListView.getSelectionModel().selectedItemProperty()
@@ -220,6 +250,9 @@ public class MixerSettingsController implements Initializable {
 						int index = mixListView.getSelectionModel().getSelectedIndex();
 						int identification = (int) mixerID.get(index);
 						setMixerIndetification(identification);
+						//String selectedItem = mixListView.getSelectionModel().getSelectedItem(); //POISTETTAVA
+						//System.out.println(selectedItem); //POISTETTAVA
+						removeFav.setDisable(false);
 					});
 			getMixes();
 		} catch (ClassNotFoundException | IOException e) {
@@ -227,6 +260,20 @@ public class MixerSettingsController implements Initializable {
 			//e.printStackTrace();
 		}
 		fin.close();
+	}
+	
+	/**
+	 * Method to remove favorite settings from the shown list
+	 * @throws IOException
+	 */
+	public void removeFav() throws IOException {
+		localList.remove(localList.lastIndexOf(String.valueOf(getMixerIndetification())));
+		save();
+		getMixes();
+		hlist.clear();
+		mixListView.getItems().clear();
+		read();
+		removeFav.setDisable(true);
 	}
 
 	/**
@@ -413,11 +460,13 @@ public class MixerSettingsController implements Initializable {
 	 * Method to initialize mixer settings window
 	 * 
 	 * @param mainController
+	 * @throws IOException 
 	 */
-	public void setMainController(MainController mainController) {
+	public void setMainController(MainController mainController) throws IOException {
 		this.mc = mainController;
 		this.controller = mc.getController();
 		getMixes();
+		read();
 	}
 
 }

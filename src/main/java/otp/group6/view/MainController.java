@@ -1176,41 +1176,48 @@ public class MainController implements Initializable {
 	 * Method opens a new scene Login and Register form
 	 */
 	public void openLoginRegister() {
-		try {
-			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\RegisterLoginView.fxml"));
-			Parent root1 = (Parent) fxmlLoader.load();
-			Stage stage = new Stage();
-			RegisterLoginController rlc = fxmlLoader.getController();
-			rlc.setMainController(this);
-			stage.initModality(Modality.APPLICATION_MODAL);
-			stage.initStyle(StageStyle.UNDECORATED);
-			stage.setTitle("Login or Register");
-			stage.setScene(new Scene(root1));
-			stage.show();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		controller.intializeDatabaseConnection();
+		if(controller.isConnected()) {
+			try {
+				FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\RegisterLoginView.fxml"));
+				Parent root1 = (Parent) fxmlLoader.load();
+				Stage stage = new Stage();
+				RegisterLoginController rlc = fxmlLoader.getController();
+				rlc.setMainController(this);
+				stage.initModality(Modality.APPLICATION_MODAL);
+				stage.initStyle(StageStyle.UNDECORATED);
+				stage.setTitle("Login or Register");
+				stage.setScene(new Scene(root1));
+				stage.show();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}		
+
 	}
 
 	/**
 	 * Method opens a new scene, the mixer settings from the database
 	 */
 	public void openMixerSettings() {
-
-		try {
-			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\MixerSettingsView.fxml"));
-			Parent root1 = (Parent) fxmlLoader.load();
-			Stage stage = new Stage();
-			MixerSettingsController msc = fxmlLoader.getController();
-			msc.setMainController(this);
-			stage.initModality(Modality.APPLICATION_MODAL);
-			stage.initStyle(StageStyle.UNDECORATED);
-			stage.setTitle("Mixer Settings Loader");
-			stage.setScene(new Scene(root1));
-			stage.show();
-		} catch (Exception e) {
-			e.printStackTrace();
+		controller.intializeDatabaseConnection();
+		if(controller.isConnected()) {
+			try {
+				FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\MixerSettingsView.fxml"));
+				Parent root1 = (Parent) fxmlLoader.load();
+				Stage stage = new Stage();
+				MixerSettingsController msc = fxmlLoader.getController();
+				msc.setMainController(this);
+				stage.initModality(Modality.APPLICATION_MODAL);
+				stage.initStyle(StageStyle.UNDECORATED);
+				stage.setTitle("Mixer Settings Loader");
+				stage.setScene(new Scene(root1));
+				stage.show();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
+
 	}
 
 	public Controller getController() {
