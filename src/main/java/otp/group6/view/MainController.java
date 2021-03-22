@@ -236,7 +236,8 @@ public class MainController implements Initializable {
 
 	@FXML
 	public void soundManipulatorTestFilter() {
-		if (toggleButtonTestFilter.isSelected() == true) {
+		if (!testFilterOn) {
+			System.out.println(toggleButtonTestFilter.isSelected());
 			controller.testFilter();
 			buttonMixerFileOpener.setDisable(true);
 			buttonMixerStartRecording.setDisable(true);
@@ -244,14 +245,17 @@ public class MainController implements Initializable {
 			//buttonLoadSettings.setDisable(true);
 			paneMixerAudioPlayer.setDisable(true);
 			paneLowPass.setDisable(true);
+			testFilterOn = true;
 		} else {
 			controller.testFilter();
+			System.out.println(toggleButtonTestFilter.isSelected());
 			buttonMixerFileOpener.setDisable(false);
 			buttonMixerStartRecording.setDisable(false);
 			//buttonSaveSettings.setDisable(false);
 			//buttonLoadSettings.setDisable(false);
 			paneMixerAudioPlayer.setDisable(false);
 			paneLowPass.setDisable(false);
+			testFilterOn = false;
 		}
 
 	}

@@ -143,12 +143,7 @@
                                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                             </rowConstraints>
                                              <children>
-                                                <ToggleButton fx:id="toggleButtonTestFilter" alignment="CENTER_LEFT" mnemonicParsing="false" onAction="#soundManipulatorTestFilter" text="Test Filter">
-                                                   <GridPane.margin>
-                                                      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                                   </GridPane.margin>
-                                                </ToggleButton>
-                                                <Button mnemonicParsing="false" onAction="#soundManipulatorResetAllSliders" prefHeight="25.0" text="Reset Sliders" GridPane.columnIndex="1">
+                                                <Button mnemonicParsing="false" onAction="#soundManipulatorResetAllSliders" prefHeight="25.0" prefWidth="107.0" text="Reset Sliders" GridPane.columnIndex="1">
                                                    <GridPane.margin>
                                                       <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                                    </GridPane.margin>
