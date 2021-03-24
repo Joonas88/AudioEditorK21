@@ -110,12 +110,16 @@ public class UserSettingsController {
 			Stage stage = (Stage) closeButton.getScene().getWindow();
 			stage.close();
 		} else {
-			// ... user chose CANCEL or closed the dialog
+			Alert alert3 = new Alert(AlertType.ERROR);
+			alert3.setTitle("Error!");
+			alert3.setHeaderText("Something went wrong saving mixer settings, please try again");
+			alert3.setContentText("If this error continues, please contact support");
+			alert3.showAndWait();
 		}
 	}
 
 	/**
-	 * Method for changin password
+	 * Method for changing password
 	 */
 	@FXML
 	public void changePassword() {
