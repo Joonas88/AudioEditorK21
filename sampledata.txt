@@ -1,5 +1,8 @@
-New Sound(0);/home/kevin/projektit/audioeditor/src/audio/miksattuAudio.wav
-New Sound(1);/home/kevin/projektit/audioeditor/src/audio/test1.wav
-New Sound(2);/home/kevin/projektit/audioeditor/src/audio/jumalauta.wav
-New Sound(3);/home/kevin/projektit/audioeditor/src/audio/jumalauta.wav
-New Sound(4);/home/kevin/projektit/audioeditor/src/audio/miksattuAudio.wav
+New Sound(0);/home/kevin/projektit/audioeditor/src/audio/testiaani.wav
+New Sound(1);/home/kevin/projektit/audioeditor/src/audio/jumalauta.wav
+New Sound(2);/home/kevin/projektit/audioeditor/src/audio/test1.wav
+New Sound(3);/home/kevin/projektit/audioeditor/src/audio/test5.wav
+New Sound(4);/home/kevin/projektit/audioeditor/src/audio/test1.wav
+New Sound(5);/home/kevin/projektit/audioeditor/src/audio/ddd.wav
+New Sound(6);/home/kevin/projektit/audioeditor/src/audio/aaa.wav
+New Sound(7);/home/kevin/projektit/audioeditor/src/audio/test5.wav

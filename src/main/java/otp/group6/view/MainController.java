@@ -79,6 +79,7 @@ public class MainController implements Initializable {
 		controller.readSampleData();
 		checkSavedSamples();
 		soundboardInit();
+		applyBackgroundColor();
 	}
 
 	/**
@@ -888,6 +889,7 @@ public class MainController implements Initializable {
 				if (matcher.find()) {
 					controller.addSample(file.getAbsolutePath());
 					addButton(controller.getSampleArrayLength() - 1);
+					applyBackgroundColor();
 				}
 			}
 
@@ -1117,6 +1119,7 @@ public class MainController implements Initializable {
 	 * @author Kevin Akkoyun
 	 */
 	public void refreshButtons() {
+		applyBackgroundColor();
 		int length = controller.getSampleArrayLength();
 		for (int i = 0; i < length; i++) {
 			AnchorPane gridRoot = (AnchorPane) buttonGrid.getChildren().get(i);
@@ -1145,7 +1148,7 @@ public class MainController implements Initializable {
 			gridRoot.getChildren().add(newSoundButton);
 		}
 	}
-
+	
 	@FXML
 	public void removeAllCheck() {
 		Alert alert = new Alert(Alert.AlertType.NONE);
@@ -1185,7 +1188,7 @@ public class MainController implements Initializable {
 		}
 	}
 
-	/**
+	/**			
 	 * @author Kevin Akkoyun
 	 */
 	public void checkSavedSamples() {
@@ -1199,6 +1202,20 @@ public class MainController implements Initializable {
 
 	public void saveSamples() {
 		controller.saveSampleData();
+	}
+	
+	public void applyBackgroundColor(){
+		int length = controller.getSampleArrayLength();
+		for (int i = 0; i < length; i++) {
+			AnchorPane gridRoot = (AnchorPane) buttonGrid.getChildren().get(i);
+			AnchorPane root = (AnchorPane) gridRoot.getChildren().get(0);
+			if(i % 2 != 0) {
+				root.setStyle("-fx-background-color: lightgray;");
+			}
+			else {
+				root.setStyle("-fx-background-color: lightblue;");
+			}
+		}
 	}
 
 	/**
