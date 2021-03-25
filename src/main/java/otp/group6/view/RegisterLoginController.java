@@ -126,7 +126,7 @@ public class RegisterLoginController {
 		// System.out.println(username.getText().toString().length());// Poistettava
 		// System.out.println(password.getText());// Poistettava
 
-		if ((unisValid(username.getText()))) {
+		if ((unisValid(username.getText()))&&!(controller.chekcforUser(username.getText()))) {
 			// System.out.println("VAPAA"); // Poistettava
 			username.setStyle("-fx-text-fill: green; -fx-font-size: 16px;");
 			wuntooltip.hide();

@@ -110,11 +110,7 @@ public class UserSettingsController {
 			Stage stage = (Stage) closeButton.getScene().getWindow();
 			stage.close();
 		} else {
-			Alert alert3 = new Alert(AlertType.ERROR);
-			alert3.setTitle("Error!");
-			alert3.setHeaderText("Something went wrong saving mixer settings, please try again");
-			alert3.setContentText("If this error continues, please contact support");
-			alert3.showAndWait();
+
 		}
 	}
 

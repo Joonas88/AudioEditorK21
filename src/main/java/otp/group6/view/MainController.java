@@ -1174,7 +1174,7 @@ public class MainController implements Initializable {
 		controller.intializeDatabaseConnection();
 		if(controller.isConnected()) {
 			try {
-				FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\RegisterLoginView.fxml"));
+				FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/RegisterLoginView.fxml"));
 				Parent root1 = (Parent) fxmlLoader.load();
 				Stage stage = new Stage();
 				RegisterLoginController rlc = fxmlLoader.getController();
@@ -1198,7 +1198,7 @@ public class MainController implements Initializable {
 		controller.intializeDatabaseConnection();
 		if(controller.isConnected()) {
 			try {
-				FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\MixerSettingsView.fxml"));
+				FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/MixerSettingsView.fxml"));
 				Parent root1 = (Parent) fxmlLoader.load();
 				Stage stage = new Stage();
 				MixerSettingsController msc = fxmlLoader.getController();
@@ -1226,7 +1226,7 @@ public class MainController implements Initializable {
 		setlogUserIn();
 
 		try {
-			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\SaveMixerSettings.fxml"));
+			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/SaveMixerSettings.fxml"));
 			Parent root1 = (Parent) fxmlLoader.load();
 			SaveMixerSettingsController smsc = fxmlLoader.getController();
 			smsc.setMainController(this);
@@ -1250,7 +1250,7 @@ public class MainController implements Initializable {
 	 */
 	public void openSaveSelection() {
 		try {
-			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\SaveSelectionView.fxml"));
+			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/SaveSelectionView.fxml"));
 			Parent root1 = (Parent) fxmlLoader.load();
 			Stage stage = new Stage();
 			SaveSelectionController ssc = fxmlLoader.getController();
@@ -1272,7 +1272,7 @@ public class MainController implements Initializable {
 	 */
 	public void openLoadSelection() {
 		try {
-			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\LoadSelectionView.fxml"));
+			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/LoadSelectionView.fxml"));
 			Parent root1 = (Parent) fxmlLoader.load();
 			Stage stage = new Stage();
 			LoadSelectionController lsc = fxmlLoader.getController();
@@ -1293,7 +1293,7 @@ public class MainController implements Initializable {
 	 */
 	public void openUserSettings() {
 		try {
-			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\UserSettingsView.fxml"));
+			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/UserSettingsView.fxml"));
 			Parent root1 = (Parent) fxmlLoader.load();
 			Stage stage = new Stage();
 			UserSettingsController usc = fxmlLoader.getController();
@@ -1400,6 +1400,7 @@ public class MainController implements Initializable {
 		userMenuButton.setText(controller.loggedIn());
 		userMenuButton.setStyle("-fx-font-size: 10pt; -fx-text-fill:black;");
 		userMenuButton.getItems().addAll(menu1, menu2);
+		loggedinuser.setVisible(true);
 		loggedinuser.setText("Logged in as: ");
 		loggedinuser.setGraphic(userMenuButton);
 		loggedinuser.setContentDisplay(ContentDisplay.RIGHT);
@@ -1412,9 +1413,12 @@ public class MainController implements Initializable {
 	 */
 	public void setlogUserOut() {
 		controller.logoutUser();
-		loggedinuser.setText("");
-		loggedinuser.setGraphic(null);
+		userMenuButton.setText("");
+		userMenuButton.setStyle("");
+		userMenuButton.getItems().removeAll(menu1, menu2);
+		loggedinuser.setVisible(false);
 		userSettings.setVisible(false);
 		loginoption.setVisible(true);
+
 	}
 }
