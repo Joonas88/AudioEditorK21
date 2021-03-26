@@ -36,12 +36,10 @@ import otp.group6.controller.Controller;
 /**
  * Provides tools for basic audio recording
  * 
- * @author Kevin Akkoyun, Joonas Soininen, Onni Lukkarila
+ * @authors Onni Lukkarila, Kevin Akkoyun, Joonas Soininen
  * @version 0.1
  *
  */
-
-//
 
 public class AudioRecorder extends Thread {
 	private Controller controller;
@@ -95,6 +93,9 @@ public class AudioRecorder extends Thread {
 		this.targetFile = targetFile;
 	}
 
+	/**
+	 * Method to start recording your microphone
+	 */
 	public void recordAudio() {
 		try {
 			writer = new WaveformWriter(format, "src/audio/default.wav");
@@ -122,24 +123,18 @@ public class AudioRecorder extends Thread {
 
 	}
 
+	/**
+	 * Method to stop recording your microphone
+	 */
 	public void stopRecord() {
 		adp.stop();
 		System.out.println("Record duration: " + adp.secondsProcessed());
 		System.out.println("Recording stopped");
 	}
 
-	public void pauseRecord() {
-		try {
-			adp.wait();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void resumeRecord() {
-		adp.notify();
-	}
-
+	/**
+	 * Method for playing recorded file
+	 */
 	public void playAudio() {
 		if (adp != null) {
 			adp.stop();
@@ -193,6 +188,9 @@ public class AudioRecorder extends Thread {
 
 	}
 
+	/**
+	 * Method to stop playing audio
+	 */
 	public void stopAudio() {
 		if (adp != null) {
 			adp.stop();
@@ -202,6 +200,9 @@ public class AudioRecorder extends Thread {
 		}
 	}
 
+	/**
+	 * Method to pause playing audio
+	 */
 	public void pauseAudio() {
 		if (adp != null) {
 			secondsProcessed = adp.secondsProcessed();
@@ -210,6 +211,10 @@ public class AudioRecorder extends Thread {
 		}
 	}
 
+	/**
+	 * Method to play recorded file desired position
+	 * @param seconds
+	 */
 	public void playFromDesiredSec(double seconds) {
 		secondsProcessed = (float) seconds;
 		System.out.println(seconds);
@@ -218,6 +223,10 @@ public class AudioRecorder extends Thread {
 		}
 	}
 
+	/**
+	 * Method to save recorded file
+	 * @param path
+	 */
 	public void saveAudioFile(String path) {
 		File source = new File("src/audio/default.wav");
 		File dest = new File(path);
@@ -236,6 +245,9 @@ public class AudioRecorder extends Thread {
 		}
 	}
 
+	/**
+	 * Method to cancel the timer that shows the correct position to mediaplayerslider
+	 */
 	public void timerCancel() {
 		if (timer != null) {
 			timer.cancel();
@@ -244,19 +256,26 @@ public class AudioRecorder extends Thread {
 		}
 	}
 
-	public float getSecondsProcessed() {
-		return adp.secondsProcessed();
-	}
-
+	/**
+	 * Method that tells if mediaplayerslider has been pressed
+	 */
 	public void recorderSliderPressed() {
 		isPressed = true;
 		System.out.println("Slider pressed");
 	}
 
+	/**
+	 * Method to set the current position to mediaplayerslider
+	 * @param seconds
+	 */
 	private void setCurrentPositionToRecordFileDurationSlider(double seconds) {
 		controller.setCurrentValueToRecordFileDurationSlider(seconds);
 	}
 
+	/**
+	 * Method to return the default audio format, which the software uses
+	 * @return correct audio format
+	 */
 	public AudioFormat getDefaultAudioFormat() {
 		float sampleRate = 44100;
 		int sampleSizeBits = 16;

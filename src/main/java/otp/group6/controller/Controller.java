@@ -228,14 +228,6 @@ public class Controller {
 		recorder.stopRecord();
 	}
 
-	public void pauseRecord() {
-		recorder.pauseRecord();
-	}
-
-	public void resumeRecord() {
-		recorder.resumeRecord();
-	}
-
 	public void audioRecorderPlayAudio() {
 		recorder.playAudio();
 	}
@@ -248,16 +240,8 @@ public class Controller {
 		recorder.pauseAudio();
 	}
 
-	public float getSecondsRecorded(float secondsRecorded) {
-		return recorder.getSecondsProcessed();
-	}
-
 	public void recorderPlayFromDesiredSec(double seconds) {
 		recorder.playFromDesiredSec(seconds);
-	}
-
-	public float getRecorderSecondsProcessed() {
-		return recorder.getSecondsProcessed();
 	}
 
 	public void recorderTimerCancel() {

@@ -253,7 +253,7 @@
                               </ButtonBar>
                               <Slider fx:id="sliderRecordedFileDuration" blockIncrement="1.0" disable="true" layoutX="82.0" layoutY="158.0" prefHeight="16.0" prefWidth="427.0" AnchorPane.bottomAnchor="46.0" AnchorPane.leftAnchor="82.0" AnchorPane.rightAnchor="111.0" AnchorPane.topAnchor="158.0" />
                               <Text fx:id="textRecordFileDuration" disable="true" layoutX="446.0" layoutY="183.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0:00 / 0:00" />
-                              <ToggleButton fx:id="recorderButtonPauseRecord" disable="true" layoutX="136.0" layoutY="79.0" mnemonicParsing="false" onAction="#recorderPauseRecord" text="Play/Pause" />
+                              <ToggleButton fx:id="recorderButtonPauseRecord" disable="true" layoutX="136.0" layoutY="79.0" mnemonicParsing="false" text="Play/Pause" />
                               <ToggleButton layoutX="430.0" layoutY="79.0" mnemonicParsing="false" onAction="#recordAudioToggle" text="Record" />
                               <Text fx:id="textRecordingDuration" layoutX="498.0" layoutY="96.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" wrappingWidth="22.13671875" />
                            </children>

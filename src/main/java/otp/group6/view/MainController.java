@@ -740,14 +740,6 @@ public class MainController implements Initializable {
 
 	}
 
-	public void recorderPauseRecord() {
-		if (recorderButtonPauseRecord.isPressed() == false) {
-			controller.pauseRecord();
-		} else {
-			controller.resumeRecord();
-		}
-	}
-
 	@FXML
 	public void recorderPlayAudio() {
 		controller.audioRecorderPlayAudio();
@@ -779,10 +771,6 @@ public class MainController implements Initializable {
 		textRecordFileDuration.setDisable(false);
 		recorderButtonPlay.setDisable(false);
 		recorderButtonSave.setDisable(false);
-	}
-
-	private void updateRecorderSlider() {
-		sliderRecordedFileDuration.setValue(controller.getRecorderSecondsProcessed());
 	}
 
 	public void recorderSliderPressed() {
