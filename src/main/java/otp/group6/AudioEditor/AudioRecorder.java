@@ -34,7 +34,7 @@ import javafx.concurrent.Task;
 import otp.group6.controller.Controller;
 
 /**
- * Provides tools for basic audio recording
+ * Provides tools for basic audio recording and playback of that recorded file
  * 
  * @authors Onni Lukkarila, Kevin Akkoyun, Joonas Soininen
  * @version 0.1
