@@ -192,6 +192,7 @@ public class MainController implements Initializable {
 	private String audioFileDurationString = "0:00";
 	private String audioFileProcessedTimeString = "0:00";
 	private DecimalFormat decimalFormat = new DecimalFormat("#0.00"); // kaikki luvut kahden desimaalin tarkkuuteen
+	private Boolean testFilterOn = false;
 
 	private Boolean isRecording = false;
 	private Timer timer;
@@ -211,8 +212,8 @@ public class MainController implements Initializable {
 		buttonPause.setDisable(false);
 		buttonStop.setDisable(false);
 		paneControl.setDisable(true);
-		buttonSaveSettings.setDisable(true);
-		buttonLoadSettings.setDisable(true);
+		//buttonSaveSettings.setDisable(true);
+		//buttonLoadSettings.setDisable(true);
 		paneLowPass.setDisable(true);
 	}
 
@@ -223,8 +224,8 @@ public class MainController implements Initializable {
 		buttonPause.setDisable(true);
 		buttonStop.setDisable(true);
 		paneControl.setDisable(false);
-		buttonSaveSettings.setDisable(false);
-		buttonLoadSettings.setDisable(false);
+		//buttonSaveSettings.setDisable(false);
+		//buttonLoadSettings.setDisable(false);
 		paneLowPass.setDisable(false);
 	}
 
@@ -235,29 +236,33 @@ public class MainController implements Initializable {
 		buttonPause.setDisable(true);
 		buttonStop.setDisable(false);
 		paneControl.setDisable(false);
-		buttonSaveSettings.setDisable(false);
-		buttonLoadSettings.setDisable(false);
+		//buttonSaveSettings.setDisable(false);
+		//buttonLoadSettings.setDisable(false);
 		paneLowPass.setDisable(false);
 	}
 
 	@FXML
 	public void soundManipulatorTestFilter() {
-		if (toggleButtonTestFilter.isSelected() == true) {
+		if (!testFilterOn) {
+			System.out.println(toggleButtonTestFilter.isSelected());
 			controller.testFilter();
 			buttonMixerFileOpener.setDisable(true);
 			buttonMixerStartRecording.setDisable(true);
-			buttonSaveSettings.setDisable(true);
-			buttonLoadSettings.setDisable(true);
+			//buttonSaveSettings.setDisable(true);
+			//buttonLoadSettings.setDisable(true);
 			paneMixerAudioPlayer.setDisable(true);
 			paneLowPass.setDisable(true);
+			testFilterOn = true;
 		} else {
 			controller.testFilter();
+			System.out.println(toggleButtonTestFilter.isSelected());
 			buttonMixerFileOpener.setDisable(false);
 			buttonMixerStartRecording.setDisable(false);
-			buttonSaveSettings.setDisable(false);
-			buttonLoadSettings.setDisable(false);
+			//buttonSaveSettings.setDisable(false);
+			//buttonLoadSettings.setDisable(false);
 			paneMixerAudioPlayer.setDisable(false);
 			paneLowPass.setDisable(false);
+			testFilterOn = false;
 		}
 
 	}
@@ -275,8 +280,8 @@ public class MainController implements Initializable {
 				fullPath = fullPath + ".wav";
 			}
 			controller.soundManipulatorSaveFile(fullPath);
+			System.out.println("saved to " + fullPath);
 		} catch (Exception e) {
-
 		}
 	}
 
@@ -731,8 +736,6 @@ public class MainController implements Initializable {
 					double audioFileLengthInSec = file.length() / (format.getFrameSize() * format.getFrameRate());
 					setMaxValueToRecordDurationSlider(audioFileLengthInSec);
 					audioFileDurationString = secondsToMinutesAndSeconds(audioFileLengthInSec);
-					textAudioFileDuration.setText(": / " + audioFileDurationString);
-
 					textRecordFileDuration.setText("0:00 / " + audioFileDurationString);
 				} catch (Exception e) {
 
@@ -742,14 +745,6 @@ public class MainController implements Initializable {
 			}
 		}
 
-	}
-
-	public void recorderPauseRecord() {
-		if (recorderButtonPauseRecord.isPressed() == false) {
-			controller.pauseRecord();
-		} else {
-			controller.resumeRecord();
-		}
 	}
 
 	@FXML
@@ -783,10 +778,6 @@ public class MainController implements Initializable {
 		textRecordFileDuration.setDisable(false);
 		recorderButtonPlay.setDisable(false);
 		recorderButtonSave.setDisable(false);
-	}
-
-	private void updateRecorderSlider() {
-		sliderRecordedFileDuration.setValue(controller.getRecorderSecondsProcessed());
 	}
 
 	public void recorderSliderPressed() {
@@ -1243,41 +1234,48 @@ public class MainController implements Initializable {
 	 * Method opens a new scene Login and Register form
 	 */
 	public void openLoginRegister() {
-		try {
-			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\RegisterLoginView.fxml"));
-			Parent root1 = (Parent) fxmlLoader.load();
-			Stage stage = new Stage();
-			RegisterLoginController rlc = fxmlLoader.getController();
-			rlc.setMainController(this);
-			stage.initModality(Modality.APPLICATION_MODAL);
-			stage.initStyle(StageStyle.UNDECORATED);
-			stage.setTitle("Login or Register");
-			stage.setScene(new Scene(root1));
-			stage.show();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		controller.intializeDatabaseConnection();
+		if(controller.isConnected()) {
+			try {
+				FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\RegisterLoginView.fxml"));
+				Parent root1 = (Parent) fxmlLoader.load();
+				Stage stage = new Stage();
+				RegisterLoginController rlc = fxmlLoader.getController();
+				rlc.setMainController(this);
+				stage.initModality(Modality.APPLICATION_MODAL);
+				stage.initStyle(StageStyle.UNDECORATED);
+				stage.setTitle("Login or Register");
+				stage.setScene(new Scene(root1));
+				stage.show();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}		
+
 	}
 
 	/**
 	 * Method opens a new scene, the mixer settings from the database
 	 */
 	public void openMixerSettings() {
-
-		try {
-			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\MixerSettingsView.fxml"));
-			Parent root1 = (Parent) fxmlLoader.load();
-			Stage stage = new Stage();
-			MixerSettingsController msc = fxmlLoader.getController();
-			msc.setMainController(this);
-			stage.initModality(Modality.APPLICATION_MODAL);
-			stage.initStyle(StageStyle.UNDECORATED);
-			stage.setTitle("Mixer Settings Loader");
-			stage.setScene(new Scene(root1));
-			stage.show();
-		} catch (Exception e) {
-			e.printStackTrace();
+		controller.intializeDatabaseConnection();
+		if(controller.isConnected()) {
+			try {
+				FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("\\MixerSettingsView.fxml"));
+				Parent root1 = (Parent) fxmlLoader.load();
+				Stage stage = new Stage();
+				MixerSettingsController msc = fxmlLoader.getController();
+				msc.setMainController(this);
+				stage.initModality(Modality.APPLICATION_MODAL);
+				stage.initStyle(StageStyle.UNDECORATED);
+				stage.setTitle("Mixer Settings Loader");
+				stage.setScene(new Scene(root1));
+				stage.show();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
+
 	}
 
 	public Controller getController() {

@@ -130,46 +130,69 @@ public class SaveMixerSettingsController {
 	 */
 	public void saveMix() throws SQLException {
 
-		if (mixName.getText().length() < 1) {
-			mixNameField.setWrapText(true);
-			mixNameField.setTextOverrun(OverrunStyle.ELLIPSIS);
-			mixName.focusedProperty().addListener(new ChangeListener<Boolean>() {
-				@Override
-				public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-					if (newValue) {
-						mixNameField.show(mixName, //
-								// popup tooltip on the right, you can adjust these values for different
-								// positions
-								mixName.getScene().getWindow().getX() + mixName.getLayoutX() + mixName.getWidth() - 220, //
-								mixName.getScene().getWindow().getY() + mixName.getLayoutY() + mixName.getHeight()
-										+ 200);
-					} else {
-						mixNameField.hide();
+		if (!(checkEmpty(mixName.getText()))) {
+			if (mixName.getText().length() < 1) {
+				mixNameField.setWrapText(true);
+				mixNameField.setTextOverrun(OverrunStyle.ELLIPSIS);
+				mixName.focusedProperty().addListener(new ChangeListener<Boolean>() {
+					@Override
+					public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+						if (newValue) {
+							mixNameField.show(mixName, //
+									// popup tooltip on the right, you can adjust these values for different
+									// positions
+									mixName.getScene().getWindow().getX() + mixName.getLayoutX() + mixName.getWidth() - 220, //
+									mixName.getScene().getWindow().getY() + mixName.getLayoutY() + mixName.getHeight()
+											+ 200);
+						} else {
+							mixNameField.hide();
+						}
 					}
-				}
-			});
+				});
 
-		} else {
-			if (controller.createMix(mixName.getText(), description.getText(), pitch, echo, decay, gain, flangerLenght,
-					wetness, lfoFrequency, lowPass)) {
-				Alert alert = new Alert(AlertType.INFORMATION);
-				alert.setTitle("Information!");
-				alert.setHeaderText("Mixer settings saved!");
-				alert.setContentText("Mixer settings have been saved succesfully to the database");
-				alert.showAndWait();
-				Stage stage = (Stage) closeButton.getScene().getWindow();
-				stage.close();
 			} else {
-				Alert alert = new Alert(AlertType.ERROR);
-				alert.setTitle("Error!");
-				alert.setHeaderText("Something went wrong savin mixer settings, please try again");
-				alert.setContentText("If this error continues, please contact support");
-				alert.showAndWait();
+				if (controller.createMix(mixName.getText(), description.getText(), pitch, echo, decay, gain, flangerLenght,
+						wetness, lfoFrequency, lowPass)) {
+					Alert alert = new Alert(AlertType.INFORMATION);
+					alert.setTitle("Information!");
+					alert.setHeaderText("Mixer settings saved!");
+					alert.setContentText("Mixer settings have been saved succesfully to the database");
+					alert.showAndWait();
+					Stage stage = (Stage) closeButton.getScene().getWindow();
+					stage.close();
+				} else {
+					Alert alert = new Alert(AlertType.ERROR);
+					alert.setTitle("Error!");
+					alert.setHeaderText("Something went wrong saving mixer settings, please try again");
+					alert.setContentText("If this error continues, please contact support");
+					alert.showAndWait();
+				}
+
 			}
-
+		} else {
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("Error!");
+			alert.setHeaderText("Name can not be empty or white space!");
+			alert.setContentText("Pelase insert a name :)");
+			alert.showAndWait();
 		}
-
+		
 	}
+	
+	
+	/**
+	 * Checks if string contains only whitespaces
+	 * 
+	 * @author Kevin Akkoyun
+	 * @param input -- String to be checked
+	 * @return returns true if string contains only whitespaces, otherwise returns
+	 *         false
+	 */
+	public boolean checkEmpty(String input) {
+		input = input.trim();
+		return input.isEmpty();
+	}
+
 
 	/**
 	 * Method handles closing scene windows.

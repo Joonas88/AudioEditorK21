@@ -36,11 +36,36 @@ public class UserSettingsController {
 	@FXML
 	private TextField password;
 	@FXML
+	private TextField showOldPW;
+	@FXML
 	private TextField npassword;
+	@FXML
+	private TextField showNewPW;
 
 	final Tooltip pwtooltip = new Tooltip("Passwords must contain 8-20 characters.\n"
 			+ "Must contain one uppercase letter\n" + "Must contain at least one number");
 
+	@FXML
+	public void showPW() {
+		password.setVisible(false);
+		showOldPW.setVisible(true);
+		showOldPW.setEditable(true);
+		showOldPW.setText(password.getText());
+		
+		npassword.setVisible(false);
+		showNewPW.setVisible(true);
+		showNewPW.setEditable(true);
+		showNewPW.setText(npassword.getText());
+	}
+	
+	@FXML
+	public void hidePW() {
+		password.setVisible(true);
+		showOldPW.setVisible(false);
+		npassword.setVisible(true);
+		showNewPW.setVisible(false);
+	}
+	
 	/**
 	 * Method to get mainController
 	 * 
@@ -105,7 +130,7 @@ public class UserSettingsController {
 		} else {
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.setTitle("Error!");
-			alert.setHeaderText("Something went wrong savin mixer settings, please try again");
+			alert.setHeaderText("Something went wrong changing password, please try again");
 			alert.setContentText("If this error continues, please contact support");
 			alert.showAndWait();
 		}

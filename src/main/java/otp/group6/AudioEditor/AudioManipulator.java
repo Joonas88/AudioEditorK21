@@ -250,7 +250,6 @@ public class AudioManipulator {
 		}
 		isPlaying = true;
 		createAudioProcessors();
-
 		adp.addAudioProcessor(new AudioProcessor() {
 			@Override
 			public void processingFinished() {
@@ -335,7 +334,6 @@ public class AudioManipulator {
 		playbackStartingPoint = 0;
 		kokonaiskesto = 0;
 		isPlaying = false;
-
 	}
 
 	// Timer metodit
