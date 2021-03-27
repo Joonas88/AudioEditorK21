@@ -896,7 +896,7 @@ public class MainController implements Initializable {
 	public void addButton(int index) {
 
 		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(MainApplication.class.getResource("SoundBoardButton.fxml"));
+		loader.setLocation(MainApplication.class.getResource("/SoundBoardButton.fxml"));
 
 		AnchorPane gridRoot = (AnchorPane) buttonGrid.getChildren().get(index);
 		Node soundButtonRoot;
@@ -1223,8 +1223,7 @@ public class MainController implements Initializable {
 	 * Opens a new scene where the mixer settings can be saved to the database
 	 */
 	public void openMixerSave() {
-		setlogUserIn();
-
+		
 		try {
 			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/SaveMixerSettings.fxml"));
 			Parent root1 = (Parent) fxmlLoader.load();
@@ -1347,7 +1346,7 @@ public class MainController implements Initializable {
 	/**
 	 * Method to store mixer settings locally
 	 */
-	public void soundManipulatorSaveMixerSettings() {
+	public void saveMixerSettingsLocally() {
 		FileChooser fileChooser = new FileChooser();
 		ExtensionFilter filter = new ExtensionFilter("TXT files (*.txt)", "*.txt");
 		fileChooser.getExtensionFilters().add(filter);
@@ -1398,7 +1397,7 @@ public class MainController implements Initializable {
 			setlogUserOut();
 		});
 		userMenuButton.setText(controller.loggedIn());
-		userMenuButton.setStyle("-fx-font-size: 10pt; -fx-text-fill:black;");
+		userMenuButton.setStyle("-fx-font-size: 10pt; -fx-text-fill:black;"); //MUOTOILU CSSSSSÄÄÄÄN
 		userMenuButton.getItems().addAll(menu1, menu2);
 		loggedinuser.setVisible(true);
 		loggedinuser.setText("Logged in as: ");

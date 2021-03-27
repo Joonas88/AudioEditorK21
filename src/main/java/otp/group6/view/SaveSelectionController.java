@@ -49,22 +49,28 @@ public class SaveSelectionController {
 	 */
 	public void checkForloggedin() {
 		controller.intializeDatabaseConnection();
-		if (!(controller.loggedIn() == " ")) {
-			mc.openMixerSave();
-			Stage stage = (Stage) closeButton.getScene().getWindow();
-			stage.close();
-		} else {
-			mc.openLoginRegister();
+		if (controller.isConnected()) {
+			if (!(controller.loggedIn() == " ")) {
+				mc.openMixerSave();
+				Stage stage = (Stage) closeButton.getScene().getWindow();
+				stage.close();
+			} else {
+				mc.openLoginRegister();
+				Stage stage = (Stage) closeButton.getScene().getWindow();
+				stage.close();
+			}	
+		} else  {
 			Stage stage = (Stage) closeButton.getScene().getWindow();
 			stage.close();
 		}
+		
 	}
 
 	/**
 	 * Method for storing settings on users computer
 	 */
 	public void saveLocal() {
-		mc.soundManipulatorSaveMixerSettings();
+		mc.saveMixerSettingsLocally();
 		Stage stage = (Stage) closeButton.getScene().getWindow();
 		stage.close();
 	}
