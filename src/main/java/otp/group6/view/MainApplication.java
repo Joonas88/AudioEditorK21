@@ -51,15 +51,6 @@ public class MainApplication extends Application {
 				System.exit(0);
 			}
 		});
-
-		/*
-		 * //ALKUP Parent root =
-		 * FXMLLoader.load(getClass().getResource("MainView.fxml")); Scene scene = new
-		 * Scene(root); primaryStage.setScene(scene);
-		 * 
-		 * primaryStage.show(); //
-		 */
-
 	}
 
 	/**
@@ -77,7 +68,6 @@ public class MainApplication extends Application {
 			primaryStage.show();
 
 			mainController = loader.getController();
-
 			mainController.initializeMixer();
 
 		} catch (IOException e) {

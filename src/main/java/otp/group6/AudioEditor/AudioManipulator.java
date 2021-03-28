@@ -1,8 +1,11 @@
 package otp.group6.AudioEditor;
 
 import java.io.File;
+import java.text.DecimalFormat;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.Formatter.BigDecimalLayoutForm;
+
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -48,21 +51,34 @@ public class AudioManipulator {
 	private Timer timer;
 	private TimerTask task;
 
-	// Original values
+	// Starting values for variables that change when user changes mixer values
 	private float sampleRate;
 	private double pitchFactor = 1;
 	private double gain = 1;
-	private double echoLength = 0.0001; // Cannot be zero
+	private double echoLength = 1;
 	private double decay = 0;
-	private double flangerLength = 0.0001; // Cannot be zero
+	private double flangerLength = 0.01;
 	private double wetness = 0;
-	private double lfo = 0;
+	private double lfo = 5;
 	private float lowPass = 44100;
 
+	// Original values causing no effect to audio
+	final private double ogPitchFactor = 1;
+	final private double ogGain = 1;
+	final private double ogEchoLength = 1;
+	final private double ogDecay = 0;
+	private double ogFlangerLength = 0.01;
+	private double ogWetness = 0;
+	private double ogLfo = 5;
+	private float ogLowPass = 44100;
+
+	private double audioFileLengthInSec;
 	private float playbackStartingPoint = (float) 0.0;// pause-nappia varten
-	private float kokonaiskesto;
+	private float currentProgress;
 	private boolean isPlaying = false;
 	private boolean isTestingFilter = false;
+
+	private boolean isSaved = false;
 
 	// Konstruktori
 	public AudioManipulator(Controller controller) {
@@ -70,7 +86,7 @@ public class AudioManipulator {
 	}
 
 	public void setAudioSourceFile(File file) {
-		try {// Haetaan tiedosto parametrin perusteella
+		try {
 			this.file = file.getAbsoluteFile();
 
 			// Converts AudioInputStream to Tarsos compatible JVMAudioInputSteam
@@ -78,21 +94,21 @@ public class AudioManipulator {
 			audioInputStreamForTarsos = new JVMAudioInputStream(
 					AudioSystem.getAudioInputStream(getAudioFormat(), audioInputStream));
 
-			// formaatti ja sampleRate instanssimuuttujiin
 			this.format = audioInputStreamForTarsos.getFormat();
 			this.sampleRate = format.getSampleRate();
 
+			// Create new WaveformSimilarityBasedOverLapAdd and new AudioDispatcher
 			wsola = new WaveformSimilarityBasedOverlapAdd(Parameters.musicDefaults(pitchFactor, sampleRate));
 			adp = new AudioDispatcher(audioInputStreamForTarsos, wsola.getInputBufferSize(), wsola.getOverlap());
 
 			wsola.setDispatcher(adp);
 			adp.addAudioProcessor(wsola);
 
-			// Pitch-arvon muuttaja
+			// Pitch effect aka rate transposer
 			rateTransposer = new RateTransposer(pitchFactor);
 			adp.addAudioProcessor(rateTransposer);
 
-			// Kaikuefekti
+			// Delay effect = echo
 			delayEffect = new DelayEffect(echoLength, decay, sampleRate);
 			adp.addAudioProcessor(delayEffect);
 
@@ -100,7 +116,7 @@ public class AudioManipulator {
 			gainProcessor = new GainProcessor(gain);
 			adp.addAudioProcessor(gainProcessor);
 
-			// Flangerefekti
+			// Flanger
 			flangerEffect = new FlangerEffect(flangerLength, wetness, sampleRate, (lfo));
 			adp.addAudioProcessor(flangerEffect);
 
@@ -112,17 +128,16 @@ public class AudioManipulator {
 
 		} catch (LineUnavailableException e) {
 		} catch (NullPointerException e) {
-			System.out.println("Tiedostoa ei valittu");
 		} catch (Exception e) {
 		}
 	}
 
 	// SOUND EFFECT METHODS
+
+	// Setters for sound effect values
 	public void setPitchFactor(double pitchFactor) {
-		// Vaihdetaan arvot Rate Transposeriin..
 		this.pitchFactor = pitchFactor;
 		rateTransposer.setFactor(pitchFactor);
-		// ..ja WaveFormSimilarityOverlappAddiin
 		wsola.setParameters(WaveformSimilarityBasedOverlapAdd.Parameters.musicDefaults(pitchFactor, sampleRate));
 	}
 
@@ -179,6 +194,28 @@ public class AudioManipulator {
 			liveDispatcher.addAudioProcessor(lowPassSP);
 		}
 
+	}
+
+	// Methods for making effects inactive, in other words restoring their values to
+	// original ones so they cause no effect
+	public void disablePitchEffect() {
+		rateTransposer.setFactor(ogPitchFactor);
+		wsola.setParameters(WaveformSimilarityBasedOverlapAdd.Parameters.musicDefaults(ogPitchFactor, sampleRate));
+	}
+
+	public void disableGainEffect() {
+		gainProcessor.setGain(ogGain);
+	}
+
+	public void disableDelayEffect() {
+		delayEffect.setEchoLength(ogEchoLength);
+		delayEffect.setDecay(ogDecay);
+	}
+
+	public void disableFlangerEffect() {
+		flangerEffect.setFlangerLength(ogFlangerLength);
+		flangerEffect.setWet(ogWetness);
+		flangerEffect.setLFOFrequency(ogLfo);
 	}
 
 	public void testFilter() {
@@ -239,31 +276,42 @@ public class AudioManipulator {
 				e.printStackTrace();
 			}
 		}
-
 	}
 
-	// MEDIAPLAYER METHODS
+	////////////////////////// MEDIAPLAYER METHODS
+
 	public void playAudio() {
+		System.out.println(audioFileLengthInSec);
 		// Stops audio dispatcher if already playing
 		if (adp != null) {
 			adp.stop();
 		}
+
 		isPlaying = true;
 		createAudioProcessors();
 
 		adp.addAudioProcessor(new AudioProcessor() {
+
 			@Override
 			public void processingFinished() {
+
+				System.out.println("kokonaiskesto" + audioFileLengthInSec);
+				System.out.println("biisiä toistettiin " + currentProgress);
+				if ((audioFileLengthInSec - currentProgress) < 0.1) {
+					System.out.println("biisi päästiin loppuun");
+					audioFileReachedEnd();
+				}
 				task.cancel();
 				timer.cancel();
 			}
 
 			@Override
 			public boolean process(AudioEvent audioEvent) {
+				currentProgress = adp.secondsProcessed();
+				System.out.println(currentProgress);
 				return false;
 			}
 		});
-
 		Thread t = new Thread(adp);
 		t.start();
 
@@ -279,14 +327,11 @@ public class AudioManipulator {
 		task = new TimerTask() {
 			@Override
 			public void run() {
-				kokonaiskesto = playbackStartingPoint;
-				kokonaiskesto += (float) (audioPlayer.getMicroSecondPosition() / 1000000.0);
-				controller.setCurrentValueToAudioDurationSlider(kokonaiskesto);
-				controller.setCurrentPositionToAudioDurationText(kokonaiskesto);
+				controller.setCurrentValueToAudioDurationSlider(currentProgress);
+				controller.setCurrentPositionToAudioDurationText(currentProgress);
 			}
 		};
-		timer.schedule(task, 100, 500); // käynnistää timerin, joka suorittaa taskin 0,5 sekunnin välein alkaen kohdasta
-										// 0s
+		timer.schedule(task, 100, 500);
 
 	}
 
@@ -315,50 +360,95 @@ public class AudioManipulator {
 	}
 
 	public void pauseAudio() {
-		if (task != null) {
-			task.cancel();
-			timer.cancel();
-		}
+		/*
+		 * if (task != null) { task.cancel(); timer.cancel(); }
+		 */
 		if (adp != null) {
 			// kohta mihin jäätiin
 			isPlaying = false;
-			System.out.println(kokonaiskesto);
+			System.out.println(currentProgress);
 			playbackStartingPoint = adp.secondsProcessed();
 			adp.stop();
 		}
 
 	}
 
-	public void resetMediaPlayer() {
-		controller.setCurrentValueToAudioDurationSlider(0.0);
-		controller.setCurrentPositionToAudioDurationText(0.0);
+	public void audioFileReachedEnd() {
+		controller.soundManipulatorAudioFileReachedEnd();
 		playbackStartingPoint = 0;
-		kokonaiskesto = 0;
+		currentProgress = 0;
+		isPlaying = false;
+	}
+
+	public void resetMediaPlayer() {
+		playbackStartingPoint = 0;
+		currentProgress = 0;
 		isPlaying = false;
 
 	}
 
 	// Timer metodit
+
 	public void timerCancel() {
 		task.cancel();
 		timer.cancel();
 		timer.purge();
 	}
 
-	public void timerWait() {
-		try {
-			task.wait();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public void setAudioFileLengthInSec(double audioFileLengthInSec) {
+		this.audioFileLengthInSec = audioFileLengthInSec;
+
+	}
+
+	
+	// Methods for enabling/disabling effects
+
+	public void usePitchProcessor(boolean trueOrFalse) {
+		if (trueOrFalse == true) {
+			setPitchFactor(this.pitchFactor);
+		} else if (trueOrFalse == false) {
+			disablePitchEffect();
 		}
 	}
 
-	public void timerNotify() {
-		timer.notify();
+	public void useGainProcessor(boolean trueOrFalse) {
+		if (trueOrFalse == true) {
+			setGain(gain);
+		} else {
+			disableGainEffect();
+		}
+
 	}
 
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	public void useDelayProcessor(boolean trueOrFalse) {
+		if (trueOrFalse == true) {
+			setDecay(decay);
+			setEchoLength(echoLength);
+		} else {
+			disableDelayEffect();
+		}
+
+	}
+
+	public void useFlangerProcessor(boolean trueOrFalse) {
+		if (trueOrFalse == true) {
+			setWetness(wetness);
+			setFlangerLength(flangerLength);
+			setLFO(lfo);
+		} else {
+			disableFlangerEffect();
+		}
+
+	}
+
+	public void useLowPassProcessor(boolean trueOrFalse) {
+		if (trueOrFalse == true) {
+
+		} else {
+
+		}
+
+	}
 
 	public void saveFile(String path) {
 		createAudioProcessors();
@@ -383,7 +473,9 @@ public class AudioManipulator {
 		try {
 			// WaveformSimilarityBasedOverlapAdd pitää tiedoston samanmittaisena
 			// pitch-arvosta riippumatta
+
 			wsola = new WaveformSimilarityBasedOverlapAdd(Parameters.musicDefaults(pitchFactor, sampleRate));
+
 			audioInputStream = AudioSystem.getAudioInputStream(file);
 			audioInputStreamForTarsos = new JVMAudioInputStream(
 					AudioSystem.getAudioInputStream(getAudioFormat(), audioInputStream));
@@ -393,6 +485,7 @@ public class AudioManipulator {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
 		// Pitch-arvon muuttaja
 		rateTransposer = new RateTransposer(pitchFactor);
 		adp.addAudioProcessor(rateTransposer);
@@ -430,4 +523,5 @@ public class AudioManipulator {
 		AudioFormat format = new AudioFormat(sampleRate, sampleSizeBits, channels, signed, bigEndian);
 		return format;
 	}
+
 }
