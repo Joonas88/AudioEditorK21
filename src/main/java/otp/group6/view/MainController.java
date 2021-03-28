@@ -189,7 +189,6 @@ public class MainController implements Initializable {
 
 	private Boolean isRecording = false;
 	private Timer timer;
-	private float recordedFileProcessed;
 
 	public void initializeMixer() {
 		initializeSlidersAndTextFields();
