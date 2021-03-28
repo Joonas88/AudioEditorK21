@@ -82,6 +82,18 @@ public class Controller {
 	public void soundManipulatorOpenFile(File file) {
 		soundManipulator.setAudioSourceFile(file);
 	}
+	
+	public void soundManipulatorOpenRecordedFile() {
+		mainController.soundManipulatorOpenRecordedFile();
+	}
+	
+	public void soundManipulatorStartRecord() {
+		soundManipulator.recordAudio();
+	}
+	
+	public void soundManipulatorStopRecord() {
+		soundManipulator.stopRecord();
+	}
 
 	public void soundManipulatorPlayAudio() {
 		soundManipulator.playAudio();
@@ -124,7 +136,6 @@ public class Controller {
 		soundManipulator.timerCancel();
 	}
 
-	////////////////////////////////////////////////////////
 	public void soundManipulatorUsePitchProcessor(boolean trueOrFalse) {
 		soundManipulator.usePitchProcessor(trueOrFalse);
 
@@ -292,7 +303,15 @@ public class Controller {
 	}
 
 	public void setCurrentValueToRecordFileDurationSlider(Double currentSeconds) {
-		mainController.setCurrentValueToRecordDuratinSlider(currentSeconds);
+		mainController.setCurrentValueToRecordDurationSlider(currentSeconds);
+	}
+	
+	public void recorderSetAudioFileDuration(float audioFileDuration) {
+		recorder.setAudioFileDuration(audioFileDuration);
+	}
+	
+	public void recorderAudioFileReachedEnd() {
+		mainController.recorderAudioFileReachedEnd();
 	}
 
 	// AudioRecorder methods stop

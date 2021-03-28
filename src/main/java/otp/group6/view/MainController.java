@@ -145,8 +145,6 @@ public class MainController implements Initializable {
 	@FXML
 	private Button buttonMixerFileOpener;
 	@FXML
-	private Button buttonMixerStartRecording;
-	@FXML
 	private Button buttonMixerResetSliders;
 
 	// Toggle buttons
@@ -162,6 +160,8 @@ public class MainController implements Initializable {
 	private ToggleButton toggleButtonFlanger;
 	@FXML
 	private ToggleButton toggleButtonLowPass;
+	@FXML
+	private ToggleButton toggleButtonMixerStartRecording;
 
 	// Panes
 	@FXML
@@ -253,14 +253,14 @@ public class MainController implements Initializable {
 			System.out.println(toggleButtonTestFilter.isSelected());
 			controller.testFilter();
 			buttonMixerFileOpener.setDisable(true);
-			buttonMixerStartRecording.setDisable(true);
+			toggleButtonMixerStartRecording.setDisable(true);
 			paneMixerAudioPlayer.setDisable(true);
 			paneLowPass.setDisable(true);
 		} else {
 			controller.testFilter();
 			System.out.println(toggleButtonTestFilter.isSelected());
 			buttonMixerFileOpener.setDisable(false);
-			buttonMixerStartRecording.setDisable(false);
+			toggleButtonMixerStartRecording.setDisable(false);
 			paneMixerAudioPlayer.setDisable(false);
 			paneLowPass.setDisable(false);
 		}
@@ -344,8 +344,50 @@ public class MainController implements Initializable {
 		} catch (Exception e) {
 		}
 	}
-
 	
+	public void soundManipulatorOpenRecordedFile() {
+		try {
+			File file = new File("src/audio/mixer_default.wav").getAbsoluteFile();
+			file.deleteOnExit();
+			soundManipulatorResetMediaPlayer();
+			controller.soundManipulatorOpenFile(file);
+			
+			// Length of the audio file in seconds (file.length / (format.frameSize *
+			// format.frameRate))
+			AudioFormat format = AudioSystem.getAudioFileFormat(file.getAbsoluteFile()).getFormat();
+			double audioFileLengthInSec = file.length() / (format.getFrameSize() * format.getFrameRate());
+			controller.setAudioFileLengthInSec(audioFileLengthInSec);
+			audioFileDurationString = secondsToMinutesAndSeconds(audioFileLengthInSec);
+
+			setMaxValueToAudioDurationSlider(audioFileLengthInSec);
+			textAudioFileDuration.setText(audioFileProcessedTimeString + " / " + audioFileDurationString);
+
+			// Shows the name of the file in textSelectedFile element
+			textSelectedFile.setText("Selected file:\nYour recording");
+
+			// Enables all sliders and audio player
+			enableMixerSlidersAndAudioPlayer();
+
+		} catch (Exception e) {
+		}
+	}
+	
+	@FXML
+	public void handleMixerRecordButton() {
+		if(toggleButtonMixerStartRecording.isSelected() == true) {
+			controller.soundManipulatorStartRecord();
+			paneMixerAudioPlayer.setDisable(true);
+			paneMixerSliders.setDisable(true);
+			toggleButtonMixerStartRecording.setText("Stop recording");
+		}
+		else {
+			controller.soundManipulatorStopRecord();
+			paneMixerAudioPlayer.setDisable(false);
+			paneMixerSliders.setDisable(false);
+			toggleButtonMixerStartRecording.setText("Start recording");
+		}
+	}
+
 	
 	// Methods for getting TextField input values
 	
@@ -795,6 +837,8 @@ public class MainController implements Initializable {
 	@FXML
 	private Button recorderButtonSave;
 	@FXML
+	private ToggleButton recorderToggleButtonStartRecording;
+	@FXML
 	private ToggleButton recorderButtonPauseRecord;
 	@FXML
 	private Text textRecordFileDuration;
@@ -803,14 +847,21 @@ public class MainController implements Initializable {
 	@FXML
 	private Slider sliderRecordedFileDuration;
 	
-	private Boolean isRecording = false;
 	private Timer timer;
 	
 
 	@FXML
 	public void recordAudioToggle() {
-
-		if (!isRecording) {
+		if (recorderToggleButtonStartRecording.isSelected()) {
+			
+			textRecordFileDuration.setDisable(true);
+			sliderRecordedFileDuration.setDisable(true);
+			recorderButtonPause.setDisable(true);
+			recorderButtonPlay.setDisable(true);
+			recorderButtonStop.setDisable(true);
+			recorderButtonSave.setDisable(true);
+			recorderToggleButtonStartRecording.setText("Stop");
+			
 			controller.recordAudio();
 			timer = new Timer();
 			TimerTask task = new TimerTask() {
@@ -822,24 +873,22 @@ public class MainController implements Initializable {
 					i++;
 				}
 			};
-
 			timer.schedule(task, 0, 1000);
-			isRecording = true;
-
 		} else {
 			timer.cancel();
 			textRecordingDuration.setText("0");
 			controller.stopRecord();
-			isRecording = false;
 			enableRecorderPlayer();
+			recorderToggleButtonStartRecording.setText("Record");
 			File file = null;
-			file = new File("src/audio/default.wav").getAbsoluteFile();
+			file = new File("src/audio/recorder_default.wav").getAbsoluteFile();
 			file.deleteOnExit();
 
 			if (file != null) {
 				try {
 					AudioFormat format = AudioSystem.getAudioFileFormat(file.getAbsoluteFile()).getFormat();
-					double audioFileLengthInSec = file.length() / (format.getFrameSize() * format.getFrameRate());
+					float audioFileLengthInSec = file.length() / (format.getFrameSize() * format.getFrameRate());
+					controller.recorderSetAudioFileDuration(audioFileLengthInSec);
 					setMaxValueToRecordDurationSlider(audioFileLengthInSec);
 					audioFileDurationString = secondsToMinutesAndSeconds(audioFileLengthInSec);
 					textRecordFileDuration.setText("0:00 / " + audioFileDurationString);
@@ -930,11 +979,19 @@ public class MainController implements Initializable {
 		sliderRecordedFileDuration.setMax(audioFileLengthInSec);
 	}
 
-	public void setCurrentValueToRecordDuratinSlider(double currentSeconds) {
+	public void setCurrentValueToRecordDurationSlider(double currentSeconds) {
 		sliderRecordedFileDuration.setValue(currentSeconds);
 		audioFileProcessedTimeString = secondsToMinutesAndSeconds(sliderRecordedFileDuration.getValue());
 		textRecordFileDuration.setText(audioFileProcessedTimeString + " / " + audioFileDurationString);
 	}
+	
+	public void recorderAudioFileReachedEnd() {
+		setCurrentValueToRecordDurationSlider(0);
+		recorderButtonPlay.setDisable(false);
+		recorderButtonPause.setDisable(true);
+		recorderButtonStop.setDisable(true);
+	}
+	
 
 	//// RECORDER METHODS END
 	//// HERE////////////////////////////////////////////////////////////////

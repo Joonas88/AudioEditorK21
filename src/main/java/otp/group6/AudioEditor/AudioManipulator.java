@@ -12,6 +12,9 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.TargetDataLine;
+
+import org.junit.validator.PublicClassValidator;
+
 import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.AudioEvent;
 import be.tarsos.dsp.AudioProcessor;
@@ -33,11 +36,13 @@ public class AudioManipulator {
 	private Controller controller;
 
 	private File file;
+	private TargetDataLine line;
 	private AudioDispatcher adp;
 	private AudioDispatcher liveDispatcher;
 	private AudioInputStream audioInputStream;
 	private JVMAudioInputStream audioInputStreamForTarsos;
-	private TarsosDSPAudioFormat format;
+	private AudioFormat format;
+	private TarsosDSPAudioFormat tarsosFormat;
 	private AudioPlayer audioPlayer;
 	private WaveformWriter writer;
 	private WaveformSimilarityBasedOverlapAdd wsola;
@@ -94,8 +99,8 @@ public class AudioManipulator {
 			audioInputStreamForTarsos = new JVMAudioInputStream(
 					AudioSystem.getAudioInputStream(getAudioFormat(), audioInputStream));
 
-			this.format = audioInputStreamForTarsos.getFormat();
-			this.sampleRate = format.getSampleRate();
+			this.tarsosFormat = audioInputStreamForTarsos.getFormat();
+			this.sampleRate = tarsosFormat.getSampleRate();
 
 			// Create new WaveformSimilarityBasedOverLapAdd and new AudioDispatcher
 			wsola = new WaveformSimilarityBasedOverlapAdd(Parameters.musicDefaults(pitchFactor, sampleRate));
@@ -124,7 +129,7 @@ public class AudioManipulator {
 			lowPassSP = new LowPassSP(lowPass, sampleRate);
 			adp.addAudioProcessor(lowPassSP);
 
-			audioPlayer = new AudioPlayer(format);
+			audioPlayer = new AudioPlayer(tarsosFormat);
 
 		} catch (LineUnavailableException e) {
 		} catch (NullPointerException e) {
@@ -240,8 +245,8 @@ public class AudioManipulator {
 				JVMAudioInputStream audioStream = new JVMAudioInputStream(ais);
 				//
 				// formaatti ja sampleRate instanssimuuttujiin
-				this.format = audioStream.getFormat();
-				this.sampleRate = format.getSampleRate();
+				this.tarsosFormat = audioStream.getFormat();
+				this.sampleRate = tarsosFormat.getSampleRate();
 
 				wsola = new WaveformSimilarityBasedOverlapAdd(
 						Parameters.musicDefaults(pitchFactor, audioStream.getFormat().getSampleRate()));
@@ -256,7 +261,7 @@ public class AudioManipulator {
 				flangerEffect = new FlangerEffect(flangerLength, wetness, sampleRate, lfo);
 				liveDispatcher.addAudioProcessor(flangerEffect);
 				lowPassSP = new LowPassSP(lowPass, sampleRate);
-				audioPlayer = new AudioPlayer(format);
+				audioPlayer = new AudioPlayer(tarsosFormat);
 
 				liveDispatcher.addAudioProcessor(rateTransposer);
 				liveDispatcher.addAudioProcessor(delayEffect);
@@ -450,7 +455,7 @@ public class AudioManipulator {
 
 	public void saveFile(String path) {
 		createAudioProcessors();
-		writer = new WaveformWriter(format, path);
+		writer = new WaveformWriter(tarsosFormat, path);
 		adp.removeAudioProcessor(audioPlayer);
 		adp.addAudioProcessor(writer);
 		try {
@@ -459,6 +464,39 @@ public class AudioManipulator {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void recordAudio() {
+		try {
+			format = getAudioFormat();
+			writer = new WaveformWriter(format, "src/audio/mixer_default.wav");
+			System.out.println(format);
+			
+			DataLine.Info info = new DataLine.Info(TargetDataLine.class, format);
+			line = (TargetDataLine) AudioSystem.getLine(info);
+			line.open(format);
+			System.out.println(line.isOpen());
+			line.start();
+
+			audioInputStream = new AudioInputStream(line);
+			audioInputStreamForTarsos = new JVMAudioInputStream(audioInputStream);
+
+			wsola = new WaveformSimilarityBasedOverlapAdd(
+					Parameters.musicDefaults(pitchFactor, format.getSampleRate()));
+			adp = new AudioDispatcher(audioInputStreamForTarsos, wsola.getInputBufferSize(), wsola.getOverlap());
+			adp.addAudioProcessor(writer);
+			Thread t = new Thread(adp);
+			t.start();
+			System.out.println("Recording started");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+	
+	public void stopRecord() {
+		adp.stop();
+		controller.soundManipulatorOpenRecordedFile();
 	}
 
 	// PRIVATE METHODS
@@ -505,7 +543,7 @@ public class AudioManipulator {
 		adp.addAudioProcessor(lowPassSP);
 
 		try {
-			audioPlayer = new AudioPlayer(format);
+			audioPlayer = new AudioPlayer(tarsosFormat);
 			adp.addAudioProcessor(audioPlayer);
 		} catch (Exception e) {
 			e.printStackTrace();
