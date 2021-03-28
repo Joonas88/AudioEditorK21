@@ -78,7 +78,7 @@ public class Controller {
 		soundManipulator.setLowPass(lowPass);
 	}
 
-	// Mixer general methods
+	// GENERAL MIXER METHODS
 	public void soundManipulatorOpenFile(File file) {
 		soundManipulator.setAudioSourceFile(file);
 	}
@@ -106,13 +106,48 @@ public class Controller {
 	public void testFilter() {
 		soundManipulator.testFilter();
 	}
+	
+	public void setAudioFileLengthInSec(double audioFileLengthInSec) {
+		soundManipulator.setAudioFileLengthInSec(audioFileLengthInSec);
+		
+	}
 
 	public void soundManipulatorResetMediaPlayer() {
 		soundManipulator.resetMediaPlayer();
 	}
+	
+	public void soundManipulatorAudioFileReachedEnd() {
+		mainController.soundManipulatorAudioFileReachedEnd();
+	}
 
 	public void timerCancel() {
 		soundManipulator.timerCancel();
+	}
+
+	////////////////////////////////////////////////////////
+	public void soundManipulatorUsePitchProcessor(boolean trueOrFalse) {
+		soundManipulator.usePitchProcessor(trueOrFalse);
+
+	}
+
+	public void soundManipulatorUseDelayProcessor(boolean trueOrFalse) {
+		soundManipulator.useDelayProcessor(trueOrFalse);
+
+	}
+
+	public void soundManipulatorUseGainProcessor(boolean trueOrFalse) {
+		soundManipulator.useGainProcessor(trueOrFalse);
+
+	}
+
+	public void soundManipulatorUseFlangerProcessor(boolean trueOrFalse) {
+		soundManipulator.useFlangerProcessor(trueOrFalse);
+
+	}
+
+	public void soundManipulatorUseLowPassProcessor(boolean trueOrFalse) {
+		soundManipulator.useLowPassProcessor(trueOrFalse);
+
 	}
 
 	// FROM SOUNDMANIPULATOR TO VIEW
@@ -141,7 +176,7 @@ public class Controller {
 	 * @param currentSeconds
 	 */
 	public void setCurrentPositionToAudioDurationText(double currentSeconds) {
-		mainController.setCurrentPositionToAudioDurationText(currentSeconds);
+		mainController.setCurrentValueToAudioDurationText(currentSeconds);
 	}
 
 	public void setDisableMixerSliders(boolean trueOrFalse) {
@@ -321,4 +356,6 @@ public class Controller {
 		return audioDAO.isHasconnected();
 	}
 	// AudioCloudDAO methods stop
+
+	
 }

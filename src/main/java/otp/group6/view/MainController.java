@@ -15,7 +15,8 @@ import java.util.regex.Pattern;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.UnsupportedAudioFileException;
+
+import be.tarsos.dsp.StopAudioProcessor;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
@@ -75,17 +76,8 @@ public class MainController implements Initializable {
 		checkSavedSamples();
 	}
 
-	/**
-	 * FXML element variables
-	 */
-	@FXML
-	AnchorPane mainContainer, soundboardContainer;
-	@FXML
-	Button newSoundButton;
-	@FXML
-	GridPane buttonGrid;
-
 ////// MIXER //////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Sliders
 	@FXML
 	private Slider sliderPitch;
 	@FXML
@@ -104,8 +96,8 @@ public class MainController implements Initializable {
 	private Slider sliderLowPass;
 	@FXML
 	private Slider sliderAudioFileDuration;
-	@FXML
-	private Slider sliderRecordedFileDuration;
+
+	// TextFields connected to sliders
 	@FXML
 	private TextField textFieldPitch;
 	@FXML
@@ -122,18 +114,14 @@ public class MainController implements Initializable {
 	private TextField textFieldLfo;
 	@FXML
 	private TextField textFieldLowPass;
+
+	// Text/label elements
 	@FXML
-	private Text textSelectedFile;
+	private Label textSelectedFile;
 	@FXML
 	private Text textAudioFileDuration;
-	@FXML
-	private Text textRecordFileDuration;
-	@FXML
-	private Text textRecordingDuration;
-	@FXML
-	private GridPane paneMixerSliders;
-	@FXML
-	private AnchorPane paneMixerAudioPlayer;
+
+	// Buttons
 	@FXML
 	private Button buttonPlay;
 	@FXML
@@ -141,33 +129,15 @@ public class MainController implements Initializable {
 	@FXML
 	private Button buttonStop;
 	@FXML
-	private Button recorderButtonPlay;
-	@FXML
-	private Button recorderButtonPause;
-	@FXML
-	private Button recorderButtonStop;
-	@FXML
-	private Button recorderButtonSave;
-	@FXML
-	private ToggleButton recorderButtonPauseRecord;
-	@FXML
 	private Button buttonInfoPitch;
 	@FXML
 	private Button buttonInfoGain;
 	@FXML
-	private Button buttonInfoEchoLength;
+	private Button buttonInfoEcho;
 	@FXML
-	private Button buttonInfoDecay;
-	@FXML
-	private Button buttonInfoFlangerLength;
-	@FXML
-	private Button buttonInfoWetness;
-	@FXML
-	private Button buttonInfoLfo;
+	private Button buttonInfoFlanger;
 	@FXML
 	private Button buttonInfoLowPass;
-	@FXML
-	private AnchorPane paneControl;
 	@FXML
 	private Button buttonSaveSettings;
 	@FXML
@@ -177,19 +147,54 @@ public class MainController implements Initializable {
 	@FXML
 	private Button buttonMixerStartRecording;
 	@FXML
+	private Button buttonMixerResetSliders;
+
+	// Toggle buttons
+	@FXML
 	private ToggleButton toggleButtonTestFilter;
+	@FXML
+	private ToggleButton toggleButtonPitch;
+	@FXML
+	private ToggleButton toggleButtonGain;
+	@FXML
+	private ToggleButton toggleButtonEcho;
+	@FXML
+	private ToggleButton toggleButtonFlanger;
+	@FXML
+	private ToggleButton toggleButtonLowPass;
+
+	// Panes
+	@FXML
+	private GridPane paneMixerSliders;
+	@FXML
+	private AnchorPane paneMixerAudioPlayer;
+	@FXML
+	private AnchorPane paneMixerMainControls;
+	@FXML
+	private AnchorPane panePitch;
+	@FXML
+	private AnchorPane paneDecay;
+	@FXML
+	private AnchorPane paneEchoLength;
+	@FXML
+	private AnchorPane paneWetness;
+	@FXML
+	private AnchorPane paneFlangerLength;
+	@FXML
+	private AnchorPane paneLfo;
 	@FXML
 	private AnchorPane paneLowPass;
 
 	// Muuttujat tiedoston kokonaiskestolle ja toistetulle ajalle
 	private String audioFileDurationString = "0:00";
 	private String audioFileProcessedTimeString = "0:00";
+
+	// TODO HOX TÄMÄN LOKALISOINTI
 	private DecimalFormat decimalFormat = new DecimalFormat("#0.00"); // kaikki luvut kahden desimaalin tarkkuuteen
-	private Boolean testFilterOn = false;
 
-	private Boolean isRecording = false;
-	private Timer timer;
-
+	/*
+	 * 
+	 */
 	public void initializeMixer() {
 		initializeSlidersAndTextFields();
 		setTooltips();
@@ -197,68 +202,89 @@ public class MainController implements Initializable {
 	}
 
 	// Methods for buttons
+	
+	/*
+	 * 
+	 */
 	@FXML
 	public void soundManipulatorPlayAudio() {
 		controller.soundManipulatorPlayAudio();
 		buttonPlay.setDisable(true);
 		buttonPause.setDisable(false);
 		buttonStop.setDisable(false);
-		paneControl.setDisable(true);
-		//buttonSaveSettings.setDisable(true);
-		//buttonLoadSettings.setDisable(true);
+		paneMixerMainControls.setDisable(true);
 		paneLowPass.setDisable(true);
 	}
-
-	@FXML
-	public void soundManipulatorStopAudio() {
-		controller.soundManipulatorStopAudio();
-		buttonPlay.setDisable(false);
-		buttonPause.setDisable(true);
-		buttonStop.setDisable(true);
-		paneControl.setDisable(false);
-		//buttonSaveSettings.setDisable(false);
-		//buttonLoadSettings.setDisable(false);
-		paneLowPass.setDisable(false);
-	}
-
+	
+	
+	/*
+	 * 
+	 */
 	@FXML
 	public void soundManipulatorPauseAudio() {
 		controller.soundManipulatorPauseAudio();
 		buttonPlay.setDisable(false);
 		buttonPause.setDisable(true);
 		buttonStop.setDisable(false);
-		paneControl.setDisable(false);
-		//buttonSaveSettings.setDisable(false);
-		//buttonLoadSettings.setDisable(false);
+		paneMixerMainControls.setDisable(false);
+		paneLowPass.setDisable(false);
+	}
+	
+	/*
+	 * 
+	 */
+	@FXML
+	public void soundManipulatorStopAudio() {
+		controller.soundManipulatorStopAudio();
+		buttonPlay.setDisable(false);
+		buttonPause.setDisable(true);
+		buttonStop.setDisable(true);
+		paneMixerMainControls.setDisable(false);
 		paneLowPass.setDisable(false);
 	}
 
+	
+	/*
+	 * 
+	 */
 	@FXML
 	public void soundManipulatorTestFilter() {
-		if (!testFilterOn) {
+		if (toggleButtonTestFilter.isSelected() == true) {
 			System.out.println(toggleButtonTestFilter.isSelected());
 			controller.testFilter();
 			buttonMixerFileOpener.setDisable(true);
 			buttonMixerStartRecording.setDisable(true);
-			//buttonSaveSettings.setDisable(true);
-			//buttonLoadSettings.setDisable(true);
 			paneMixerAudioPlayer.setDisable(true);
 			paneLowPass.setDisable(true);
-			testFilterOn = true;
 		} else {
 			controller.testFilter();
 			System.out.println(toggleButtonTestFilter.isSelected());
 			buttonMixerFileOpener.setDisable(false);
 			buttonMixerStartRecording.setDisable(false);
-			//buttonSaveSettings.setDisable(false);
-			//buttonLoadSettings.setDisable(false);
 			paneMixerAudioPlayer.setDisable(false);
 			paneLowPass.setDisable(false);
-			testFilterOn = false;
 		}
 
 	}
+	
+	/*
+	 * 
+	 */
+	public void soundManipulatorAudioFileReachedEnd() {
+		audioFileProcessedTimeString = secondsToMinutesAndSeconds(0);
+		textAudioFileDuration.setText(audioFileProcessedTimeString + " / " + audioFileDurationString);
+		sliderAudioFileDuration.setValue(0);
+		buttonPlay.setDisable(false);
+		buttonPause.setDisable(true);
+		buttonStop.setDisable(true);
+		paneMixerMainControls.setDisable(false);
+		paneLowPass.setDisable(false);
+	}
 
+	
+	/*
+	 * 
+	 */
 	@FXML
 	public void soundManipulatorSaveMixedFile() {
 		FileChooser fileChooser = new FileChooser();
@@ -277,11 +303,15 @@ public class MainController implements Initializable {
 		}
 	}
 
+	
+	/*
+	 * 
+	 */
 	@FXML
 	public void soundManipulatorOpenFile() {
 		try {
 			Pattern pattern = Pattern.compile("(\\.wav)$", Pattern.CASE_INSENSITIVE);
-
+			
 			// Avataan file AudioFileHandlerilla ja välitetään file kontrollerille
 			File file = AudioFileHandler.openFileExplorer(mainContainer.getScene().getWindow());
 			Matcher matcher = pattern.matcher(file.getName());
@@ -295,18 +325,18 @@ public class MainController implements Initializable {
 				alert.setContentText("Please select only WAV files");
 				alert.showAndWait();
 			}
-
 			// Length of the audio file in seconds (file.length / (format.frameSize *
 			// format.frameRate))
 			AudioFormat format = AudioSystem.getAudioFileFormat(file.getAbsoluteFile()).getFormat();
 			double audioFileLengthInSec = file.length() / (format.getFrameSize() * format.getFrameRate());
+			controller.setAudioFileLengthInSec(audioFileLengthInSec);
 			audioFileDurationString = secondsToMinutesAndSeconds(audioFileLengthInSec);
 
 			setMaxValueToAudioDurationSlider(audioFileLengthInSec);
 			textAudioFileDuration.setText(audioFileProcessedTimeString + " / " + audioFileDurationString);
 
 			// Shows the name of the file in textSelectedFile element
-			textSelectedFile.setText("Selected file: " + file.getName());
+			textSelectedFile.setText("Selected file:\n" + file.getName());
 
 			// Enables all sliders and audio player
 			enableMixerSlidersAndAudioPlayer();
@@ -315,12 +345,19 @@ public class MainController implements Initializable {
 		}
 	}
 
+	
+	
 	// Methods for getting TextField input values
+	
+	/*
+	 * 
+	 */
+	@FXML
 	private void getTextFieldPitch() {
 		String text = textFieldPitch.getText();
 		try {
 			double number = Double.parseDouble(text);
-			if (number <= 4.0 && number >= 0.1) {
+			if (number >= sliderPitch.getMin() && number <= sliderPitch.getMax()) {
 				controller.soundManipulatorSetPitchFactor(number);
 				sliderPitch.setValue(number);
 			} else {
@@ -331,11 +368,15 @@ public class MainController implements Initializable {
 		}
 	}
 
+	/*
+	 * 
+	 */
+	@FXML
 	private void getTextFieldGain() {
 		String text = textFieldGain.getText();
 		try {
 			double number = Double.parseDouble(text);
-			if (number >= 0 && number <= 5) {
+			if (number >= sliderGain.getMin() && number <= sliderGain.getMax()) {
 				controller.soundManipulatorSetGain(number);
 				sliderGain.setValue(number);
 			} else {
@@ -346,11 +387,15 @@ public class MainController implements Initializable {
 		}
 	}
 
+	/*
+	 * 
+	 */
+	@FXML
 	private void getTextFieldEchoLength() {
 		String text = textFieldEchoLength.getText();
 		try {
 			double number = Double.parseDouble(text);
-			if (number >= 0 && number <= 5) {
+			if (number >= sliderEchoLength.getMin() && number <= sliderEchoLength.getMax()) {
 				controller.soundManipulatorSetEchoLength(number);
 				sliderEchoLength.setValue(number);
 			} else {
@@ -361,11 +406,15 @@ public class MainController implements Initializable {
 		}
 	}
 
+	/*
+	 * 
+	 */
+	@FXML
 	private void getTextFieldDecay() {
 		String text = textFieldDecay.getText();
 		try {
 			double number = Double.parseDouble(text);
-			if (number >= 0 && number <= 1) {
+			if (number >= sliderDecay.getMin() && number <= sliderDecay.getMax()) {
 				controller.soundManipulatorSetDecay(number);
 				sliderDecay.setValue(number);
 			} else {
@@ -376,11 +425,15 @@ public class MainController implements Initializable {
 		}
 	}
 
+	/*
+	 * 
+	 */
+	@FXML
 	private void getTextFieldFlangerLength() {
 		String text = textFieldFlangerLength.getText();
 		try {
 			double number = Double.parseDouble(text);
-			if (number >= 0 && number <= 1) {
+			if (number >= sliderFlangerLength.getMin() && number <= sliderFlangerLength.getMax()) {
 				controller.soundManipulatorSetFlangerLength(number);
 				sliderFlangerLength.setValue(number);
 			} else {
@@ -391,11 +444,12 @@ public class MainController implements Initializable {
 		}
 	}
 
+	@FXML
 	private void getTextFieldWetness() {
 		String text = textFieldWetness.getText();
 		try {
 			double number = Double.parseDouble(text);
-			if (number >= 0 && number <= 1) {
+			if (number >= sliderWetness.getMin() && number <= sliderWetness.getMax()) {
 				controller.soundManipulatorSetWetness(number);
 				sliderWetness.setValue(number);
 			} else {
@@ -406,11 +460,12 @@ public class MainController implements Initializable {
 		}
 	}
 
+	@FXML
 	private void getTextFieldLfo() {
 		String text = textFieldLfo.getText();
 		try {
 			double number = Double.parseDouble(text);
-			if (number >= 0 && number <= 100) {
+			if (number >= sliderLfoFrequency.getMin() && number <= sliderLfoFrequency.getMax()) {
 				controller.soundManipulatorSetLFO(number);
 				sliderLfoFrequency.setValue(number);
 			} else {
@@ -421,11 +476,12 @@ public class MainController implements Initializable {
 		}
 	}
 
+	@FXML
 	private void getTextFieldLowPass() {
 		String text = textFieldLowPass.getText();
 		try {
 			double number = Double.parseDouble(text);
-			if (number >= 0 && number <= 44100) {
+			if (number >= sliderLowPass.getMin() && number <= sliderLowPass.getMax()) {
 				controller.soundManipulatorSetLowPass((float) number);
 				sliderLowPass.setValue(number);
 			} else {
@@ -447,16 +503,50 @@ public class MainController implements Initializable {
 		audioFileProcessedTimeString = secondsToMinutesAndSeconds(sliderAudioFileDuration.getValue());
 		textAudioFileDuration.setText(audioFileProcessedTimeString + " / " + audioFileDurationString);
 	}
+	
+	
+	//Methods for toggle buttons
+	
+	public void handleToggleButtonPitch() {
+		if (toggleButtonPitch.isSelected()) {
+			controller.soundManipulatorUsePitchProcessor(true);
+			sliderPitch.setDisable(false);
+			textFieldPitch.setDisable(false);
+		} else if (!toggleButtonPitch.isSelected()) {
+			controller.soundManipulatorUsePitchProcessor(false);
+			sliderPitch.setDisable(true);
+			textFieldPitch.setDisable(true);
+		}
+	}
+
+	public void handleToggleButtonEcho() {
+		controller.soundManipulatorUseDelayProcessor(toggleButtonEcho.isSelected());
+
+	}
+
+	public void handleToggleButtonGain() {
+		controller.soundManipulatorUseGainProcessor(toggleButtonGain.isSelected());
+
+	}
+
+	public void handleToggleButtonFlanger() {
+		controller.soundManipulatorUseFlangerProcessor(toggleButtonFlanger.isSelected());
+
+	}
+
+	public void handleToggleButtonLowPass() {
+		controller.soundManipulatorUseLowPassProcessor(toggleButtonLowPass.isSelected());
+	}
 
 	@FXML
 	public void soundManipulatorResetAllSliders() {
 		sliderPitch.setValue(1);
 		sliderGain.setValue(1);
-		sliderEchoLength.setValue(0);
+		sliderEchoLength.setValue(1);
 		sliderDecay.setValue(0);
-		sliderFlangerLength.setValue(0);
+		sliderFlangerLength.setValue(0.01);
 		sliderWetness.setValue(0);
-		sliderLfoFrequency.setValue(0);
+		sliderLfoFrequency.setValue(5);
 		sliderLowPass.setValue(44100);
 	}
 
@@ -464,26 +554,35 @@ public class MainController implements Initializable {
 		controller.soundManipulatorResetMediaPlayer();
 	}
 
-	// Audio file sliderin metodit (controller kutsuu)
+	
+	/*
+	 * 
+	 */
 	public void setMaxValueToAudioDurationSlider(double audioFileLengthInSec) {
 		sliderAudioFileDuration.setMax(audioFileLengthInSec);
 	}
 
+	/*
+	 * 
+	 */
 	public void setCurrentValueToAudioDurationSlider(double currentSeconds) {
 		sliderAudioFileDuration.setValue(currentSeconds);
-		if (currentSeconds == sliderAudioFileDuration.getMax()) {
-			buttonPlay.setDisable(false);
-			buttonStop.setDisable(true);
-			buttonPause.setDisable(true);
-		}
 	}
 
-	public void setCurrentPositionToAudioDurationText(double currentSeconds) {
+	/*
+	 *
+	 * 
+	 */
+	public void setCurrentValueToAudioDurationText(double currentSeconds) {
 		audioFileProcessedTimeString = secondsToMinutesAndSeconds(currentSeconds);
 		textAudioFileDuration.setText(audioFileProcessedTimeString + " / " + audioFileDurationString);
 	}
 
-	// Apumetodeja
+	/*
+	 * @ author Roosa Laukkanen
+	 * 
+	 * Converts seconds to minutes and seconds. Returns String in XX:XX format
+	 */
 	private String secondsToMinutesAndSeconds(double seconds) {
 		int numberOfminutes = (int) (seconds / 60);
 		int numberOfSeconds = (int) (seconds % 60);
@@ -503,6 +602,12 @@ public class MainController implements Initializable {
 		paneMixerSliders.setDisable(trueOrFalse);
 	}
 
+	/*
+	 * @author Roosa Laukkanen
+	 * 
+	 * Sets value property listeners to every slider and sets event listeners to
+	 * input text fields
+	 */
 	private void initializeSlidersAndTextFields() {
 		// Pitch slider
 		sliderPitch.valueProperty().addListener(new ChangeListener<Number>() {
@@ -597,11 +702,11 @@ public class MainController implements Initializable {
 					audioFileProcessedTimeString = secondsToMinutesAndSeconds(sliderAudioFileDuration.getValue());
 					textAudioFileDuration.setText(audioFileProcessedTimeString + " / " + audioFileDurationString);
 				}
-
 			}
 		});
 
-		//
+		//On key methods for every text field
+		
 		textFieldPitch.setOnKeyPressed(event -> {
 			if (event.getCode() == KeyCode.ENTER) {
 				getTextFieldPitch();
@@ -652,46 +757,55 @@ public class MainController implements Initializable {
 	}
 
 	/*
+	 * @author Roosa Laukkanen
+	 * 
 	 * Sets a tooltip to every info button
 	 */
 	private void setTooltips() {
 		final Tooltip tooltipPitch = new Tooltip();
-		tooltipPitch.setText("Pitch");
+		tooltipPitch.setText("Pitch muuttaa kappaleen sävelkorkeutta");
 
 		final Tooltip tooltipGain = new Tooltip();
-		tooltipGain.setText("Gain");
+		tooltipGain.setText("Gain muuttaa kappaleen äänenvoimakkuutta");
 
-		final Tooltip tooltipEchoLength = new Tooltip();
-		tooltipEchoLength.setText("Echo");
+		final Tooltip tooltipEcho = new Tooltip();
+		tooltipEcho.setText("Echoon kuuluu decay ja length");
 
-		final Tooltip tooltipDecay = new Tooltip();
-		tooltipDecay.setText("Decay");
-
-		final Tooltip tooltipFlangerLength = new Tooltip();
-		tooltipFlangerLength.setText("Flanger Length");
-
-		final Tooltip tooltipWetness = new Tooltip();
-		tooltipWetness.setText("Wet");
-
-		final Tooltip tooltipLfo = new Tooltip();
-		tooltipLfo.setText("LFO");
+		final Tooltip tooltipFlanger = new Tooltip();
+		tooltipFlanger.setText("Flangeriin kuuluu wetness, length ja lfo");
 
 		final Tooltip tooltipLowPass = new Tooltip();
-		tooltipLowPass.setText("Low Pass");
+		tooltipLowPass.setText("Low Pass on ihan :) ominaisuus");
 
 		buttonInfoPitch.setTooltip(tooltipPitch);
 		buttonInfoGain.setTooltip(tooltipGain);
-		buttonInfoEchoLength.setTooltip(tooltipEchoLength);
-		buttonInfoDecay.setTooltip(tooltipDecay);
-		buttonInfoFlangerLength.setTooltip(tooltipFlangerLength);
-		buttonInfoWetness.setTooltip(tooltipWetness);
-		buttonInfoLfo.setTooltip(tooltipLfo);
 		buttonInfoLowPass.setTooltip(tooltipLowPass);
 	}
 
 	//// MIXER METHODS END HERE
 
 	// RECORDER METHODS START HERE/////////////////////////////////////
+	
+	@FXML
+	private Button recorderButtonPlay;
+	@FXML
+	private Button recorderButtonPause;
+	@FXML
+	private Button recorderButtonStop;
+	@FXML
+	private Button recorderButtonSave;
+	@FXML
+	private ToggleButton recorderButtonPauseRecord;
+	@FXML
+	private Text textRecordFileDuration;
+	@FXML
+	private Text textRecordingDuration;
+	@FXML
+	private Slider sliderRecordedFileDuration;
+	
+	private Boolean isRecording = false;
+	private Timer timer;
+	
 
 	@FXML
 	public void recordAudioToggle() {
@@ -824,11 +938,21 @@ public class MainController implements Initializable {
 
 	//// RECORDER METHODS END
 	//// HERE////////////////////////////////////////////////////////////////
-	// Used in play button methods
-	public Button lastButton;
 
+	/**
+	 * FXML element variables
+	 */
+	@FXML
+	AnchorPane mainContainer, soundboardContainer;
+	@FXML
+	Button newSoundButton;
+	@FXML
+	GridPane buttonGrid;
 	@FXML
 	Button clearButton;
+
+	// Used in play button methods
+	public Button lastButton;
 
 	/**
 	 * Used to edit existing sample in the sample array Opens File explorer and
