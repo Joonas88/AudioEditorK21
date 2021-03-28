@@ -83,12 +83,12 @@
                               <Text fx:id="textAudioFileDuration" layoutX="747.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0:00 / 0:00" AnchorPane.bottomAnchor="78.0" AnchorPane.leftAnchor="747.0" AnchorPane.rightAnchor="113.6201171875" AnchorPane.topAnchor="6.0" />
                               <ButtonBar layoutX="286.0" layoutY="50.0" prefHeight="40.0" prefWidth="294.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="286.0" AnchorPane.rightAnchor="284.0" AnchorPane.topAnchor="50.0">
                                  <buttons>
-                                    <Button fx:id="buttonPause" disable="true" mnemonicParsing="false" onAction="#soundManipulatorPauseAudio" text="Pause" />
-                                    <Button fx:id="buttonPlay" mnemonicParsing="false" onAction="#soundManipulatorPlayAudio" text="Play" />
-                                    <Button fx:id="buttonStop" disable="true" mnemonicParsing="false" onAction="#soundManipulatorStopAudio" text="Stop" />
+                                    <Button fx:id="buttonPause" disable="true" mnemonicParsing="false" onAction="#handleAudioManipulatorPauseButton" text="Pause" />
+                                    <Button fx:id="buttonPlay" mnemonicParsing="false" onAction="#handleAudioManipulatorPlayButton" text="Play" />
+                                    <Button fx:id="buttonStop" disable="true" mnemonicParsing="false" onAction="#handleAudioManipulatorStopButton" text="Stop" />
                                  </buttons>
                               </ButtonBar>
-                              <Button layoutX="724.0" layoutY="57.0" mnemonicParsing="false" onAction="#soundManipulatorSaveMixedFile" prefHeight="30.0" prefWidth="118.0" text="Save Mixed File" AnchorPane.bottomAnchor="17.0" AnchorPane.leftAnchor="724.0" AnchorPane.rightAnchor="28.0" AnchorPane.topAnchor="57.0" />
+                              <Button layoutX="724.0" layoutY="57.0" mnemonicParsing="false" onAction="#handleAudioManipulatorSaveMixedFileButton" prefHeight="30.0" prefWidth="118.0" text="Save Mixed File" AnchorPane.bottomAnchor="17.0" AnchorPane.leftAnchor="724.0" AnchorPane.rightAnchor="28.0" AnchorPane.topAnchor="57.0" />
                            </children>
                         </AnchorPane>
                         <GridPane layoutX="350.0" layoutY="169.0" prefHeight="412.0" prefWidth="900.0" AnchorPane.bottomAnchor="125.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="15.0">
@@ -188,7 +188,7 @@
                                     </GridPane>
                                     <ButtonBar layoutX="256.0" layoutY="367.0" prefHeight="40.0" prefWidth="438.0">
                                       <buttons>
-                                          <Button fx:id="buttonMixerResetSliders" mnemonicParsing="false" onAction="#soundManipulatorResetAllSliders" prefHeight="25.0" prefWidth="107.0" text="Reset Sliders" />
+                                          <Button fx:id="buttonMixerResetSliders" mnemonicParsing="false" onAction="#audioManipulatorResetAllSliders" prefHeight="25.0" prefWidth="107.0" text="Reset Sliders" />
                                           <Button fx:id="buttonLoadSettings" mnemonicParsing="false" onAction="#openLoadSelection" prefWidth="114.0" text="Load Settings" />
                                           <Button fx:id="buttonSaveSettings" mnemonicParsing="false" onAction="#openSaveSelection" text="Save Settings" />
                                       </buttons>
@@ -209,7 +209,7 @@
                                           <AnchorPane prefHeight="231.0" prefWidth="112.0">
                                              <children>
                                                 <Label alignment="CENTER" layoutX="30.0" layoutY="14.0" text="Select file " AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-                                                <Button fx:id="buttonMixerFileOpener" layoutX="65.0" layoutY="40.0" mnemonicParsing="false" onAction="#soundManipulatorOpenFile" text="File..." />
+                                                <Button fx:id="buttonMixerFileOpener" layoutX="65.0" layoutY="40.0" mnemonicParsing="false" onAction="#handleAudioManipulatorOpenFileButton" text="File..." />
                                                 <Label layoutX="76.0" layoutY="89.0" text="OR" />
                                                 <ToggleButton fx:id="toggleButtonMixerStartRecording" layoutX="38.0" layoutY="157.0" mnemonicParsing="false" onAction="#handleMixerRecordButton" text="Start recording" />
                                                 <Label alignment="CENTER" layoutX="2.0" layoutY="131.0" text="Record file" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="-2.0" />
@@ -220,7 +220,7 @@
                                              <children>
                                                 <Separator layoutX="10.0" layoutY="12.0" prefHeight="2.0" prefWidth="118.0" />
                                                 <Label alignment="CENTER" layoutX="14.0" layoutY="29.0" text="Try mixer" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-                                                <ToggleButton fx:id="toggleButtonTestFilter" layoutX="48.0" layoutY="61.0" mnemonicParsing="false" onAction="#soundManipulatorTestFilter" text="Test Filters" AnchorPane.leftAnchor="48.0" AnchorPane.rightAnchor="48.0" />
+                                                <ToggleButton fx:id="toggleButtonTestFilter" layoutX="48.0" layoutY="61.0" mnemonicParsing="false" onAction="#handleAudioManipulatorTestFilterButton" text="Test Filters" AnchorPane.leftAnchor="48.0" AnchorPane.rightAnchor="48.0" />
                                              </children>
                                           </AnchorPane>
                                        </children>

@@ -18,7 +18,7 @@ public class Controller {
 
 	private Soundboard soundboard;
 	private AudioRecorder recorder;
-	private AudioManipulator soundManipulator;
+	private AudioManipulator audioManipulator;
 	private AudioCloudDAO audioDAO;
 	private MainController mainController;
 
@@ -30,7 +30,7 @@ public class Controller {
 	public void initialConfig() {
 		soundboard = new Soundboard();
 		recorder = new AudioRecorder(this);
-		soundManipulator = new AudioManipulator(this);
+		audioManipulator = new AudioManipulator(this);
 	}
 
 	// SoundManipulator methods start
@@ -39,125 +39,125 @@ public class Controller {
 
 	// SoundManipulator parameter setters
 	// Pitch
-	public void soundManipulatorSetPitchFactor(double pitch) {
-		soundManipulator.setPitchFactor(pitch);
+	public void audioManipulatorSetPitchFactor(double pitch) {
+		audioManipulator.setPitchFactor(pitch);
 	}
 
 	// Gain
-	public void soundManipulatorSetGain(double gain) {
-		soundManipulator.setGain(gain);
+	public void audioManipulatorSetGain(double gain) {
+		audioManipulator.setGain(gain);
 	}
 
 	// Echo length
-	public void soundManipulatorSetEchoLength(double echoLength) {
-		soundManipulator.setEchoLength(echoLength);
+	public void audioManipulatorSetEchoLength(double echoLength) {
+		audioManipulator.setEchoLength(echoLength);
 	}
 
 	// Decay
-	public void soundManipulatorSetDecay(double decay) {
-		soundManipulator.setDecay(decay);
+	public void audioManipulatorSetDecay(double decay) {
+		audioManipulator.setDecay(decay);
 	}
 
 	// Flanger length
-	public void soundManipulatorSetFlangerLength(double flangerLength) {
-		soundManipulator.setFlangerLength(flangerLength);
+	public void audioManipulatorSetFlangerLength(double flangerLength) {
+		audioManipulator.setFlangerLength(flangerLength);
 	}
 
 	// Flanger wetness
-	public void soundManipulatorSetWetness(double wetness) {
-		soundManipulator.setWetness(wetness);
+	public void audioManipulatorSetWetness(double wetness) {
+		audioManipulator.setWetness(wetness);
 	}
 
 	// LFO
-	public void soundManipulatorSetLFO(double lfo) {
-		soundManipulator.setLFO(lfo);
+	public void audioManipulatorSetLFO(double lfo) {
+		audioManipulator.setLFO(lfo);
 	}
 
 	// LowPass
-	public void soundManipulatorSetLowPass(float lowPass) {
-		soundManipulator.setLowPass(lowPass);
+	public void audioManipulatorSetLowPass(float lowPass) {
+		audioManipulator.setLowPass(lowPass);
 	}
 
 	// GENERAL MIXER METHODS
-	public void soundManipulatorOpenFile(File file) {
-		soundManipulator.setAudioSourceFile(file);
+	public void audioManipulatorOpenFile(File file) {
+		audioManipulator.setAudioSourceFile(file);
 	}
 	
-	public void soundManipulatorOpenRecordedFile() {
-		mainController.soundManipulatorOpenRecordedFile();
+	public void audioManipulatorOpenRecordedFile() {
+		mainController.audioManipulatorOpenRecordedFile();
 	}
 	
-	public void soundManipulatorStartRecord() {
-		soundManipulator.recordAudio();
+	public void audioManipulatorStartRecord() {
+		audioManipulator.recordAudio();
 	}
 	
-	public void soundManipulatorStopRecord() {
-		soundManipulator.stopRecord();
+	public void audioManipulatorStopRecord() {
+		audioManipulator.stopRecord();
 	}
 
-	public void soundManipulatorPlayAudio() {
-		soundManipulator.playAudio();
+	public void audioManipulatorPlayAudio() {
+		audioManipulator.playAudio();
 	}
 
-	public void soundManipulatorStopAudio() {
-		soundManipulator.stopAudio();
+	public void audioManipulatorStopAudio() {
+		audioManipulator.stopAudio();
 	}
 
-	public void soundManipulatorPauseAudio() {
-		soundManipulator.pauseAudio();
+	public void audioManipulatorPauseAudio() {
+		audioManipulator.pauseAudio();
 	}
 
-	public void soundManipulatorPlayFromDesiredSec(double seconds) {
-		soundManipulator.playFromDesiredSec(seconds);
+	public void audioManipulatorPlayFromDesiredSec(double seconds) {
+		audioManipulator.playFromDesiredSec(seconds);
 	}
 
-	public void soundManipulatorSaveFile(String path) {
-		soundManipulator.saveFile(path);
+	public void audioManipulatorSaveFile(String path) {
+		audioManipulator.saveFile(path);
 	}
 
 	public void testFilter() {
-		soundManipulator.testFilter();
+		audioManipulator.testFilter();
 	}
 	
 	public void setAudioFileLengthInSec(double audioFileLengthInSec) {
-		soundManipulator.setAudioFileLengthInSec(audioFileLengthInSec);
+		audioManipulator.setAudioFileLengthInSec(audioFileLengthInSec);
 		
 	}
 
-	public void soundManipulatorResetMediaPlayer() {
-		soundManipulator.resetMediaPlayer();
+	public void audioManipulatorResetMediaPlayer() {
+		audioManipulator.resetMediaPlayer();
 	}
 	
-	public void soundManipulatorAudioFileReachedEnd() {
-		mainController.soundManipulatorAudioFileReachedEnd();
+	public void audioManipulatorAudioFileReachedEnd() {
+		mainController.audioManipulatorAudioFileReachedEnd();
 	}
 
 	public void timerCancel() {
-		soundManipulator.timerCancel();
+		audioManipulator.timerCancel();
 	}
 
-	public void soundManipulatorUsePitchProcessor(boolean trueOrFalse) {
-		soundManipulator.usePitchProcessor(trueOrFalse);
-
-	}
-
-	public void soundManipulatorUseDelayProcessor(boolean trueOrFalse) {
-		soundManipulator.useDelayProcessor(trueOrFalse);
+	public void audioManipulatorUsePitchProcessor(boolean trueOrFalse) {
+		audioManipulator.usePitchProcessor(trueOrFalse);
 
 	}
 
-	public void soundManipulatorUseGainProcessor(boolean trueOrFalse) {
-		soundManipulator.useGainProcessor(trueOrFalse);
+	public void audioManipulatorUseDelayProcessor(boolean trueOrFalse) {
+		audioManipulator.useDelayProcessor(trueOrFalse);
 
 	}
 
-	public void soundManipulatorUseFlangerProcessor(boolean trueOrFalse) {
-		soundManipulator.useFlangerProcessor(trueOrFalse);
+	public void audioManipulatorUseGainProcessor(boolean trueOrFalse) {
+		audioManipulator.useGainProcessor(trueOrFalse);
 
 	}
 
-	public void soundManipulatorUseLowPassProcessor(boolean trueOrFalse) {
-		soundManipulator.useLowPassProcessor(trueOrFalse);
+	public void audioManipulatorUseFlangerProcessor(boolean trueOrFalse) {
+		audioManipulator.useFlangerProcessor(trueOrFalse);
+
+	}
+
+	public void audioManipulatorUseLowPassProcessor(boolean trueOrFalse) {
+		audioManipulator.useLowPassProcessor(trueOrFalse);
 
 	}
 
