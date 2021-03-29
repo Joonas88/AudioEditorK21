@@ -1,5 +1,7 @@
 package otp.group6.AudioEditor;
 
+import static org.junit.Assert.assertFalse;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -54,6 +56,8 @@ public class AudioRecorder extends Thread {
 	private WaveformWriter writer;
 	private Thread t;
 	private float secondsProcessed = (float) 0.0;
+	private float audioFileDuration = (float) 0.0;
+	private float playbackStartingPoint = (float) 0.0;
 	private Boolean isPlaying = false;
 	private Boolean isPressed = false;
 	private Timer timer;
@@ -98,7 +102,7 @@ public class AudioRecorder extends Thread {
 	 */
 	public void recordAudio() {
 		try {
-			writer = new WaveformWriter(format, "src/audio/default.wav");
+			writer = new WaveformWriter(format, "src/audio/recorder_default.wav");
 
 			line.open(format);
 			System.out.println(line.isOpen());
@@ -150,12 +154,16 @@ public class AudioRecorder extends Thread {
 			adp.addAudioProcessor(new AudioProcessor() {
 				@Override
 				public void processingFinished() {
-					// TODO Tähän pitäis laittaa viesti main controllerille play-napin
-					// aktivoinnista!
+					if((audioFileDuration - secondsProcessed) < 0.1) {
+						audioFileReachedEnd();
+					}
+					task.cancel();
+					timer.cancel();
 				}
 
 				@Override
 				public boolean process(AudioEvent audioEvent) {
+					secondsProcessed = adp.secondsProcessed();
 					return false;
 				}
 			});
@@ -166,9 +174,8 @@ public class AudioRecorder extends Thread {
 		Thread t = new Thread(adp);
 		t.start();
 		isPlaying = true;
-		if (secondsProcessed != (float) 0.0) {
-			adp.skip(secondsProcessed);
-			secondsProcessed = (float) 0.0;
+		if (playbackStartingPoint != (float) 0.0) {
+			adp.skip(playbackStartingPoint);
 		}
 		isPressed = false;
 		timer = new Timer();
@@ -195,7 +202,7 @@ public class AudioRecorder extends Thread {
 		if (adp != null) {
 			adp.stop();
 			isPlaying = false;
-			secondsProcessed = (float) 0.0;
+			playbackStartingPoint = (float) 0.0;
 			setCurrentPositionToRecordFileDurationSlider(0);
 		}
 	}
@@ -205,7 +212,7 @@ public class AudioRecorder extends Thread {
 	 */
 	public void pauseAudio() {
 		if (adp != null) {
-			secondsProcessed = adp.secondsProcessed();
+			playbackStartingPoint = adp.secondsProcessed();
 			adp.stop();
 			isPlaying = false;
 		}
@@ -216,7 +223,7 @@ public class AudioRecorder extends Thread {
 	 * @param seconds
 	 */
 	public void playFromDesiredSec(double seconds) {
-		secondsProcessed = (float) seconds;
+		playbackStartingPoint = (float) seconds;
 		System.out.println(seconds);
 		if (isPlaying == true) {
 			playAudio();
@@ -270,6 +277,24 @@ public class AudioRecorder extends Thread {
 	 */
 	private void setCurrentPositionToRecordFileDurationSlider(double seconds) {
 		controller.setCurrentValueToRecordFileDurationSlider(seconds);
+	}
+	
+	/**
+	 * Method to set audio file's duration to recorder class
+	 * @param audioFileDuration
+	 */
+	public void setAudioFileDuration (float audioFileDuration) {
+		this.audioFileDuration = audioFileDuration;
+	}
+	
+	/**
+	 * Method to tell maincontroller that audio file has reached its end
+	 */
+	public void audioFileReachedEnd(){
+		controller.recorderAudioFileReachedEnd();
+		playbackStartingPoint = 0;
+		secondsProcessed = 0;
+		isPlaying = false;
 	}
 
 	/**
