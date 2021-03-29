@@ -29,6 +29,9 @@ public class Controller {
 		this.mainController = mainController;
 		initialConfig();
 	}
+	public Controller() {
+		initialConfig();
+	}
 
 	public void initialConfig() {
 		soundboard = new Soundboard();

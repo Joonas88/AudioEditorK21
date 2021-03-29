@@ -46,7 +46,7 @@ public class MainApplication extends Application {
 		this.primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			@Override
 			public void handle(WindowEvent t) {
-				mainController.saveSamples();
+				mainController.exitRoutine();
 				Platform.exit();
 				System.exit(0);
 			}
