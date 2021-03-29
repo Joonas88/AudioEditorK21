@@ -1,16 +1,19 @@
 package otp.group6.view;
 
+import java.net.URL;
 import java.sql.SQLException;
+import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.OverrunStyle;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.control.Tooltip;
 import javafx.stage.Stage;
 import otp.group6.controller.Controller;
@@ -21,7 +24,7 @@ import otp.group6.controller.Controller;
  * @author Joonas Soininen
  *
  */
-public class RegisterLoginController {
+public class RegisterLoginController implements Initializable {
 	Controller controller;
 	MainController mc;
 
@@ -36,13 +39,14 @@ public class RegisterLoginController {
 	@FXML
 	private TextField visiblePW;
 	@FXML
-	private Label showPW;
-	@FXML
 	private Button closeButton;
 	@FXML
 	private Button loginButton;
+	@FXML
+	private ToggleButton showPW;
+	private String lastPW;
 
-	final Tooltip pwtooltip = new Tooltip("Paswords must contain 8-20 characters.\n"
+	final Tooltip pwtooltip = new Tooltip("Password must contain 8-20 characters.\n"
 			+ "Must contain one uppercase letter\n" + "Must contain at least one number");
 
 	final Tooltip wuntooltip = new Tooltip("Can not set this username\nMake sure there are no white spaces or \nselect another one");
@@ -54,19 +58,30 @@ public class RegisterLoginController {
 	 */
 	@FXML
 	public void showPW() {
-		password.setVisible(false);
-		visiblePW.setVisible(true);
-		visiblePW.setEditable(true);
-		visiblePW.setText(password.getText());
+		if (showPW.isSelected()) {
+			password.setVisible(false);
+			visiblePW.setVisible(true);
+			visiblePW.setEditable(true);
+			visiblePW.setText(password.getText());
+			
+		} else if (!showPW.isSelected()) {
+			visiblePW.setVisible(false);
+			password.setText(visiblePW.getText());
+			password.setVisible(true);
+		}
+
 	}
 	
 	/**
 	 * Method to hide the password when exiting the hover
 	 */
 	@FXML
-	public void hidePW() {
-		visiblePW.setVisible(false);
-		password.setVisible(true);
+	public void setFinalPW() {
+		if (showPW.isSelected()) {
+			setLastPW(visiblePW.getText());
+		} else {
+			setLastPW(password.getText());	
+		}		
 	}
 	
 	/**
@@ -89,6 +104,8 @@ public class RegisterLoginController {
 		this.mc = mainController;
 		this.controller = mc.getController();
 		controller.intializeDatabaseConnection();
+		pwReminder();
+		username.requestFocus();
 	}
 
 	/**
@@ -107,7 +124,7 @@ public class RegisterLoginController {
 					pwtooltip.show(password, //
 							// popup tooltip on the right, you can adjust these values for different
 							// positions
-							password.getScene().getWindow().getX() + password.getLayoutX() + password.getWidth() + 35, //
+							password.getScene().getWindow().getX() + password.getLayoutX() + password.getWidth() + 0, //
 							password.getScene().getWindow().getY() + password.getLayoutY() + password.getHeight());
 				} else {
 					pwtooltip.hide();
@@ -126,21 +143,23 @@ public class RegisterLoginController {
 		// System.out.println(username.getText().toString().length());// Poistettava
 		// System.out.println(password.getText());// Poistettava
 
-		if ((unisValid(username.getText()))) {
+		if ((unisValid(username.getText()))&&!(controller.chekcforUser(username.getText()))) {
 			// System.out.println("VAPAA"); // Poistettava
 			username.setStyle("-fx-text-fill: green; -fx-font-size: 16px;");
 			wuntooltip.hide();
-			if (pwIsValid(password.getText())) {
-				controller.createUser(username.getText(), password.getText());
+			if (pwIsValid(getLastPW())) {
+				controller.createUser(username.getText(), getLastPW());
 				loginUser();
 			} else {
 				// System.out.println("UUS PASSU"); // Poistettava
 				password.setStyle("-fx-text-fill: red; -fx-font-size: 16px;");
+				visiblePW.setStyle("-fx-text-fill: red; -fx-font-size: 16px;");
 				// password.setStyle("-fx-control-inner-background:#000000; -fx-font-family:
 				// Consolas; -fx-highlight-fill: #00ff00; -fx-highlight-text-fill: #000000;
 				// -fx-text-fill: #00ff00; ");
 				wuntooltip.hide();
 				password.requestFocus();
+				visiblePW.requestFocus();
 			}
 
 		} else {
@@ -175,9 +194,10 @@ public class RegisterLoginController {
 	public void loginUser() {
 		logintip.setWrapText(true);
 		logintip.setTextOverrun(OverrunStyle.ELLIPSIS);
-		if (controller.loginUser(username.getText(), password.getText()) == "No user") {
+		if (controller.loginUser(username.getText(), getLastPW()) == "No user") {
 			username.setStyle("-fx-text-fill: red; -fx-font-size: 16px;");
 			password.setStyle("-fx-text-fill: red; -fx-font-size: 16px;");
+			visiblePW.setStyle("-fx-text-fill: red; -fx-font-size: 16px;");
 			username.focusedProperty().addListener(new ChangeListener<Boolean>() {
 				@Override
 				public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
@@ -196,9 +216,10 @@ public class RegisterLoginController {
 			});
 			username.requestFocus();
 		} else {
-			if (controller.loginUser(username.getText(), password.getText()) == "Incorrect user or pw") {
+			if (controller.loginUser(username.getText(), getLastPW()) == "Incorrect user or pw") {
 				username.setStyle("-fx-text-fill: red; -fx-font-size: 16px;");
 				password.setStyle("-fx-text-fill: red; -fx-font-size: 16px;");
+				visiblePW.setStyle("-fx-text-fill: red; -fx-font-size: 16px;");
 				username.focusedProperty().addListener(new ChangeListener<Boolean>() {
 					@Override
 					public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
@@ -219,7 +240,7 @@ public class RegisterLoginController {
 				});
 				username.requestFocus();
 			} else {
-				controller.loginUser(username.getText(), password.getText());
+				controller.loginUser(username.getText(), getLastPW());
 				Stage stage = (Stage) closeButton.getScene().getWindow();
 				stage.close();
 				// mc.openMixerSave();
@@ -250,6 +271,21 @@ public class RegisterLoginController {
 	public static boolean unisValid(final String username) {
 		Matcher matcher = unPattern.matcher(username);
 		return matcher.matches();
+	}
+
+	@Override
+	public void initialize(URL arg0, ResourceBundle arg1) {
+		// TODO Auto-generated method stub
+
+		
+	}
+
+	public String getLastPW() {
+		return lastPW;
+	}
+
+	public void setLastPW(String lastPW) {
+		this.lastPW = lastPW;
 	}
 
 }

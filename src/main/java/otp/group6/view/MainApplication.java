@@ -60,7 +60,7 @@ public class MainApplication extends Application {
 	public void initializeRootLayout() {
 		try {
 			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(MainApplication.class.getResource("MainView.fxml"));
+			loader.setLocation(MainApplication.class.getResource("/MainView.fxml"));
 			rootLayout = (AnchorPane) loader.load();
 
 			Scene scene = new Scene(rootLayout);

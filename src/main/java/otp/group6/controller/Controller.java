@@ -360,8 +360,8 @@ public class Controller {
 		return audioDAO.getCertainMixesArray(select, specify);
 	}
 
-	public boolean deleteMix(String specify) {
-		return audioDAO.deleteMix(specify);
+	public boolean deleteMix(String name, int id) {
+		return audioDAO.deleteMix(name, id);
 	}
 
 	public boolean deleteUser() {

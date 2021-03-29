@@ -174,45 +174,72 @@
     </display>  
   </class>  
   <association id="20">    
+<<<<<<< HEAD
     <bendpoint x="501" y="285"/>    
     <end type="SOURCE" refId="17" navigable="false">      
       <attribute id="21" name="controller">        
+=======
+    <bendpoint x="309" y="508"/>    
+    <end type="SOURCE" refId="16" navigable="false">      
+      <attribute id="21" name="mc">        
+>>>>>>> joonas
         <position height="0" width="0" x="0" y="0"/>      
       </attribute>      
       <multiplicity id="22" minimum="0" maximum="1">        
         <position height="0" width="0" x="0" y="0"/>      
       </multiplicity>    
     </end>    
-    <end type="TARGET" refId="10" navigable="true"/>    
+    <end type="TARGET" refId="11" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
   <association id="23">    
     <end type="SOURCE" refId="10" navigable="false">      
+<<<<<<< HEAD
       <attribute id="24" name="recorder">        
+=======
+      <attribute id="24" name="audioDAO">        
+>>>>>>> joonas
         <position height="0" width="0" x="0" y="0"/>      
       </attribute>      
       <multiplicity id="25" minimum="0" maximum="1">        
         <position height="0" width="0" x="0" y="0"/>      
       </multiplicity>    
     </end>    
+<<<<<<< HEAD
     <end type="TARGET" refId="5" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
   <association id="26">    
     <end type="SOURCE" refId="18" navigable="false">      
       <attribute id="27" name="mc">        
+=======
+    <end type="TARGET" refId="7" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="26">    
+    <end type="SOURCE" refId="10" navigable="false">      
+      <attribute id="27" name="recorder">        
+>>>>>>> joonas
         <position height="0" width="0" x="0" y="0"/>      
       </attribute>      
       <multiplicity id="28" minimum="0" maximum="1">        
         <position height="0" width="0" x="0" y="0"/>      
       </multiplicity>    
     </end>    
+<<<<<<< HEAD
     <end type="TARGET" refId="11" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
   <association id="29">    
     <bendpoint x="309" y="508"/>    
     <end type="SOURCE" refId="16" navigable="false">      
+=======
+    <end type="TARGET" refId="5" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="29">    
+    <end type="SOURCE" refId="18" navigable="false">      
+>>>>>>> joonas
       <attribute id="30" name="mc">        
         <position height="0" width="0" x="0" y="0"/>      
       </attribute>      
@@ -225,7 +252,11 @@
   </association>  
   <association id="32">    
     <end type="SOURCE" refId="10" navigable="false">      
+<<<<<<< HEAD
       <attribute id="33" name="audioDAO">        
+=======
+      <attribute id="33" name="mainController">        
+>>>>>>> joonas
         <position height="0" width="0" x="0" y="0"/>      
       </attribute>      
       <multiplicity id="34" minimum="0" maximum="1">        
@@ -236,8 +267,12 @@
     <display labels="true" multiplicity="true"/>  
   </association>  
   <association id="35">    
+<<<<<<< HEAD
     <bendpoint x="102" y="227"/>    
     <end type="SOURCE" refId="13" navigable="false">      
+=======
+    <end type="SOURCE" refId="5" navigable="false">      
+>>>>>>> joonas
       <attribute id="36" name="controller">        
         <position height="0" width="0" x="0" y="0"/>      
       </attribute>      
@@ -249,8 +284,13 @@
     <display labels="true" multiplicity="true"/>  
   </association>  
   <association id="38">    
+<<<<<<< HEAD
     <end type="SOURCE" refId="9" navigable="false">      
       <attribute id="39" name="player">        
+=======
+    <end type="SOURCE" refId="17" navigable="false">      
+      <attribute id="39" name="mc">        
+>>>>>>> joonas
         <position height="0" width="0" x="0" y="0"/>      
       </attribute>      
       <multiplicity id="40" minimum="0" maximum="1">        
@@ -261,9 +301,15 @@
     <display labels="true" multiplicity="true"/>  
   </association>  
   <association id="41">    
+<<<<<<< HEAD
     <bendpoint x="301" y="261"/>    
     <end type="SOURCE" refId="16" navigable="false">      
       <attribute id="42" name="controller">        
+=======
+    <bendpoint x="678" y="488"/>    
+    <end type="SOURCE" refId="19" navigable="false">      
+      <attribute id="42" name="mc">        
+>>>>>>> joonas
         <position height="0" width="0" x="0" y="0"/>      
       </attribute>      
       <multiplicity id="43" minimum="0" maximum="1">        
@@ -274,15 +320,23 @@
     <display labels="true" multiplicity="true"/>  
   </association>  
   <association id="44">    
+<<<<<<< HEAD
     <end type="SOURCE" refId="7" navigable="false">      
       <attribute id="45" name="userclass">        
         <position height="0" width="0" x="0" y="0"/>      
       </attribute>      
       <multiplicity id="46" minimum="0" maximum="1">        
+=======
+    <end type="SOURCE" refId="9" navigable="false">      
+      <attribute id="45" name="sampleArray">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="46" minimum="0" maximum="2147483647">        
+>>>>>>> joonas
         <position height="0" width="0" x="0" y="0"/>      
       </multiplicity>    
     </end>    
-    <end type="TARGET" refId="3" navigable="true"/>    
+    <end type="TARGET" refId="2" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
   <nesting id="47">    
@@ -290,16 +344,25 @@
     <end type="TARGET" refId="15"/>  
   </nesting>  
   <association id="48">    
+<<<<<<< HEAD
     <bendpoint x="100" y="505"/>    
     <end type="SOURCE" refId="13" navigable="false">      
       <attribute id="49" name="mc">        
+=======
+    <end type="SOURCE" refId="9" navigable="false">      
+      <attribute id="49" name="player">        
+>>>>>>> joonas
         <position height="0" width="0" x="0" y="0"/>      
       </attribute>      
       <multiplicity id="50" minimum="0" maximum="1">        
         <position height="0" width="0" x="0" y="0"/>      
       </multiplicity>    
     </end>    
+<<<<<<< HEAD
     <end type="TARGET" refId="11" navigable="true"/>    
+=======
+    <end type="TARGET" refId="6" navigable="true"/>    
+>>>>>>> joonas
     <display labels="true" multiplicity="true"/>  
   </association>  
   <nesting id="51">    
@@ -307,30 +370,43 @@
     <end type="TARGET" refId="1"/>  
   </nesting>  
   <association id="52">    
+<<<<<<< HEAD
     <end type="SOURCE" refId="10" navigable="false">      
       <attribute id="53" name="mainController">        
+=======
+    <bendpoint x="301" y="261"/>    
+    <end type="SOURCE" refId="16" navigable="false">      
+      <attribute id="53" name="controller">        
+>>>>>>> joonas
         <position height="0" width="0" x="0" y="0"/>      
       </attribute>      
       <multiplicity id="54" minimum="0" maximum="1">        
         <position height="0" width="0" x="0" y="0"/>      
       </multiplicity>    
     </end>    
-    <end type="TARGET" refId="11" navigable="true"/>    
+    <end type="TARGET" refId="10" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
   <association id="55">    
+<<<<<<< HEAD
     <bendpoint x="582" y="222"/>    
     <end type="SOURCE" refId="19" navigable="false">      
       <attribute id="56" name="controller">        
+=======
+    <bendpoint x="100" y="505"/>    
+    <end type="SOURCE" refId="13" navigable="false">      
+      <attribute id="56" name="mc">        
+>>>>>>> joonas
         <position height="0" width="0" x="0" y="0"/>      
       </attribute>      
       <multiplicity id="57" minimum="0" maximum="1">        
         <position height="0" width="0" x="0" y="0"/>      
       </multiplicity>    
     </end>    
-    <end type="TARGET" refId="10" navigable="true"/>    
+    <end type="TARGET" refId="11" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
+<<<<<<< HEAD
   <association id="58">    
     <end type="SOURCE" refId="19" navigable="false">      
       <attribute id="59" name="myObservableList">        
@@ -347,25 +423,68 @@
     <bendpoint x="557" y="232"/>    
     <end type="SOURCE" refId="18" navigable="false">      
       <attribute id="62" name="controller">        
+=======
+  <nesting id="58">    
+    <end type="SOURCE" refId="7"/>    
+    <end type="TARGET" refId="3"/>  
+  </nesting>  
+  <association id="59">    
+    <bendpoint x="422" y="324"/>    
+    <end type="SOURCE" refId="11" navigable="false">      
+      <attribute id="60" name="controller">        
         <position height="0" width="0" x="0" y="0"/>      
       </attribute>      
-      <multiplicity id="63" minimum="0" maximum="1">        
+      <multiplicity id="61" minimum="0" maximum="1">        
         <position height="0" width="0" x="0" y="0"/>      
       </multiplicity>    
     </end>    
     <end type="TARGET" refId="10" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
+  <association id="62">    
+    <bendpoint x="501" y="285"/>    
+    <end type="SOURCE" refId="17" navigable="false">      
+      <attribute id="63" name="controller">        
+>>>>>>> joonas
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="64" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="10" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+<<<<<<< HEAD
   <association id="64">    
     <bendpoint x="678" y="488"/>    
     <end type="SOURCE" refId="19" navigable="false">      
       <attribute id="65" name="mc">        
+=======
+  <association id="65">    
+    <bendpoint x="205" y="239"/>    
+    <end type="SOURCE" refId="14" navigable="false">      
+      <attribute id="66" name="controller">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="67" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="10" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="68">    
+    <end type="SOURCE" refId="7" navigable="false">      
+      <attribute id="69" name="userclass">        
+>>>>>>> joonas
         <position height="0" width="0" x="0" y="0"/>      
       </attribute>      
       <multiplicity id="66" minimum="0" maximum="1">        
         <position height="0" width="0" x="0" y="0"/>      
       </multiplicity>    
     </end>    
+<<<<<<< HEAD
     <end type="TARGET" refId="11" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
@@ -376,12 +495,24 @@
         <position height="0" width="0" x="0" y="0"/>      
       </attribute>      
       <multiplicity id="69" minimum="0" maximum="1">        
+=======
+    <end type="TARGET" refId="3" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="71">    
+    <end type="SOURCE" refId="19" navigable="false">      
+      <attribute id="72" name="myObservableList">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="73" minimum="0" maximum="2147483647">        
+>>>>>>> joonas
         <position height="0" width="0" x="0" y="0"/>      
       </multiplicity>    
     </end>    
-    <end type="TARGET" refId="10" navigable="true"/>    
+    <end type="TARGET" refId="15" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
+<<<<<<< HEAD
   <association id="70">    
     <end type="SOURCE" refId="10" navigable="false">      
       <attribute id="71" name="soundboard">        
@@ -401,12 +532,35 @@
         <position height="0" width="0" x="0" y="0"/>      
       </attribute>      
       <multiplicity id="75" minimum="0" maximum="1">        
+=======
+  <association id="74">    
+    <bendpoint x="557" y="232"/>    
+    <end type="SOURCE" refId="18" navigable="false">      
+      <attribute id="75" name="controller">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="76" minimum="0" maximum="1">        
         <position height="0" width="0" x="0" y="0"/>      
       </multiplicity>    
     </end>    
     <end type="TARGET" refId="10" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
+  <association id="77">    
+    <bendpoint x="213" y="509"/>    
+    <end type="SOURCE" refId="14" navigable="false">      
+      <attribute id="78" name="mc">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="79" minimum="0" maximum="1">        
+>>>>>>> joonas
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="11" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+<<<<<<< HEAD
   <nesting id="76">    
     <end type="SOURCE" refId="7"/>    
     <end type="TARGET" refId="3"/>  
@@ -437,6 +591,47 @@
     <display labels="true" multiplicity="true"/>  
   </association>  
   <nesting id="83">    
+=======
+  <association id="80">    
+    <bendpoint x="582" y="222"/>    
+    <end type="SOURCE" refId="19" navigable="false">      
+      <attribute id="81" name="controller">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="82" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="10" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="83">    
+    <end type="SOURCE" refId="10" navigable="false">      
+      <attribute id="84" name="soundboard">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="85" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="9" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="86">    
+    <bendpoint x="102" y="227"/>    
+    <end type="SOURCE" refId="13" navigable="false">      
+      <attribute id="87" name="controller">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="88" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="10" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <nesting id="89">    
+>>>>>>> joonas
     <end type="SOURCE" refId="9"/>    
     <end type="TARGET" refId="2"/>  
   </nesting>  

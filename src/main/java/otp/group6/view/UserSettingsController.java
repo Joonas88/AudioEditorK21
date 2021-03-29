@@ -1,18 +1,22 @@
 package otp.group6.view;
 
+import java.net.URL;
 import java.util.Optional;
+import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.OverrunStyle;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
@@ -25,7 +29,7 @@ import otp.group6.controller.Controller;
  * @author Joonas Soininen
  *
  */
-public class UserSettingsController {
+public class UserSettingsController implements Initializable{
 	Controller controller;
 	MainController mc;
 
@@ -41,29 +45,46 @@ public class UserSettingsController {
 	private TextField npassword;
 	@FXML
 	private TextField showNewPW;
+	@FXML
+	private ToggleButton showPW1;
+	@FXML
+	private ToggleButton showPW2;
+	
 
 	final Tooltip pwtooltip = new Tooltip("Passwords must contain 8-20 characters.\n"
 			+ "Must contain one uppercase letter\n" + "Must contain at least one number");
 
 	@FXML
-	public void showPW() {
-		password.setVisible(false);
-		showOldPW.setVisible(true);
-		showOldPW.setEditable(true);
-		showOldPW.setText(password.getText());
+	public void showPW1() {
 		
-		npassword.setVisible(false);
-		showNewPW.setVisible(true);
-		showNewPW.setEditable(true);
-		showNewPW.setText(npassword.getText());
+		if (showPW1.isSelected()) {
+			password.setVisible(false);
+			showOldPW.setVisible(true);
+			showOldPW.setEditable(true);
+			showOldPW.setText(password.getText());
+		} else if (!showPW1.isSelected()) {
+			password.setText(showOldPW.getText());
+			password.setVisible(true);			
+			showOldPW.setVisible(false);
+		}
+
+		
+
 	}
 	
 	@FXML
-	public void hidePW() {
-		password.setVisible(true);
-		showOldPW.setVisible(false);
-		npassword.setVisible(true);
-		showNewPW.setVisible(false);
+	public void showPW2() {
+		if (showPW2.isSelected()) {
+			npassword.setVisible(false);
+			showNewPW.setVisible(true);
+			showNewPW.setEditable(true);
+			showNewPW.setText(npassword.getText());
+		} else if (!showPW2.isSelected()) {
+			npassword.setText(showNewPW.getText());
+			npassword.setVisible(true);
+			showNewPW.setVisible(false);
+		}
+
 	}
 	
 	/**
@@ -110,12 +131,12 @@ public class UserSettingsController {
 			Stage stage = (Stage) closeButton.getScene().getWindow();
 			stage.close();
 		} else {
-			// ... user chose CANCEL or closed the dialog
+
 		}
 	}
 
 	/**
-	 * Method for changin password
+	 * Method for changing password
 	 */
 	@FXML
 	public void changePassword() {
@@ -155,7 +176,7 @@ public class UserSettingsController {
 							// positions
 							npassword.getScene().getWindow().getX() + npassword.getLayoutX() + npassword.getWidth(), //
 							npassword.getScene().getWindow().getY() + npassword.getLayoutY() + npassword.getHeight()
-									+ 130);
+									+ 0);
 				} else {
 					pwtooltip.hide();
 				}
@@ -175,6 +196,12 @@ public class UserSettingsController {
 	public static boolean isValid(final String password) {
 		Matcher matcher = pattern.matcher(password);
 		return matcher.matches();
+	}
+
+	@Override
+	public void initialize(URL arg0, ResourceBundle arg1) {
+		pwReminder();
+		
 	}
 
 }
