@@ -95,6 +95,10 @@ public class Soundboard {
 		}
 		return false;
 	}
+	
+	public boolean checkSampleArray(Sample sample) {
+		return sampleArray.contains(sample);
+	}
 
 	/**
 	 * Returns the length of sample array
@@ -114,8 +118,10 @@ public class Soundboard {
 	 * 
 	 * @param path Filepath as String
 	 */
-	public void addSample(String path) {
-		sampleArray.add(new Sample(path));
+	public Sample addSample(String path) {
+		Sample newSample = new Sample(path);
+		sampleArray.add(newSample);
+		return newSample;
 	}
 
 	public void editSample(String path, int index) {
@@ -132,12 +138,15 @@ public class Soundboard {
 
 	/**
 	 * Removes sample with a given index value from the sample array
-	 * 
+	 * @return if sample index is given, returns sample; else returns boolean if given sample is removed
 	 * @param sampleIndex
 	 */
-	public void removeSample(int sampleIndex) {
-		sampleArray.remove(sampleIndex);
+	public Sample removeSample(int sampleIndex) {
+		return sampleArray.remove(sampleIndex);
 		// update button positions
+	}
+	public boolean removeSample(Sample sample) {
+		return sampleArray.remove(sample);
 	}
 
 	/**

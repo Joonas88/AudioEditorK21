@@ -38,7 +38,11 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import otp.group6.AudioEditor.AudioFileHandler;
 import otp.group6.controller.Controller;
-
+/**
+ * Controller for soundboard view TODO changes to make this class control the view and standalone controller for soundboard in controller package
+ * @author kevin
+ *
+ */
 public class SoundboardController implements Initializable {
 	private Controller controller;
 	
