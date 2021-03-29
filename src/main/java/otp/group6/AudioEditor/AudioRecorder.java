@@ -1,7 +1,5 @@
 package otp.group6.AudioEditor;
 
-import static org.junit.Assert.assertFalse;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
