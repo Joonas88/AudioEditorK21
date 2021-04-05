@@ -1,15 +1,10 @@
 # AudioEditor
 
+This verison of the project is not finished and is extremely crude. This version in uploaded here only for a showcase.
+
 Desktop application for recording, mixing and playing sound files. AudioEditor was made as a group project at Metropolia University of Applied Sciences. The application was developed with Java as a Maven project.
 
 ## Installation guide
-**Attention!**
-
-**_For the moment there is a problem with the Apacne Maven dependency and plugin with the JavaFX. 
-To run the project you must run MainApplication.java directly.
-We are working on this issue._**
-
-
 
 You can download this project directly from this repository and add it to your chosen development environment that supports Apache Maven and run it using Mavens javafx run function.
 
